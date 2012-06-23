@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{039420CF-CF63-421A-8EFC-71109C909D30}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>MediaOrganiser</RootNamespace>
+    <AssemblyName>MediaOrganiser</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Organiser.cs" />
+    <Compile Include="ShowFinder.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\MediaOrganiser.Shows\MediaOrganiser.Shows.csproj">
+      <Project>{74BB1CC6-9E2C-4BDA-BEC3-F40EC694E187}</Project>
+      <Name>MediaOrganiser.Shows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MediaOrganiser.Convertor\MediaOrganiser.Convertor.csproj">
+      <Project>{E2CBAD9F-2047-4AEC-858D-C7F008E1D894}</Project>
+      <Name>MediaOrganiser.Convertor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Files\System.Files.csproj">
+      <Project>{E7EB41D8-6079-4BCA-BC6B-8EA46489B60F}</Project>
+      <Name>System.Files</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Logging\System.Logging.csproj">
+      <Project>{D0B1A5D1-64BE-416A-8522-EA6998C93C29}</Project>
+      <Name>System.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Threading.Helpers\System.Threading.Helpers.csproj">
+      <Project>{1BD63904-18F6-437A-AE3F-B1A79AD566DD}</Project>
+      <Name>System.Threading.Helpers</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

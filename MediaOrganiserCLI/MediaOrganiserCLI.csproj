@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7415F673-9328-4198-B307-27E10A88E653}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MediaOrganiserCLI</RootNamespace>
+    <AssemblyName>MediaOrganiserCLI</AssemblyName>
+    <StartupObject>MediaOrganiserCLI.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Externalconsole>true</Externalconsole>
+    <Commandlineparameters>/Volumes/Torrents/Game of Thrones s01,/Volumes/Torrents/Game.of.Thrones.S02/ /Users/Dipesh/Desktop/OutputMedia</Commandlineparameters>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="CommandLine">
+      <HintPath>Externals\CommandLine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\MediaOrganiser\MediaOrganiser.csproj">
+      <Project>{039420CF-CF63-421A-8EFC-71109C909D30}</Project>
+      <Name>MediaOrganiser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Files\System.Files.csproj">
+      <Project>{E7EB41D8-6079-4BCA-BC6B-8EA46489B60F}</Project>
+      <Name>System.Files</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Externals\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Externals\CommandLine.dll" />
+  </ItemGroup>
+</Project>
