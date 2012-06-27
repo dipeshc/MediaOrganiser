@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Threading.Helpers", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiserCLI", "MediaOrganiserCLI\MediaOrganiserCLI.csproj", "{7415F673-9328-4198-B307-27E10A88E653}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.iTunes", "Apple.iTunes\Apple.iTunes.csproj", "{F15396F9-463B-4407-8C87-2F464902382A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -49,6 +51,10 @@ Global
 		{E7EB41D8-6079-4BCA-BC6B-8EA46489B60F}.Debug|x86.Build.0 = Debug|x86
 		{E7EB41D8-6079-4BCA-BC6B-8EA46489B60F}.Release|x86.ActiveCfg = Release|x86
 		{E7EB41D8-6079-4BCA-BC6B-8EA46489B60F}.Release|x86.Build.0 = Release|x86
+		{F15396F9-463B-4407-8C87-2F464902382A}.Debug|x86.ActiveCfg = Debug|x86
+		{F15396F9-463B-4407-8C87-2F464902382A}.Debug|x86.Build.0 = Debug|x86
+		{F15396F9-463B-4407-8C87-2F464902382A}.Release|x86.ActiveCfg = Release|x86
+		{F15396F9-463B-4407-8C87-2F464902382A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = MediaOrganiserCLI\MediaOrganiserCLI.csproj
