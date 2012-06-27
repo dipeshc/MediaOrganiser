@@ -7,12 +7,12 @@ namespace System.Files
 	{
 		public static String GetTempPath()
 		{
-			return Path.GetTempPath();
+			return System.IO.Path.GetTempPath();
 		}
 
 		public static String PathCombine(String Path1, String Path2)
 		{
-			return Path.Combine(Path1, Path2);
+			return System.IO.Path.Combine(Path1, Path2);
 		}
 	}
 }

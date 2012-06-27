@@ -17,6 +17,11 @@ namespace System.Files
 			theFile = aFile;
 		}
 
+		public File(IPath Path)
+		{
+			theFile = new FileInfo(Path.FullName);
+		}
+
 		public String Name
 		{
 			get

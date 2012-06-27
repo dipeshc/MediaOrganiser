@@ -21,11 +21,11 @@ namespace MediaOrganiserCLI
 			[OptionList("e", "excluded", Separator=',', HelpText = "Shows found in the Input folders that match shows found in the Excluded folders will not be organised. Comma seperated for mutiple folders.")]
 			public IList<String> Excludes { get; set; }
 
-			public IEnumerable<IDirectory> InputDirectories
+			public IEnumerable<IPath> InputPaths
 			{
 				get
 				{
-					return Inputs.Select(Path => new Directory(Path));
+					return Inputs.Select(aPath => new Path(aPath));
 				}
 			}
 
@@ -37,11 +37,16 @@ namespace MediaOrganiserCLI
 				}
 			}
 
-			public IEnumerable<IDirectory> ExcludedDirectories
+			public IEnumerable<IPath> ExcludedPaths
 			{
 				get
 				{
-					return Excludes.Select(Path => new Directory(Path));
+					if(Excludes==null)
+					{
+						return new List<IPath>();
+					}
+
+					return Excludes.Select(aPath => new Path(aPath));
 				}
 			}
 
@@ -88,8 +93,8 @@ namespace MediaOrganiserCLI
 				// Exit 1.
                 Environment.Exit(1);
 			}
-		
-			Organiser Organiser = new Organiser(Options.InputDirectories, Options.OutputDirectory, Options.ExcludedDirectories);
+
+			Organiser Organiser = new Organiser(Options.InputPaths, Options.OutputDirectory, Options.ExcludedPaths);
 			Organiser.Organise();
 
 			// Exit 0.

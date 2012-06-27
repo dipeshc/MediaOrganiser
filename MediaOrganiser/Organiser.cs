@@ -12,9 +12,9 @@ namespace MediaOrganiser
 {
 	public class Organiser
 	{
-		private IEnumerable<IDirectory> InputDirectories;
+		private IEnumerable<IPath> InputPaths;
 		private IDirectory OutputDirectory;
-		private IEnumerable<IDirectory> ExcludedDirectories;
+		private IEnumerable<IPath> ExcludedPaths;
 		private IDirectory WorkingDirectory;
 
 		public IEnumerable<String> ShowInputFileTypes = new List<String>() {"mp4", "avi", "mkv", "m4v"};
@@ -27,12 +27,12 @@ namespace MediaOrganiser
 		private LockableInt SaveShowMetaDataThreadAvailability = new LockableInt(2);
 		private LockableInt MoveShowToOutputDirectoryThreadAvailability = new LockableInt(5);
 
-		public Organiser (IEnumerable<IDirectory> InputDirectories, IDirectory OutputDirectory, IEnumerable<IDirectory> ExcludedDirectories)
+		public Organiser (IEnumerable<IPath> InputPaths, IDirectory OutputDirectory, IEnumerable<IPath> ExcludedPaths)
 		{
 			// Setup folders.
-			this.InputDirectories = InputDirectories;
+			this.InputPaths = InputPaths;
 			this.OutputDirectory = OutputDirectory;
-			this.ExcludedDirectories = Enumerable.Union<IDirectory>(new List<IDirectory>{OutputDirectory}, ExcludedDirectories);
+			this.ExcludedPaths = Enumerable.Union<IPath>(new List<IPath>{new Path(OutputDirectory.FullName)}, ExcludedPaths);
 			this.WorkingDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), "MediaOrganiserWorkingArea"));
 
 			// Create working directory if it does not exist.
@@ -45,8 +45,8 @@ namespace MediaOrganiser
 		public void Organise()
 		{
 			// Scan input and output folder to identify files.
-			IEnumerable<IShow> InputShows = ShowFinder.GetShowsInDirectories(InputDirectories, ShowInputFileTypes);
-			IEnumerable<IShow> ExcludedShows = ShowFinder.GetShowsInDirectories(ExcludedDirectories, ShowInputFileTypes);
+			IEnumerable<IShow> InputShows = ShowFinder.GetShows(InputPaths, ShowInputFileTypes);
+			IEnumerable<IShow> ExcludedShows = ShowFinder.GetShows(ExcludedPaths, ShowInputFileTypes);
 
 			// Extract basic details from show.
 			Parallel.ForEach(Enumerable.Union<IShow>(InputShows, ExcludedShows), Show =>

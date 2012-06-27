@@ -18,6 +18,11 @@ namespace System.Files
 			theDirectory = aDirectory;
 		}
 
+		public Directory (IPath Path)
+		{
+			theDirectory = new DirectoryInfo(Path.FullName);
+		}
+
 		public String Name
 		{
 			get

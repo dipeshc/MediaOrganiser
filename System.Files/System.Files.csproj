@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E7EB41D8-6079-4BCA-BC6B-8EA46489B60F}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>FileSystems</RootNamespace>
-    <AssemblyName>FileSystems</AssemblyName>
+    <RootNamespace>System.Files</RootNamespace>
+    <AssemblyName>System.Files</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -42,6 +42,8 @@
     <Compile Include="IDirectory.cs" />
     <Compile Include="File.cs" />
     <Compile Include="Directory.cs" />
+    <Compile Include="IPath.cs" />
+    <Compile Include="Path.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

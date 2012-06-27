@@ -8,31 +8,40 @@ namespace MediaOrganiser
 {
 	public class ShowFinder
 	{
-		public static IEnumerable<IShow> GetShowsInDirectory(IDirectory Directory, String ShowFileType)
+		public static IEnumerable<IShow> GetShows(IPath Path, String ShowFileType)
 		{
-			return GetShowsInDirectories(new List<IDirectory>{Directory}, new List<String>{ShowFileType});
+			return GetShows(new List<IPath>{Path}, new List<String>{ShowFileType});
 		}
 
-		public static IEnumerable<IShow> GetShowsInDirectory(IDirectory Directory, IEnumerable<String> ShowFileTypes)
+		public static IEnumerable<IShow> GetShows(IPath Path, IEnumerable<String> ShowFileTypes)
 		{
-			return GetShowsInDirectories(new List<IDirectory>{Directory}, ShowFileTypes);
+			return GetShows(new List<IPath>{Path}, ShowFileTypes);
 		}
 
-		public static IEnumerable<IShow> GetShowsInDirectories(IEnumerable<IDirectory> Directories, String ShowFileType)
+		public static IEnumerable<IShow> GetShows(IEnumerable<IPath> Paths, String ShowFileType)
 		{
-			return GetShowsInDirectories(Directories, new List<String>{ShowFileType});
+			return GetShows(Paths, new List<String>{ShowFileType});
 		}
 
-		public static IEnumerable<IShow> GetShowsInDirectories(IEnumerable<IDirectory> Directories, IEnumerable<String> ShowFileTypes)
+		public static IEnumerable<IShow> GetShows(IEnumerable<IPath> Paths, IEnumerable<String> ShowFileTypes)
 		{
 			IList<IShow> Shows = new List<IShow>();
 			foreach(String ShowFileType in ShowFileTypes)
 			{
-				foreach(IDirectory Directory in Directories)
+				foreach(IPath Path in Paths)
 				{
-					foreach(IFile ShowFile in Directory.GetFilesInAllDirectories("*."+ShowFileType))
+					// If file then add directly.
+					if(Path.IsFile && new File(Path).Extension.ToLower()=="."+ShowFileType)
 					{
-						Shows.Add(new Show(ShowFile));
+						Shows.Add(new Show(new File(Path)));
+					}
+					else if(Path.IsDirectory)
+					{
+						// If directory go through directory and then add.
+						foreach(IFile ShowFile in new Directory(Path).GetFilesInAllDirectories("*."+ShowFileType))
+						{
+							Shows.Add(new Show(ShowFile));
+						}
 					}
 				}
 			}
