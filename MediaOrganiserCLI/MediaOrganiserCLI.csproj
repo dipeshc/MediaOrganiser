@@ -21,7 +21,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
-    <Commandlineparameters>/Volumes/Torrents/Game of Thrones s01,/Volumes/Torrents/Game.of.Thrones.S02/ /Users/Dipesh/Desktop/OutputMedia</Commandlineparameters>
+    <Commandlineparameters>-i ~/Desktop/in/GameOfThrones-S01E01.mp4 -a -e</Commandlineparameters>
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="mkdir -p Merged" workingdir="${TargetDir}" />

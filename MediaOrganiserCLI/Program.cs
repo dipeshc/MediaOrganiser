@@ -12,14 +12,20 @@ namespace MediaOrganiserCLI
 	{
 		private sealed class Options : CommandLineOptionsBase
         {
-            [OptionList("i", "input", Required=true, Separator=',', HelpText = "The Input folders from which shows will be found. Comma seperated for mutiple folders.")]
+            [OptionList("i", "input", Required=true, Separator=',', HelpText = "The Input folders from which media will be found. Comma seperated for mutiple folders.")]
             public IList<String> Inputs {get; set;}
 
-            [Option("o", "outputs", Required = true, HelpText = "The Output folder from which organised shows will be put.")]
+            [Option("o", "outputs", HelpText = "The Output folder from which organised media will be put.")]
             public String Output { get; set; }
 
-			[OptionList("e", "excluded", Separator=',', HelpText = "Shows found in the Input folders that match shows found in the Excluded folders will not be organised. Comma seperated for mutiple folders.")]
+			[OptionList("e", "excluded", Separator=',', HelpText = "Media found in the Input folders that match shows found in the Excluded folders will not be organised. Comma seperated for mutiple folders.")]
 			public IList<String> Excludes { get; set; }
+
+			[Option("a", "addToiTunes", Required=false, HelpText = "Adds the converted media to iTunes.")]
+			public Boolean AddToiTunes { get; set; }
+
+			[Option("e", "excludeiTunesMedia", Required=false, HelpText = "Adds the iTunes media location to the list of excludes.")]
+            public Boolean ExcludeiTunesMedia { get; set; }
 
 			public IEnumerable<IPath> InputPaths
 			{
@@ -33,7 +39,7 @@ namespace MediaOrganiserCLI
 			{
 				get
 				{
-					return new Directory(Output);
+					return Output==null?null:new Directory(Output);
 				}
 			}
 
@@ -41,12 +47,7 @@ namespace MediaOrganiserCLI
 			{
 				get
 				{
-					if(Excludes==null)
-					{
-						return new List<IPath>();
-					}
-
-					return Excludes.Select(aPath => new Path(aPath));
+					return Excludes==null?null:Excludes.Select(aPath => new Path(aPath));
 				}
 			}
 
@@ -94,7 +95,7 @@ namespace MediaOrganiserCLI
                 Environment.Exit(1);
 			}
 
-			Organiser Organiser = new Organiser(Options.InputPaths, Options.OutputDirectory, Options.ExcludedPaths);
+			Organiser Organiser = new Organiser(Options.InputPaths, Options.OutputDirectory, Options.ExcludedPaths, Options.AddToiTunes, Options.ExcludeiTunesMedia);
 			Organiser.Organise();
 
 			// Exit 0.

@@ -7,6 +7,7 @@ using System.Threading.Helpers;
 using System.Collections.Generic;
 using MediaOrganiser.Shows;
 using MediaOrganiser.Convertor;
+using Apple.iTunes;
 
 namespace MediaOrganiser
 {
@@ -16,6 +17,7 @@ namespace MediaOrganiser
 		private IDirectory OutputDirectory;
 		private IEnumerable<IPath> ExcludedPaths;
 		private IDirectory WorkingDirectory;
+		private Boolean AddToiTunes;
 
 		public IEnumerable<String> ShowInputFileTypes = new List<String>() {"mp4", "avi", "mkv", "m4v"};
 		public String OutputFileType = "mp4";
@@ -25,15 +27,27 @@ namespace MediaOrganiser
 		private LockableInt ConvertShowIfRequiredThreadAvailability = new LockableInt(1);
 		private LockableInt ExtractAdditionalShowDetailsIfPossibleThreadAvailability = new LockableInt(1);
 		private LockableInt SaveShowMetaDataThreadAvailability = new LockableInt(2);
+		private LockableInt AddShowToiTunesThreadAvailability = new LockableInt(1);
+		private LockableInt DeleteShowThreadAvailability = new LockableInt(10);
 		private LockableInt MoveShowToOutputDirectoryThreadAvailability = new LockableInt(5);
 
-		public Organiser (IEnumerable<IPath> InputPaths, IDirectory OutputDirectory, IEnumerable<IPath> ExcludedPaths)
+		public Organiser (IEnumerable<IPath> InputPaths, IDirectory OutputDirectory, IEnumerable<IPath> ExcludedPaths, Boolean AddToiTunes, Boolean ExcludeiTunesMedia)
 		{
 			// Setup folders.
 			this.InputPaths = InputPaths;
 			this.OutputDirectory = OutputDirectory;
-			this.ExcludedPaths = Enumerable.Union<IPath>(new List<IPath>{new Path(OutputDirectory.FullName)}, ExcludedPaths);
 			this.WorkingDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), "MediaOrganiserWorkingArea"));
+			this.AddToiTunes = AddToiTunes;
+
+			this.ExcludedPaths = ExcludedPaths??new List<IPath>();
+			if(OutputDirectory!=null)
+			{
+				Enumerable.Union<IPath>(new List<IPath>{new Path(OutputDirectory.FullName)}, this.ExcludedPaths);
+			}
+			if(ExcludeiTunesMedia)
+			{
+				this.ExcludedPaths = Enumerable.Union<IPath>(new List<IPath>{new Path(Apple.iTunes.Properties.TVShowMediaDirectory.FullName)}, this.ExcludedPaths);
+			}
 
 			// Create working directory if it does not exist.
 			if(!WorkingDirectory.Exists)
@@ -84,10 +98,28 @@ namespace MediaOrganiser
 					SaveShowMetaData(Show);
 				});
 
-				Helper.RunWhenThreadAvailable(MoveShowToOutputDirectoryThreadAvailability, 1, () =>
+				if(AddToiTunes)
 				{
-					MoveShowToOutputDirectory(Show);
-				});
+					Helper.RunWhenThreadAvailable(AddShowToiTunesThreadAvailability, 1, () =>
+					{
+						AddShowToiTunes(Show);
+					});
+				}
+
+				if(OutputDirectory==null)
+				{
+					Helper.RunWhenThreadAvailable(DeleteShowThreadAvailability, 1, () =>
+					{
+						DeleteShow(Show);
+					});
+				}
+				else
+				{
+					Helper.RunWhenThreadAvailable(MoveShowToOutputDirectoryThreadAvailability, 1, () =>
+					{
+						MoveShowToOutputDirectory(Show);
+					});
+				}
 			});
 		}
 
@@ -146,6 +178,21 @@ namespace MediaOrganiser
 			Log.WriteLine("Saving details. {0}", Show.ShowFile.FullName);
 			Show.SaveDetails();
 			Log.WriteLine("Saved details. {0}", Show.ShowFile.FullName);
+		}
+
+		private void AddShowToiTunes(IShow Show)
+		{
+			Log.WriteLine("Adding show to iTunes. {0}", Show.ShowFile.FullName);
+			Apple.iTunes.Importer.Add(Show.ShowFile);
+			Log.WriteLine("Added show to iTunes. {0}", Show.ShowFile.FullName);
+		}
+
+		private void DeleteShow(IShow Show)
+		{
+			String ShowFileFullName = Show.ShowFile.FullName;
+			Log.WriteLine("Deleting show as no output directory. {0}", ShowFileFullName);
+			Show.ShowFile.Delete();
+			Log.WriteLine("Deleted show as no output directory. {0}", ShowFileFullName);
 		}
 
 		private void MoveShowToOutputDirectory(IShow Show)

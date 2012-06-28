@@ -33,6 +33,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="Importer.cs" />
+    <Compile Include="Properties.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\System.Files\System.Files.csproj">
@@ -41,6 +42,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Externals\" />
+    <Reference Include="System" />
   </ItemGroup>
 </Project>

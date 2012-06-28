@@ -59,5 +59,9 @@
       <Project>{1BD63904-18F6-437A-AE3F-B1A79AD566DD}</Project>
       <Name>System.Threading.Helpers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Apple.iTunes\Apple.iTunes.csproj">
+      <Project>{F15396F9-463B-4407-8C87-2F464902382A}</Project>
+      <Name>Apple.iTunes</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
