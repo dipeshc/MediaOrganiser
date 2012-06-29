@@ -39,14 +39,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\MediaOrganiser.Shows\MediaOrganiser.Shows.csproj">
-      <Project>{74BB1CC6-9E2C-4BDA-BEC3-F40EC694E187}</Project>
-      <Name>MediaOrganiser.Shows</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MediaOrganiser.Convertor\MediaOrganiser.Convertor.csproj">
-      <Project>{E2CBAD9F-2047-4AEC-858D-C7F008E1D894}</Project>
-      <Name>MediaOrganiser.Convertor</Name>
-    </ProjectReference>
     <ProjectReference Include="..\System.Files\System.Files.csproj">
       <Project>{E7EB41D8-6079-4BCA-BC6B-8EA46489B60F}</Project>
       <Name>System.Files</Name>
@@ -62,6 +54,10 @@
     <ProjectReference Include="..\Apple.iTunes\Apple.iTunes.csproj">
       <Project>{F15396F9-463B-4407-8C87-2F464902382A}</Project>
       <Name>Apple.iTunes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MediaOrganiser.Shows\MediaOrganiser.Media.csproj">
+      <Project>{74BB1CC6-9E2C-4BDA-BEC3-F40EC694E187}</Project>
+      <Name>MediaOrganiser.Media</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

@@ -3,23 +3,54 @@ using System.Collections.Generic;
 using TvdbLib;
 using TvdbLib.Data;
 
-namespace MediaOrganiser.Shows.Details
+namespace MediaOrganiser.Media.Shows.Details
 {
 	public class ShowDetailsAdditionalTVDB : IShowDetailsAdditional
 	{
 		private static TvdbHandler TVDB = new TvdbHandler("416920BF8A4C278C");
 
-		public String EpisodeName { get; set; }
-		public DateTime? AiredDate { get; set; }
-		public String Overview { get; set; }
-		public String TVNetwork { get; set; }
-
-		private Boolean _HasExtractedDetails = false;
-		public Boolean HasExtractedDetails
+		private String _EpisodeName;
+		public String EpisodeName
 		{
 			get
 			{
-				return _HasExtractedDetails;
+				return _EpisodeName;
+			}
+		}
+
+		private DateTime? _AiredDate;
+		public DateTime? AiredDate
+		{
+			get
+			{
+				return _AiredDate;
+			}
+		}
+
+		private String _Overview;
+		public String Overview
+		{
+			get
+			{
+				return _Overview;
+			}
+		}
+
+		private String _TVNetwork;
+		public String TVNetwork
+		{
+			get
+			{
+				return _TVNetwork;
+			}
+		}
+
+		private Boolean _HasDetails = false;
+		public Boolean HasDetails
+		{
+			get
+			{
+				return _HasDetails;
 			}
 		}
 
@@ -45,12 +76,12 @@ namespace MediaOrganiser.Shows.Details
 			TvdbEpisode Episode = Series.GetEpisodes(ShowDetailsBasic.SeasonNumber ?? 0).Find(anEpisode => anEpisode.EpisodeNumber == ShowDetailsBasic.EpisodeNumber);
 			
 			// Set details.
-			EpisodeName = Episode.EpisodeName;
-			AiredDate = Episode.FirstAired;
-			Overview = Episode.Overview;
-			TVNetwork = Series.Network;
+			_EpisodeName = Episode.EpisodeName;
+			_AiredDate = Episode.FirstAired;
+			_Overview = Episode.Overview;
+			_TVNetwork = Series.Network;
 
-			_HasExtractedDetails = true;
+			_HasDetails = true;
 			return true;
 		}
 	}

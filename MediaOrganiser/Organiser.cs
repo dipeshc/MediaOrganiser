@@ -5,8 +5,7 @@ using System.Logging;
 using System.Threading.Tasks;
 using System.Threading.Helpers;
 using System.Collections.Generic;
-using MediaOrganiser.Shows;
-using MediaOrganiser.Convertor;
+using MediaOrganiser.Media;
 using Apple.iTunes;
 
 namespace MediaOrganiser
@@ -19,17 +18,15 @@ namespace MediaOrganiser
 		private IDirectory WorkingDirectory;
 		private Boolean AddToiTunes;
 
-		public IEnumerable<String> ShowInputFileTypes = new List<String>() {"mp4", "avi", "mkv", "m4v"};
-		public String OutputFileType = "mp4";
-
 		// ThreadAvailability for each action.
-		private LockableInt CopyShowToWorkingAreaThreadAvailability = new LockableInt(1);
-		private LockableInt ConvertShowIfRequiredThreadAvailability = new LockableInt(1);
-		private LockableInt ExtractAdditionalShowDetailsIfPossibleThreadAvailability = new LockableInt(1);
-		private LockableInt SaveShowMetaDataThreadAvailability = new LockableInt(2);
-		private LockableInt AddShowToiTunesThreadAvailability = new LockableInt(1);
-		private LockableInt DeleteShowThreadAvailability = new LockableInt(10);
-		private LockableInt MoveShowToOutputDirectoryThreadAvailability = new LockableInt(5);
+		private LockableInt CopyMediaToWorkingAreaThreadAvailability = new LockableInt(1);
+		private LockableInt ConvertMediaIfRequiredThreadAvailability = new LockableInt(1);
+		private LockableInt ExtractExhaustiveMediaDetailsThreadAvailability = new LockableInt(1);
+		private LockableInt SaveMediaMetaDataThreadAvailability = new LockableInt(2);
+		private LockableInt RenameMediaToCleanNameThreadAvailability = new LockableInt(5);
+		private LockableInt AddMediaToiTunesThreadAvailability = new LockableInt(1);
+		private LockableInt DeleteMediaThreadAvailability = new LockableInt(10);
+		private LockableInt MoveMediaToOutputDirectoryThreadAvailability = new LockableInt(5);
 
 		public Organiser (IEnumerable<IPath> InputPaths, IDirectory OutputDirectory, IEnumerable<IPath> ExcludedPaths, Boolean AddToiTunes, Boolean ExcludeiTunesMedia)
 		{
@@ -46,7 +43,7 @@ namespace MediaOrganiser
 			}
 			if(ExcludeiTunesMedia)
 			{
-				this.ExcludedPaths = Enumerable.Union<IPath>(new List<IPath>{new Path(Apple.iTunes.Properties.TVShowMediaDirectory.FullName)}, this.ExcludedPaths);
+				this.ExcludedPaths = Enumerable.Union<IPath>(new List<IPath>{new Path(Apple.iTunes.Properties.RootMediaDirectory.FullName)}, this.ExcludedPaths);
 			}
 
 			// Create working directory if it does not exist.
@@ -58,148 +55,127 @@ namespace MediaOrganiser
 
 		public void Organise()
 		{
-			// Scan input and output folder to identify files.
-			IEnumerable<IShow> InputShows = ShowFinder.GetShows(InputPaths, ShowInputFileTypes);
-			IEnumerable<IShow> ExcludedShows = ShowFinder.GetShows(ExcludedPaths, ShowInputFileTypes);
+			// Find media that needs to be organised.
+			Log.WriteLine("Getting media to be organised");
+			IEnumerable<IMedia> MediaToOrganise = ShowFinder.FindShowsToOrganise(InputPaths, ExcludedPaths);
+			Log.WriteLine("MediaToOrganise Found. Number: {0}", new List<IMedia>(MediaToOrganise).Count);
 
-			// Extract basic details from show.
-			Parallel.ForEach(Enumerable.Union<IShow>(InputShows, ExcludedShows), Show =>
+			// Organise media.
+			Parallel.ForEach(MediaToOrganise, Media =>
 			{
-				Log.WriteLine("Extracting Basic Details. {0}", Show.ShowFile.FullName);
-				Show.ExtractBasicDetails();
-				Log.WriteLine("Extracted Basic Details. {0}", Show.ShowFile.FullName);
-			});
-
-			// Identify files that are currently not in the output directory.
-			Log.WriteLine("Getting NonExcludedShows");
-			IEnumerable<IShow> ShowsToOrganise = ShowFinder.GetNonExcludedShows(InputShows, ExcludedShows);
-			Log.WriteLine("NonExcludedShows Found. Number: {0}", new List<IShow>(ShowsToOrganise).Count);
-
-			// Organise shows.
-			Parallel.ForEach(ShowsToOrganise, Show =>
-			{
-				Helper.RunWhenThreadAvailable(CopyShowToWorkingAreaThreadAvailability, 1, () =>
+				Helper.RunWhenThreadAvailable(CopyMediaToWorkingAreaThreadAvailability, 1, () =>
 				{
-					CopyShowToWorkingArea(Show);
+					CopyMediaToWorkingArea(Media);
 				});
 
-				Helper.RunWhenThreadAvailable(ConvertShowIfRequiredThreadAvailability, 1, () =>
+				Helper.RunWhenThreadAvailable(ConvertMediaIfRequiredThreadAvailability, 1, () =>
 				{
-					ConvertShowIfRequired(Show);
+					ConvertMediaIfRequired(Media);
 				});
 
-				Helper.RunWhenThreadAvailable(ExtractAdditionalShowDetailsIfPossibleThreadAvailability, 1, () =>
+				Helper.RunWhenThreadAvailable(ExtractExhaustiveMediaDetailsThreadAvailability, 1, () =>
 				{
-					ExtractAdditionalShowDetailsIfPossible(Show);
+					ExtractExhaustiveMediaDetails(Media);
 				});
 
-				Helper.RunWhenThreadAvailable(SaveShowMetaDataThreadAvailability, 1, () =>
+				Helper.RunWhenThreadAvailable(SaveMediaMetaDataThreadAvailability, 1, () =>
 				{
-					SaveShowMetaData(Show);
+					SaveMediaMetaData(Media);
+				});
+
+				Helper.RunWhenThreadAvailable(RenameMediaToCleanNameThreadAvailability, 1, () =>
+				{
+					RenameMediaToCleanFileName(Media);
 				});
 
 				if(AddToiTunes)
 				{
-					Helper.RunWhenThreadAvailable(AddShowToiTunesThreadAvailability, 1, () =>
+					Helper.RunWhenThreadAvailable(AddMediaToiTunesThreadAvailability, 1, () =>
 					{
-						AddShowToiTunes(Show);
+						AddMediaToiTunes(Media);
 					});
 				}
 
 				if(OutputDirectory==null)
 				{
-					Helper.RunWhenThreadAvailable(DeleteShowThreadAvailability, 1, () =>
+					Helper.RunWhenThreadAvailable(DeleteMediaThreadAvailability, 1, () =>
 					{
-						DeleteShow(Show);
+						DeleteMedia(Media);
 					});
 				}
 				else
 				{
-					Helper.RunWhenThreadAvailable(MoveShowToOutputDirectoryThreadAvailability, 1, () =>
+					Helper.RunWhenThreadAvailable(MoveMediaToOutputDirectoryThreadAvailability, 1, () =>
 					{
-						MoveShowToOutputDirectory(Show);
+						MoveMediaToOutputDirectory(Media);
 					});
 				}
 			});
 		}
 
-		private void CopyShowToWorkingArea(IShow Show)
+		private void CopyMediaToWorkingArea(IMedia Media)
 		{
-			Log.WriteLine("Copying show to working area. {0}", Show.ShowFile.FullName);
-			// Create file for working area version of show.
-			IFile WorkingAreaShowFile = new File(FileSystem.PathCombine(WorkingDirectory.FullName, Show.ShowFile.Name));
+			Log.WriteLine("Copying media to working area. {0}", Media.MediaFile.FullName);
+			// Create file for working area version of media.
+			IFile WorkingAreaMediaFile = new File(FileSystem.PathCombine(WorkingDirectory.FullName, Media.MediaFile.Name));
 
-			// Copy the show and then assign the new file to the show.
-			Show.ShowFile.CopyTo(WorkingAreaShowFile, true);
-			Show.ShowFile = WorkingAreaShowFile;
-			Log.WriteLine("Copied show to working area. {0}", Show.ShowFile.FullName);
+			// Copy the media and then assign the new file to the media.
+			Media.MediaFile.CopyTo(WorkingAreaMediaFile, true);
+			Media.MediaFile = WorkingAreaMediaFile;
+			Log.WriteLine("Copied media to working area. {0}", Media.MediaFile.FullName);
 		}
 
-		private void ConvertShowIfRequired(IShow Show)
+		private void ConvertMediaIfRequired(IMedia Media)
 		{
-			Log.WriteLine("Checking if show needs to be converted. {0}", Show.ShowFile.FullName);
-			// Check if extension matches output extension. If not then convert.
-			if(Show.ShowFile.Extension.ToLower() == "."+OutputFileType)
+			if(Media.RequiresConversion)
 			{
-				Log.WriteLine("Show does not need to be converted. {0}", Show.ShowFile.FullName);
-				return;
-			}
-
-			// Create file for converted version of show.
-			IFile ConvertedShowFile = new File(Show.ShowFile.FullNameWithoutExtension + "." + OutputFileType);
-
-			// Convert show.
-			Log.WriteLine("Starting show conversion. {0}", Show.ShowFile.FullName);
-			Convertor.Convertor.ConvertForiPad(Show.ShowFile, ConvertedShowFile);
-
-			// Delete old file and assign the new file to the show.
-			IFile OldFile = Show.ShowFile;
-			Show.ShowFile = ConvertedShowFile;
-			OldFile.Delete();
-			Log.WriteLine("Converted show if required. {0}", Show.ShowFile.FullName);
-		}
-
-		private void ExtractAdditionalShowDetailsIfPossible(IShow Show)
-		{
-			Log.WriteLine("Extracting additional details. {0}", Show.ShowFile.FullName);
-			try
-			{
-				Show.ExtractAdditionalDetails();
-				Log.WriteLine("Extracted additional details. {0}", Show.ShowFile.FullName);
-			}
-			catch
-			{
-				Log.WriteLine("Failed to extract additional details. {0}", Show.ShowFile.FullName);
+				Log.WriteLine("Starting media conversion. {0}", Media.MediaFile.FullName);
+				Media.Convert();
+				Log.WriteLine("Converted media. {0}", Media.MediaFile.FullName);
 			}
 		}
 
-		private void SaveShowMetaData(IShow Show)
+		private void ExtractExhaustiveMediaDetails(IMedia Media)
 		{
-			Log.WriteLine("Saving details. {0}", Show.ShowFile.FullName);
-			Show.SaveDetails();
-			Log.WriteLine("Saved details. {0}", Show.ShowFile.FullName);
+			Log.WriteLine("Extracting Details Exhaustive. {0}", Media.MediaFile.FullName);
+			Media.ExtractDetails(true);
+			Log.WriteLine("Extracted Details Exhaustive. {0}", Media.MediaFile.FullName);
 		}
 
-		private void AddShowToiTunes(IShow Show)
+		private void SaveMediaMetaData(IMedia Media)
 		{
-			Log.WriteLine("Adding show to iTunes. {0}", Show.ShowFile.FullName);
-			Apple.iTunes.Importer.Add(Show.ShowFile);
-			Log.WriteLine("Added show to iTunes. {0}", Show.ShowFile.FullName);
+			Log.WriteLine("Saving details. {0}", Media.MediaFile.FullName);
+			Media.SaveDetails();
+			Log.WriteLine("Saved details. {0}", Media.MediaFile.FullName);
 		}
 
-		private void DeleteShow(IShow Show)
+		private void RenameMediaToCleanFileName(IMedia Media)
 		{
-			String ShowFileFullName = Show.ShowFile.FullName;
-			Log.WriteLine("Deleting show as no output directory. {0}", ShowFileFullName);
-			Show.ShowFile.Delete();
-			Log.WriteLine("Deleted show as no output directory. {0}", ShowFileFullName);
+			Log.WriteLine("Renaming media. {0}", Media.MediaFile.FullName);
+			Media.MediaFile.MoveTo(FileSystem.PathCombine(WorkingDirectory.FullName, Media.CleanFileName));
+			Log.WriteLine("Renamed media. {0}", Media.MediaFile.FullName);
 		}
 
-		private void MoveShowToOutputDirectory(IShow Show)
+		private void AddMediaToiTunes(IMedia Media)
 		{
-			Log.WriteLine("Copying show to output directory. {0}", Show.ShowFile.FullName);
-			Show.ShowFile.MoveTo(FileSystem.PathCombine(OutputDirectory.FullName, Show.ShowFileName));
-			Log.WriteLine("Copied show to output directory. {0}", Show.ShowFile.FullName);
+			Log.WriteLine("Adding media to iTunes. {0}", Media.MediaFile.FullName);
+			Apple.iTunes.Importer.Add(Media.MediaFile);
+			Log.WriteLine("Added media to iTunes. {0}", Media.MediaFile.FullName);
+		}
+
+		private void DeleteMedia(IMedia Media)
+		{
+			String MediaFileFullName = Media.MediaFile.FullName;
+			Log.WriteLine("Deleting media. {0}", MediaFileFullName);
+			Media.MediaFile.Delete();
+			Log.WriteLine("Deleted media. {0}", MediaFileFullName);
+		}
+
+		private void MoveMediaToOutputDirectory(IMedia Media)
+		{
+			Log.WriteLine("Copying media to output directory. {0}", Media.MediaFile.FullName);
+			Media.MediaFile.MoveTo(FileSystem.PathCombine(OutputDirectory.FullName, Media.MediaFile.Name));
+			Log.WriteLine("Copied media to output directory. {0}", Media.MediaFile.FullName);
 		}
 	}
 }

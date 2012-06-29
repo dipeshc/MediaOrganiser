@@ -1,29 +1,35 @@
 using System;
+using System.Linq;
 using System.Files;
 using System.Logging;
+using System.Threading.Tasks;
 using System.Collections.Generic;
-using MediaOrganiser.Shows;
+using MediaOrganiser.Media;
+using MediaOrganiser.Media.Shows;
 
 namespace MediaOrganiser
 {
 	public class ShowFinder
 	{
-		public static IEnumerable<IShow> GetShows(IPath Path, String ShowFileType)
+		public static IEnumerable<String> ShowFileTypes = new List<String>() {"mp4", "avi", "mkv", "m4v"};
+
+		public static IEnumerable<IMedia> FindShowsToOrganise(IEnumerable<IPath> InputPaths, IEnumerable<IPath> ExcludedPaths)
 		{
-			return GetShows(new List<IPath>{Path}, new List<String>{ShowFileType});
+			// Scan input and output folder to identify files.
+			IEnumerable<IShow> InputMedia = ShowFinder.GetShows(InputPaths);
+			IEnumerable<IShow> ExcludedMedia = ShowFinder.GetShows(ExcludedPaths);
+
+			// Extract basic details from media.
+			Parallel.ForEach(Enumerable.Union<IShow>(InputMedia, ExcludedMedia), Show =>
+			{
+				Show.ExtractDetails(false);
+			});
+
+			// Identify media that needs to be organised.
+			return ShowFinder.GetNonExcludedShows(InputMedia, ExcludedMedia);
 		}
 
-		public static IEnumerable<IShow> GetShows(IPath Path, IEnumerable<String> ShowFileTypes)
-		{
-			return GetShows(new List<IPath>{Path}, ShowFileTypes);
-		}
-
-		public static IEnumerable<IShow> GetShows(IEnumerable<IPath> Paths, String ShowFileType)
-		{
-			return GetShows(Paths, new List<String>{ShowFileType});
-		}
-
-		public static IEnumerable<IShow> GetShows(IEnumerable<IPath> Paths, IEnumerable<String> ShowFileTypes)
+		private static IEnumerable<IShow> GetShows(IEnumerable<IPath> Paths)
 		{
 			IList<IShow> Shows = new List<IShow>();
 			foreach(String ShowFileType in ShowFileTypes)
@@ -48,16 +54,16 @@ namespace MediaOrganiser
 			return Shows;
 		}
 
-		public static IEnumerable<IShow> GetNonExcludedShows(IEnumerable<IShow> InputShows, IEnumerable<IShow> ExcludedShows)
+		private static IEnumerable<IShow> GetNonExcludedShows(IEnumerable<IShow> InputShows, IEnumerable<IShow> ExcludedShows)
 		{
 			IList<IShow> NonExcludedShows = new List<IShow>();
 
 			foreach(IShow InputShow in InputShows)
 			{
 				// Check if show has details extracted.
-				if(!InputShow.HasBasicDetails)
+				if(!InputShow.HasDetails)
 				{
-					Log.WriteLine("Basic Details not found. Will not be included for organisation. Skipping show. {0}", InputShow.ShowFile.FullName);
+					Log.WriteLine("Details not found. Will not be included for organisation. Skipping. {0}", InputShow.MediaFile.FullName);
 					continue;
 				}
 
@@ -65,9 +71,9 @@ namespace MediaOrganiser
 				Boolean Found = false;
 				foreach(IShow ExlcudedShow in ExcludedShows)
 				{
-					if(InputShow.ShowDetailsBasic.ShowName == ExlcudedShow.ShowDetailsBasic.ShowName &&
-					   InputShow.ShowDetailsBasic.SeasonNumber == ExlcudedShow.ShowDetailsBasic.SeasonNumber &&
-					   InputShow.ShowDetailsBasic.EpisodeNumber == ExlcudedShow.ShowDetailsBasic.EpisodeNumber)
+					if(InputShow.ShowName == ExlcudedShow.ShowName &&
+					   InputShow.SeasonNumber == ExlcudedShow.SeasonNumber &&
+					   InputShow.EpisodeNumber == ExlcudedShow.EpisodeNumber)
 					{
 						Found = true;
 						break;

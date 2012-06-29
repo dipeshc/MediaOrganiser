@@ -16,12 +16,23 @@ namespace Apple.iTunes
 		{
 			foreach(IFile File in Files)
 			{
-				String AppleScript = @"osascript -e 'tell application ""iTunes"" to add POSIX file ""{0}""'";
-				Process.Start(AppleScript);
+				ImportToiTunes(File);
 			}
 			return true;
 		}
 
+		private static void ImportToiTunes(IFile File)
+		{
+			String Arguments = String.Format("-e 'tell application \"iTunes\" to add POSIX file \"{0}\"'", File.FullName);
+
+			Process iTunesImportScriptRunner = new Process();
+			iTunesImportScriptRunner.StartInfo.FileName = "osascript";
+			iTunesImportScriptRunner.StartInfo.Arguments = Arguments;
+			iTunesImportScriptRunner.StartInfo.UseShellExecute = false;
+			iTunesImportScriptRunner.StartInfo.RedirectStandardOutput = true;
+			iTunesImportScriptRunner.Start();
+			iTunesImportScriptRunner.StandardOutput.ReadToEnd();
+		}
 	}
 }
 

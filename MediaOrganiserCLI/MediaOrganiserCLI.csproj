@@ -21,7 +21,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
-    <Commandlineparameters>-i ~/Desktop/in/GameOfThrones-S01E01.mp4 -a -e</Commandlineparameters>
+    <Commandlineparameters>-i ~/Desktop/\[Narutoverse\]_NARUTO_Shippuden_268.mp4 -a</Commandlineparameters>
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="mkdir -p Merged" workingdir="${TargetDir}" />

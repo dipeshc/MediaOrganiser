@@ -14,7 +14,7 @@ namespace Apple.iTunes
 			}
 		}
 
-		public static IDirectory AllMediaDirectory
+		public static IDirectory RootMediaDirectory
 		{
 			get
 			{
