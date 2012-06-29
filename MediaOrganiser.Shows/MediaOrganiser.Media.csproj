@@ -47,10 +47,15 @@
     <Compile Include="Shows\ShowDetails\ShowDetailsAtomic.cs" />
     <Compile Include="Shows\ShowDetails\IShowDetailsBasic.cs" />
     <Compile Include="Shows\ShowDetails\ShowDetailsBasicRegex.cs" />
+    <Compile Include="Movies\IMovie.cs" />
+    <Compile Include="Movies\IMovieDetailsBasic.cs" />
+    <Compile Include="Movies\Movie.cs" />
+    <Compile Include="Movies\MovieDetailsBasicRegex.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Externals\" />
     <Folder Include="Shows\" />
+    <Folder Include="Movies\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Externals\AtomicParsley" />
