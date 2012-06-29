@@ -1,6 +1,4 @@
 using System;
-using System.Files;
-using MediaOrganiser.Media;
 using MediaOrganiser.Media.Shows.Details;
 
 namespace MediaOrganiser.Media.Shows

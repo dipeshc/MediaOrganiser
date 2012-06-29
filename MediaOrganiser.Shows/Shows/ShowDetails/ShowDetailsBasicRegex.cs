@@ -44,10 +44,10 @@ namespace MediaOrganiser.Media.Shows.Details
 			}
 		}
 
-		public Boolean ExtractDetails(String Name)
+		public Boolean ExtractDetails(String SearchInput)
 		{
 			// Use regex to extract out details.
-			Match Match = ShowPartsRegex.Match(Name);
+			Match Match = ShowPartsRegex.Match(SearchInput);
 			if(!Match.Success)
 			{
 				return false;
