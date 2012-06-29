@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiser", "MediaOrganiser\MediaOrganiser.csproj", "{039420CF-CF63-421A-8EFC-71109C909D30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiser.Media", "MediaOrganiser.Shows\MediaOrganiser.Media.csproj", "{74BB1CC6-9E2C-4BDA-BEC3-F40EC694E187}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiser.Media", "MediaOrganiser.Media\MediaOrganiser.Media.csproj", "{74BB1CC6-9E2C-4BDA-BEC3-F40EC694E187}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Files", "System.Files\System.Files.csproj", "{E7EB41D8-6079-4BCA-BC6B-8EA46489B60F}"
 EndProject
