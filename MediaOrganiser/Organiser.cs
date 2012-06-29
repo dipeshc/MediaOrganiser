@@ -20,7 +20,7 @@ namespace MediaOrganiser
 
 		// ThreadAvailability for each action.
 		private LockableInt CopyMediaToWorkingAreaThreadAvailability = new LockableInt(1);
-		private LockableInt ConvertMediaIfRequiredThreadAvailability = new LockableInt(1);
+		private LockableInt ConvertMediaThreadAvailability = new LockableInt(1);
 		private LockableInt ExtractExhaustiveMediaDetailsThreadAvailability = new LockableInt(1);
 		private LockableInt SaveMediaMetaDataThreadAvailability = new LockableInt(2);
 		private LockableInt RenameMediaToCleanNameThreadAvailability = new LockableInt(5);
@@ -63,15 +63,19 @@ namespace MediaOrganiser
 			// Organise media.
 			Parallel.ForEach(MediaToOrganise, Media =>
 			{
+				// Copy media to working area.
 				Helper.RunWhenThreadAvailable(CopyMediaToWorkingAreaThreadAvailability, 1, () =>
 				{
 					CopyMediaToWorkingArea(Media);
 				});
 
-				Helper.RunWhenThreadAvailable(ConvertMediaIfRequiredThreadAvailability, 1, () =>
+				if(Media.RequiresConversion)
 				{
-					ConvertMediaIfRequired(Media);
-				});
+					Helper.RunWhenThreadAvailable(ConvertMediaThreadAvailability, 1, () =>
+					{
+						ConvertMedia(Media);
+					});
+				}
 
 				Helper.RunWhenThreadAvailable(ExtractExhaustiveMediaDetailsThreadAvailability, 1, () =>
 				{
@@ -125,14 +129,11 @@ namespace MediaOrganiser
 			Log.WriteLine("Copied media to working area. {0}", Media.MediaFile.FullName);
 		}
 
-		private void ConvertMediaIfRequired(IMedia Media)
+		private void ConvertMedia(IMedia Media)
 		{
-			if(Media.RequiresConversion)
-			{
-				Log.WriteLine("Starting media conversion. {0}", Media.MediaFile.FullName);
-				Media.Convert();
-				Log.WriteLine("Converted media. {0}", Media.MediaFile.FullName);
-			}
+			Log.WriteLine("Starting media conversion. {0}", Media.MediaFile.FullName);
+			Media.Convert();
+			Log.WriteLine("Converted media. {0}", Media.MediaFile.FullName);
 		}
 
 		private void ExtractExhaustiveMediaDetails(IMedia Media)

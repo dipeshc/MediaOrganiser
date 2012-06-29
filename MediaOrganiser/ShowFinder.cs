@@ -15,18 +15,20 @@ namespace MediaOrganiser
 
 		public static IEnumerable<IMedia> FindShowsToOrganise(IEnumerable<IPath> InputPaths, IEnumerable<IPath> ExcludedPaths)
 		{
-			// Scan input and output folder to identify files.
-			IEnumerable<IShow> InputMedia = ShowFinder.GetShows(InputPaths);
-			IEnumerable<IShow> ExcludedMedia = ShowFinder.GetShows(ExcludedPaths);
+			// Scan input and output folder to identify shows.
+			IEnumerable<IShow> InputShows = ShowFinder.GetShows(InputPaths);
+			IEnumerable<IShow> ExcludedShows = ShowFinder.GetShows(ExcludedPaths);
 
-			// Extract basic details from media.
-			Parallel.ForEach(Enumerable.Union<IShow>(InputMedia, ExcludedMedia), Show =>
+			// Extract basic details from show.
+			Parallel.ForEach(Enumerable.Union<IShow>(InputShows, ExcludedShows), Show =>
 			{
+				Log.WriteLine("Extracting non-full detail for show {0}", Show.MediaFile.FullName);
 				Show.ExtractDetails(false);
+				Log.WriteLine("Extracted non-full detail for show {0}", Show.MediaFile.FullName);
 			});
 
-			// Identify media that needs to be organised.
-			return ShowFinder.GetNonExcludedShows(InputMedia, ExcludedMedia);
+			// Identify shows that needs to be organised.
+			return ShowFinder.GetNonExcludedShows(InputShows, ExcludedShows);
 		}
 
 		private static IEnumerable<IShow> GetShows(IEnumerable<IPath> Paths)
