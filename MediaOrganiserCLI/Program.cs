@@ -27,6 +27,9 @@ namespace MediaOrganiserCLI
 			[Option("e", "excludeiTunesMedia", Required=false, HelpText = "Adds the iTunes media location to the list of excludes.")]
             public Boolean ExcludeiTunesMedia { get; set; }
 
+			[Option("c", "clean", Required=false, HelpText = "Removes any temporary files and/or cache.")]
+			public Boolean Clean { get; set; }
+
 			public IEnumerable<IPath> InputPaths
 			{
 				get
@@ -95,7 +98,7 @@ namespace MediaOrganiserCLI
                 Environment.Exit(1);
 			}
 
-			Organiser Organiser = new Organiser(Options.InputPaths, Options.OutputDirectory, Options.ExcludedPaths, Options.AddToiTunes, Options.ExcludeiTunesMedia);
+			Organiser Organiser = new Organiser(Options.InputPaths, Options.OutputDirectory, Options.ExcludedPaths, Options.Clean, Options.AddToiTunes, Options.ExcludeiTunesMedia);
 			Organiser.Organise();
 
 			// Exit 0.

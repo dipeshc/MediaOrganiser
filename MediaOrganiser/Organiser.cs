@@ -28,7 +28,7 @@ namespace MediaOrganiser
 		private LockableInt DeleteMediaThreadAvailability = new LockableInt(10);
 		private LockableInt MoveMediaToOutputDirectoryThreadAvailability = new LockableInt(5);
 
-		public Organiser (IEnumerable<IPath> InputPaths, IDirectory OutputDirectory, IEnumerable<IPath> ExcludedPaths, Boolean AddToiTunes, Boolean ExcludeiTunesMedia)
+		public Organiser (IEnumerable<IPath> InputPaths, IDirectory OutputDirectory, IEnumerable<IPath> ExcludedPaths, Boolean Clean, Boolean AddToiTunes, Boolean ExcludeiTunesMedia)
 		{
 			// Setup folders.
 			this.InputPaths = InputPaths;
@@ -44,6 +44,12 @@ namespace MediaOrganiser
 			if(ExcludeiTunesMedia)
 			{
 				this.ExcludedPaths = Enumerable.Union<IPath>(new List<IPath>{new Path(Apple.iTunes.Properties.RootMediaDirectory.FullName)}, this.ExcludedPaths);
+			}
+
+			// Clean working directory if required.
+			if(Clean && WorkingDirectory.Parent.Exists)
+			{
+				WorkingDirectory.Parent.Delete(true);
 			}
 
 			// Create working directory if it does not exist.

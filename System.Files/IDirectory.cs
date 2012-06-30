@@ -8,7 +8,9 @@ namespace System.Files
 		String Name { get; }
 		String FullName { get; }
 		Boolean Exists { get; }
+		IDirectory Parent { get; }
 		void Create();
+		void Delete(Boolean Recursive);
 		IEnumerable<IFile> GetFilesInTopDirectoryOnly(String SearchPattern);
 		IEnumerable<IFile> GetFilesInAllDirectories(String SearchPattern);
 	}

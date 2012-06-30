@@ -47,9 +47,22 @@ namespace System.Files
 			}
 		}
 
+		public IDirectory Parent
+		{
+			get
+			{
+				return new Directory(theDirectory.Parent);
+			}
+		}
+
 		public void Create()
 		{
 			theDirectory.Create();
+		}
+
+		public void Delete(Boolean Recursive)
+		{
+			theDirectory.Delete(Recursive);
 		}
 
 		public IEnumerable<IFile> GetFilesInTopDirectoryOnly(String SearchPattern)
