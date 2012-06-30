@@ -12,7 +12,7 @@ namespace System.Files
 		Boolean Exists { get ; }
 		void Create();
 		void CopyTo(IFile CopyToFile, Boolean Overwrite=false);
-		void MoveTo(String Path);
+		void MoveTo(String Path, Boolean Overwrite=false);
 		void Delete();
 	}
 }

@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace MediaOrganiser.Media.Shows.Details
 {
-	public class ShowDetailsBasicRegex : IShowDetailsBasic
+	public class ShowDetailsRegex : IShowDetailsBasic
 	{
 		private static Regex ShowPartsRegex = new Regex(@"^(?:\[\w*\][\W_]?)?(.*)(?=[\W_](?:[sS]?(\d+)[eExX])?(\d{2,}))");
 

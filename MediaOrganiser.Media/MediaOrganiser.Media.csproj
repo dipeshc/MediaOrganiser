@@ -43,14 +43,14 @@
     <Compile Include="Shows\IShow.cs" />
     <Compile Include="Shows\Show.cs" />
     <Compile Include="Shows\ShowDetails\IShowDetailsAdditional.cs" />
-    <Compile Include="Shows\ShowDetails\ShowDetailsAdditionalTVDB.cs" />
     <Compile Include="Shows\ShowDetails\ShowDetailsAtomic.cs" />
     <Compile Include="Shows\ShowDetails\IShowDetailsBasic.cs" />
-    <Compile Include="Shows\ShowDetails\ShowDetailsBasicRegex.cs" />
     <Compile Include="Movies\IMovie.cs" />
     <Compile Include="Movies\IMovieDetailsBasic.cs" />
     <Compile Include="Movies\Movie.cs" />
     <Compile Include="Movies\MovieDetailsBasicRegex.cs" />
+    <Compile Include="Shows\ShowDetails\ShowDetailsTVDB.cs" />
+    <Compile Include="Shows\ShowDetails\ShowDetailsRegex.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Externals\" />

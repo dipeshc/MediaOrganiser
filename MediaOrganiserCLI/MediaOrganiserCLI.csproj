@@ -21,7 +21,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
-    <Commandlineparameters>-i ~/Desktop/\[Narutoverse\]_NARUTO_Shippuden_268.mp4 -a</Commandlineparameters>
+    <Commandlineparameters>~/Scripts/MediaOrganiserCLI.exe -i ~/Desktop/Greys\ Anatomy/ -a</Commandlineparameters>
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="mkdir -p Merged" workingdir="${TargetDir}" />

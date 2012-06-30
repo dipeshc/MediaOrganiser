@@ -1,13 +1,43 @@
 using System;
+using System.Files;
 using System.Collections.Generic;
 using TvdbLib;
 using TvdbLib.Data;
+using TvdbLib.Cache;
 
 namespace MediaOrganiser.Media.Shows.Details
 {
-	public class ShowDetailsAdditionalTVDB : IShowDetailsAdditional
+	public class ShowDetailsTVDB : IShowDetailsBasic, IShowDetailsAdditional
 	{
-		private static TvdbHandler TVDB = new TvdbHandler("416920BF8A4C278C");
+		private static Directory CacheDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), "MediaOrganiser", "TVDBCache"));
+		private static TvdbHandler TVDB = new TvdbHandler(new XmlCacheProvider(CacheDirectory.FullName), "416920BF8A4C278C");
+
+		private String _ShowName;
+		public String ShowName
+		{
+			get
+			{
+				return _ShowName;
+			}
+		}
+
+		private Int32? _SeasonNumber;
+		public Int32? SeasonNumber
+		{
+			get
+			{
+				return _SeasonNumber;
+			}
+		}
+
+		private Int32? _EpisodeNumber;
+		public Int32? EpisodeNumber
+		{
+			get
+			{
+				return _EpisodeNumber;
+			}
+		}
 
 		private String _EpisodeName;
 		public String EpisodeName
@@ -56,6 +86,18 @@ namespace MediaOrganiser.Media.Shows.Details
 
 		public Boolean ExtractDetails(IShowDetailsBasic ShowDetailsBasic)
 		{
+			// Check if cache directory exists.
+			if(!CacheDirectory.Exists)
+			{
+				CacheDirectory.Create();
+			}
+
+			// Initalise cache if needed.
+			if(!TVDB.IsCacheInitialised)
+			{
+				TVDB.InitCache();
+			}
+
 			// Get details from the TVDB.
 			List<TvdbSearchResult> SearchResults = TVDB.SearchSeries(ShowDetailsBasic.ShowName);
 			
@@ -76,6 +118,9 @@ namespace MediaOrganiser.Media.Shows.Details
 			TvdbEpisode Episode = Series.GetEpisodes(ShowDetailsBasic.SeasonNumber ?? 0).Find(anEpisode => anEpisode.EpisodeNumber == ShowDetailsBasic.EpisodeNumber);
 			
 			// Set details.
+			_ShowName = Series.SeriesName;
+			_SeasonNumber = ShowDetailsBasic.SeasonNumber;
+			_EpisodeNumber = ShowDetailsBasic.EpisodeNumber;
 			_EpisodeName = Episode.EpisodeName;
 			_AiredDate = Episode.FirstAired;
 			_Overview = Episode.Overview;

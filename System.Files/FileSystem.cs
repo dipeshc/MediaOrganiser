@@ -10,9 +10,25 @@ namespace System.Files
 			return System.IO.Path.GetTempPath();
 		}
 
-		public static String PathCombine(String Path1, String Path2)
+		public static String PathCombine(params String[] Paths)
 		{
-			return System.IO.Path.Combine(Path1, Path2);
+			if(Paths.Length==0)
+			{
+				return "";
+			}
+
+			if(Paths.Length==1)
+			{
+				return Paths[0];
+			}
+
+			String Path = Paths[0];
+
+			for(int I=1; I!=Paths.Length; ++I)
+			{
+				Path = System.IO.Path.Combine(Path, Paths[I]);
+			}
+			return Path;
 		}
 	}
 }

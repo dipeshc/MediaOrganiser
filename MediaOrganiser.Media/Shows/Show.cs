@@ -12,8 +12,8 @@ namespace MediaOrganiser.Media.Shows
 		private IShowDetailsBasic ShowDetailsBasic = null;
 		private IShowDetailsAdditional ShowDetailsAdditional = null;
 
-		private ShowDetailsBasicRegex ShowDetailsBasicRegex = new ShowDetailsBasicRegex();
-		private ShowDetailsAdditionalTVDB ShowDetailsAdditionalTVDB = new ShowDetailsAdditionalTVDB();
+		private ShowDetailsRegex ShowDetailsRegex = new ShowDetailsRegex();
+		private ShowDetailsTVDB ShowDetailsTVDB = new ShowDetailsTVDB();
 		private ShowDetailsAtomic ShowDetailsAtomic = new ShowDetailsAtomic();
 
 		private static String _OutputFileType = "mp4";
@@ -112,35 +112,33 @@ namespace MediaOrganiser.Media.Shows
 
 		public Boolean ExtractDetails(Boolean DoExhaustiveExtraction=true)
 		{
-			// Try getting directly from ShowDetails.
+			// 1) Try getting directly from file meta data.
 			if(ShowDetailsAtomic.HasDetails || ShowDetailsAtomic.ExtractDetails(MediaFile))
 			{
 				ShowDetailsBasic = ShowDetailsAtomic;
 				ShowDetailsAdditional = ShowDetailsAtomic;
-				return true;
 			}
 
-			// Try getting from file name.
-			Boolean Extracted = false;
-			if(ShowDetailsBasicRegex.HasDetails || ShowDetailsBasicRegex.ExtractDetails(MediaFile.Name))
+			// 2) If unable to get from file metadata then try getting from file name.
+			if(!HasDetails && (ShowDetailsRegex.HasDetails || ShowDetailsRegex.ExtractDetails(MediaFile.Name)))
 			{
-				ShowDetailsBasic = ShowDetailsBasicRegex;
-				Extracted = true;
+				ShowDetailsBasic = ShowDetailsRegex;
 			}
 
-			// Try getting from online if DoExhaustiveExtraction.
+			// 3) If HasDetails and DoExhaustiveExtraction then try getting additional details from online.
 			try
 			{
-				if(DoExhaustiveExtraction && (ShowDetailsAdditionalTVDB.HasDetails || ShowDetailsAdditionalTVDB.ExtractDetails(ShowDetailsBasic)))
+				if(HasDetails && DoExhaustiveExtraction && (ShowDetailsTVDB.HasDetails || ShowDetailsTVDB.ExtractDetails(ShowDetailsBasic)))
 				{
-					ShowDetailsAdditional = ShowDetailsAdditionalTVDB;
+					ShowDetailsBasic = ShowDetailsTVDB;
+					ShowDetailsAdditional = ShowDetailsTVDB;
 				}
 			}
 			catch
 			{
 			}
 
-			return Extracted;
+			return HasDetails;
 		}
 
 		public void SaveDetails()

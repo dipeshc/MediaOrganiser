@@ -80,9 +80,16 @@ namespace System.Files
 			theFile.CopyTo(CopyToFile.FullName, Overwrite);
 		}
 
-		public void MoveTo(String Path)
+		public void MoveTo(String Path, Boolean Overwrite=false)
 		{
-			theFile.MoveTo(Path);
+			File PathFile = new File(Path);
+
+			if(Overwrite && PathFile.Exists)
+			{
+				PathFile.Delete();
+			}
+
+			theFile.MoveTo(PathFile.FullName);
 		}
 
 		public void Delete()

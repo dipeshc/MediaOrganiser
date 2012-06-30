@@ -33,7 +33,7 @@ namespace MediaOrganiser
 			// Setup folders.
 			this.InputPaths = InputPaths;
 			this.OutputDirectory = OutputDirectory;
-			this.WorkingDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), "MediaOrganiserWorkingArea"));
+			this.WorkingDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), "MediaOrganiser", "WorkingArea"));
 			this.AddToiTunes = AddToiTunes;
 
 			this.ExcludedPaths = ExcludedPaths??new List<IPath>();
@@ -153,7 +153,7 @@ namespace MediaOrganiser
 		private void RenameMediaToCleanFileName(IMedia Media)
 		{
 			Log.WriteLine("Renaming media. {0}", Media.MediaFile.FullName);
-			Media.MediaFile.MoveTo(FileSystem.PathCombine(WorkingDirectory.FullName, Media.CleanFileName));
+			Media.MediaFile.MoveTo(FileSystem.PathCombine(WorkingDirectory.FullName, Media.CleanFileName), true);
 			Log.WriteLine("Renamed media. {0}", Media.MediaFile.FullName);
 		}
 
