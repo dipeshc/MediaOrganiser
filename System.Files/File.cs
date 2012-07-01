@@ -84,7 +84,7 @@ namespace System.Files
 		{
 			File PathFile = new File(Path);
 
-			if(Overwrite && PathFile.Exists)
+			if(Overwrite && PathFile.Exists && PathFile.FullName!=theFile.FullName)
 			{
 				PathFile.Delete();
 			}

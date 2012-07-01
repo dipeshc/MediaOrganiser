@@ -21,7 +21,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
-    <Commandlineparameters>~/Scripts/MediaOrganiserCLI.exe -i ~/Desktop/Greys\ Anatomy/ -a -c</Commandlineparameters>
+    <Commandlineparameters>-e -i ~/Desktop/Vids/ -o ~/Desktop/Output/</Commandlineparameters>
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="mkdir -p Merged" workingdir="${TargetDir}" />

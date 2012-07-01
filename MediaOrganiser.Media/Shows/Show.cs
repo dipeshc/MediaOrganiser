@@ -97,6 +97,15 @@ namespace MediaOrganiser.Media.Shows
 			}
 		}
 
+		private IFile _Artwork;
+		public IFile Artwork
+		{
+			get
+			{
+				return ShowDetailsAdditional.Artwork;
+			}
+		}
+
 		public Boolean RequiresConversion
 		{
 			get
@@ -143,7 +152,7 @@ namespace MediaOrganiser.Media.Shows
 
 		public void SaveDetails()
 		{
-			AtomicParsley.AtomicParsley.SetDetails(MediaFile.FullName, ShowName, SeasonNumber, EpisodeNumber, EpisodeName, AiredDate, Overview, TVNetwork);
+			AtomicParsley.AtomicParsley.SetDetails(MediaFile.FullName, ShowName, SeasonNumber, EpisodeNumber, EpisodeName, AiredDate, Overview, TVNetwork, Artwork==null?null:Artwork.FullName);
 		}
 
 		public String CleanFileName

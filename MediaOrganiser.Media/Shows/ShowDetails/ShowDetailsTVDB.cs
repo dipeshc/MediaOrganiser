@@ -1,8 +1,10 @@
 using System;
+using System.Linq;
 using System.Files;
 using System.Collections.Generic;
 using TvdbLib;
 using TvdbLib.Data;
+using TvdbLib.Data.Banner;
 using TvdbLib.Cache;
 
 namespace MediaOrganiser.Media.Shows.Details
@@ -75,6 +77,15 @@ namespace MediaOrganiser.Media.Shows.Details
 			}
 		}
 
+		private IFile _Artwork;
+		public IFile Artwork
+		{
+			get
+			{
+				return _Artwork;
+			}
+		}
+
 		private Boolean _HasDetails = false;
 		public Boolean HasDetails
 		{
@@ -113,10 +124,18 @@ namespace MediaOrganiser.Media.Shows.Details
 				TvdbLanguage.DefaultLanguage,
 				true,
 				false,
-				false
+				true
 			);
+
+			// Get banner.
+			TvdbBanner SeasonBanner = Series.SeasonBanners.Where(B=>B.Season==ShowDetailsBasic.SeasonNumber).FirstOrDefault();
+			if(SeasonBanner!=null)
+			{
+				SeasonBanner.LoadBanner();
+			}
+
 			TvdbEpisode Episode = Series.GetEpisodes(ShowDetailsBasic.SeasonNumber ?? 0).Find(anEpisode => anEpisode.EpisodeNumber == ShowDetailsBasic.EpisodeNumber);
-			
+
 			// Set details.
 			_ShowName = Series.SeriesName;
 			_SeasonNumber = ShowDetailsBasic.SeasonNumber;
@@ -125,9 +144,37 @@ namespace MediaOrganiser.Media.Shows.Details
 			_AiredDate = Episode.FirstAired;
 			_Overview = Episode.Overview;
 			_TVNetwork = Series.Network;
-
+			_Artwork = SeasonBanner==null?null:GetBannerCacheFile(SeasonBanner);
 			_HasDetails = true;
 			return true;
+		}
+
+		private static IFile GetBannerCacheFile(TvdbBanner Banner, Boolean Thumbnail=false)
+		{
+			String FileName = "";
+
+			// Add pre-fix based on if thumb or not.
+			if(Banner.GetType()==typeof(TvdbBannerWithThumb))
+			{
+				FileName += "thumb_";
+			}
+			else
+			{
+				FileName += "img_";
+			}
+
+			// Handle different BannerPath conversion for different banner types.
+			if(Banner.GetType() == typeof(TvdbFanartBanner))
+			{
+				FileName += "fan_" + new File(Banner.BannerPath).Name;
+			}
+			else
+			{
+				FileName += Banner.BannerPath.Replace("/", "_");
+			}
+
+			// Return file.
+			return new File(FileSystem.PathCombine(CacheDirectory.FullName, Banner.SeriesId.ToString(), FileName));
 		}
 	}
 }

@@ -23,7 +23,7 @@ namespace Apple.iTunes
 
 		private static void ImportToiTunes(IFile File)
 		{
-			String EscapedFileName = File.FullName.Replace("'", "\\'").Replace("\"","\\\"");;
+			String EscapedFileName = File.FullName.Replace("'", "\\'").Replace("\"","\\\"");
 			String Arguments = String.Format("-e 'tell application \"iTunes\" to add POSIX file \"{0}\"'", EscapedFileName);
 
 			Process iTunesImportScriptRunner = new Process();

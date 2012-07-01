@@ -71,6 +71,15 @@ namespace MediaOrganiser.Media.Shows.Details
 			}
 		}
 
+		private IFile _Artwork;
+		public IFile Artwork
+		{
+			get
+			{
+				return _Artwork;
+			}
+		}
+
 		private Boolean _HasDetails = false;
 		public Boolean HasDetails
 		{
@@ -98,6 +107,7 @@ namespace MediaOrganiser.Media.Shows.Details
 			_AiredDate = null;
 			_Overview = null;
 			_TVNetwork = null;
+			_Artwork = null;
 
 			if(Details.ContainsKey("tvsn"))
 			{

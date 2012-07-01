@@ -41,9 +41,9 @@ namespace AtomicParsley
 			return Details;
 		}
 
-		public static void SetDetails(String FilePath, String ShowName, Int32? SeasonNumber, Int32? EpisodeNumber, String EpisodeName, DateTime? AiredDate, String Overview, String TVNetwork)
+		public static void SetDetails(String FilePath, String ShowName, Int32? SeasonNumber, Int32? EpisodeNumber, String EpisodeName, DateTime? AiredDate, String Overview, String TVNetwork, String ArtworkPath=null)
 		{
-			var Output = Run(String.Format(
+			String Arguments = String.Format(
 				"\"{0}\" --overWrite --stik \"TV Show\" --TVShowName \"{1}\" --TVSeasonNum \"{2}\" --TVEpisodeNum \"{3}\" --tracknum \"{3}\" --title \"{4}\" --year \"{5}\" --description \"{6}\" --TVNetwork \"{7}\"",
 				FilePath,
 				ShowName,
@@ -52,8 +52,14 @@ namespace AtomicParsley
 				EpisodeName,
 				(AiredDate==null?"":((DateTime)AiredDate).ToString("u").Replace(" ", "T")),
 				Overview,
-				TVNetwork)
-			);
+				TVNetwork);
+
+			if(ArtworkPath!=null)
+			{
+				Arguments += String.Format(" --artwork \"{0}\"", ArtworkPath);
+			}
+
+			String Output = Run(Arguments);
 
 			Console.WriteLine(Output);
 		}
