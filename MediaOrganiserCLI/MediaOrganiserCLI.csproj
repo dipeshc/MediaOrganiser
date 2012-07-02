@@ -21,7 +21,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
-    <Commandlineparameters>-e -i ~/Desktop/Vids/ -o ~/Desktop/Output/</Commandlineparameters>
+    <Commandlineparameters>-a -e -i /Volumes/Torrents/[ShowRSS]/</Commandlineparameters>
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="mkdir -p Merged" workingdir="${TargetDir}" />

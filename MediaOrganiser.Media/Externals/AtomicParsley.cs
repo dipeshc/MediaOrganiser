@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Files;
+using System.Reflection;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -8,13 +10,29 @@ namespace AtomicParsley
 {
 	public static class AtomicParsley
 	{
-		private const string AtomicParsleyFilePath = @"./AtomicParsley";
 		private static Regex DetailRegex = new Regex("Atom \"(.*)\" contains: (.*)");
+
+		private static IFile AtomicParsleyFile
+		{
+			get
+			{
+				IFile _AtomicParsleyFile = new File(FileSystem.PathCombine(FileSystem.GetTempPath(), "MediaOrganiser", "AtomicParsley.exe"));
+				if(!_AtomicParsleyFile.Exists)
+				{
+					System.IO.Stream Stream = typeof(AtomicParsley).Assembly.GetManifestResourceStream("MediaOrganiser.Media.Externals.AtomicParsley");
+					byte[] Bytes = new byte[(int)Stream.Length];
+					Stream.Read(Bytes, 0, Bytes.Length);
+					System.IO.File.WriteAllBytes(_AtomicParsleyFile.FullName, Bytes);
+					Mono.Posix.Syscall.chmod (_AtomicParsleyFile.FullName, Mono.Posix.FileMode.S_IXUSR);
+				}
+				return _AtomicParsleyFile;
+			}
+		}
 
 		public static String Run(String Arguments)
 		{
 			Process AtomicParsley = new Process();
-			AtomicParsley.StartInfo.FileName = AtomicParsleyFilePath;
+			AtomicParsley.StartInfo.FileName = AtomicParsleyFile.FullName;
 			AtomicParsley.StartInfo.Arguments = Arguments;
 			AtomicParsley.StartInfo.UseShellExecute = false;
 			AtomicParsley.StartInfo.RedirectStandardOutput = true;
