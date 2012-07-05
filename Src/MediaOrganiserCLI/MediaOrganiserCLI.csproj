@@ -21,7 +21,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
-    <Commandlineparameters>-a -e -i ~/Desktop/[Narutoverse]_NARUTO_Shippuden_269.avi</Commandlineparameters>
+    <Commandlineparameters>-a -e -i ~/Desktop/[Narutoverse]_NARUTO_Shippuden_269.mp4</Commandlineparameters>
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="rm -rf Output;mkdir Output" workingdir="${SolutionDir}/../" />

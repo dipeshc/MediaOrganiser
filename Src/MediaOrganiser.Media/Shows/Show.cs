@@ -71,7 +71,7 @@ namespace MediaOrganiser.Media.Shows
 		{
 			get
 			{
-				return ShowDetailsAdditional.EpisodeName;
+				return ShowDetailsAdditional==null?null:ShowDetailsAdditional.EpisodeName;
 			}
 		}
 
@@ -79,7 +79,7 @@ namespace MediaOrganiser.Media.Shows
 		{
 			get
 			{
-				return ShowDetailsAdditional.AiredDate;
+				return ShowDetailsAdditional==null?null:ShowDetailsAdditional.AiredDate;
 			}
 		}
 
@@ -87,7 +87,7 @@ namespace MediaOrganiser.Media.Shows
 		{
 			get
 			{
-				return ShowDetailsAdditional.Overview;
+				return ShowDetailsAdditional==null?null:ShowDetailsAdditional.Overview;
 			}
 		}
 
@@ -95,7 +95,7 @@ namespace MediaOrganiser.Media.Shows
 		{
 			get
 			{
-				return ShowDetailsAdditional.TVNetwork;
+				return ShowDetailsAdditional==null?null:ShowDetailsAdditional.TVNetwork;
 			}
 		}
 
@@ -103,7 +103,7 @@ namespace MediaOrganiser.Media.Shows
 		{
 			get
 			{
-				return ShowDetailsAdditional.Artworks;
+				return ShowDetailsAdditional==null?null:ShowDetailsAdditional.Artworks;
 			}
 		}
 
