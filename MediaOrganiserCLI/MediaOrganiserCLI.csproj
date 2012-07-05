@@ -21,7 +21,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
-    <Commandlineparameters>-a -e -i /Volumes/Torrents/[ShowRSS]/</Commandlineparameters>
+    <Commandlineparameters>-a -e -i ~/Desktop/[Narutoverse]_NARUTO_Shippuden_269.avi</Commandlineparameters>
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="mkdir -p Merged" workingdir="${TargetDir}" />

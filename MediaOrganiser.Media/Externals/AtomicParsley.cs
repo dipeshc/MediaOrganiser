@@ -11,13 +11,13 @@ namespace AtomicParsley
 {
 	public static class AtomicParsley
 	{
-		private static Regex DetailRegex = new Regex("Atom \"(.*)\" contains: (.*)");
+		private static Regex AtomDetailRegex = new Regex("Atom \"(.*)\" contains: (.*)");
 
 		private static IFile AtomicParsleyFile
 		{
 			get
 			{
-				// Get _AtomicParsley file.
+				// Get AtomicParsely file.
 				IFile _AtomicParsleyFile = new File(FileSystem.PathCombine(FileSystem.GetTempPath(), Assembly.GetExecutingAssembly().GetName().Name, "AtomicParsley.exe"));
 
 				// If AtomicParsely does not exist, then create it.
@@ -30,7 +30,7 @@ namespace AtomicParsley
 					}
 
 					// Read bytes from assembly and create the file.
-					System.IO.Stream Stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MediaOrganiser.Media.Externals."+_AtomicParsleyFile.NameWithoutExtension);
+					System.IO.Stream Stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MediaOrganiser.Media.Externals."+_AtomicParsleyFile.Name);
 					byte[] Bytes = new byte[(int)Stream.Length];
 					Stream.Read(Bytes, 0, Bytes.Length);
 					System.IO.File.WriteAllBytes(_AtomicParsleyFile.FullName, Bytes);
@@ -64,7 +64,7 @@ namespace AtomicParsley
 			Output.Split('\n').ToList().ForEach(Line =>
 			{
 				// Use regex to extract out details.
-				Match Match = DetailRegex.Match(Line);
+				Match Match = AtomDetailRegex.Match(Line);
 				if(Match.Success)
 				{
 					Details.Add(Match.Groups[1].Value, Match.Groups[2].Value);
