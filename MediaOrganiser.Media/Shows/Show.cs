@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Files;
+using System.Collections.Generic;
 using MediaOrganiser.Convertor;
 using MediaOrganiser.Media.Shows.Details;
 
@@ -97,12 +99,11 @@ namespace MediaOrganiser.Media.Shows
 			}
 		}
 
-		private IFile _Artwork;
-		public IFile Artwork
+		public IEnumerable<IFile> Artworks
 		{
 			get
 			{
-				return ShowDetailsAdditional.Artwork;
+				return ShowDetailsAdditional.Artworks;
 			}
 		}
 
@@ -152,7 +153,7 @@ namespace MediaOrganiser.Media.Shows
 
 		public void SaveDetails()
 		{
-			AtomicParsley.AtomicParsley.SetDetails(MediaFile.FullName, ShowName, SeasonNumber, EpisodeNumber, EpisodeName, AiredDate, Overview, TVNetwork, Artwork==null?null:Artwork.FullName);
+			AtomicParsley.AtomicParsley.SetDetails(MediaFile.FullName, ShowName, SeasonNumber, EpisodeNumber, EpisodeName, AiredDate, Overview, TVNetwork, Artworks==null?null:Artworks.Select(A=>A.FullName));
 		}
 
 		public String CleanFileName

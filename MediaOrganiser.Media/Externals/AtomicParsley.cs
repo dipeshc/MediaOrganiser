@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Mono.Unix.Native;
 
 namespace AtomicParsley
 {
@@ -16,15 +17,29 @@ namespace AtomicParsley
 		{
 			get
 			{
-				IFile _AtomicParsleyFile = new File(FileSystem.PathCombine(FileSystem.GetTempPath(), "MediaOrganiser", "AtomicParsley.exe"));
+				// Get _AtomicParsley file.
+				IFile _AtomicParsleyFile = new File(FileSystem.PathCombine(FileSystem.GetTempPath(), Assembly.GetExecutingAssembly().GetName().Name, "AtomicParsley.exe"));
+
+				// If AtomicParsely does not exist, then create it.
 				if(!_AtomicParsleyFile.Exists)
 				{
-					System.IO.Stream Stream = typeof(AtomicParsley).Assembly.GetManifestResourceStream("MediaOrganiser.Media.Externals.AtomicParsley");
+					// Create folder if does not exist.
+					if(!_AtomicParsleyFile.Directory.Exists)
+					{
+						_AtomicParsleyFile.Directory.Create();
+					}
+
+					// Read bytes from assembly and create the file.
+					System.IO.Stream Stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MediaOrganiser.Media.Externals."+_AtomicParsleyFile.NameWithoutExtension);
 					byte[] Bytes = new byte[(int)Stream.Length];
 					Stream.Read(Bytes, 0, Bytes.Length);
 					System.IO.File.WriteAllBytes(_AtomicParsleyFile.FullName, Bytes);
-					Mono.Posix.Syscall.chmod (_AtomicParsleyFile.FullName, Mono.Posix.FileMode.S_IXUSR);
+
+					// Set permissions.
+					Syscall.chmod(_AtomicParsleyFile.FullName, FilePermissions.S_IRWXU);
 				}
+
+				// Return.
 				return _AtomicParsleyFile;
 			}
 		}
@@ -59,7 +74,7 @@ namespace AtomicParsley
 			return Details;
 		}
 
-		public static void SetDetails(String FilePath, String ShowName, Int32? SeasonNumber, Int32? EpisodeNumber, String EpisodeName, DateTime? AiredDate, String Overview, String TVNetwork, String ArtworkPath=null)
+		public static void SetDetails(String FilePath, String ShowName, Int32? SeasonNumber, Int32? EpisodeNumber, String EpisodeName, DateTime? AiredDate, String Overview, String TVNetwork, IEnumerable<String> ArtworkPaths=null)
 		{
 			String Arguments = String.Format(
 				"\"{0}\" --overWrite --stik \"TV Show\" --TVShowName \"{1}\" --TVSeasonNum \"{2}\" --TVEpisodeNum \"{3}\" --tracknum \"{3}\" --title \"{4}\" --year \"{5}\" --description \"{6}\" --TVNetwork \"{7}\"",
@@ -72,9 +87,12 @@ namespace AtomicParsley
 				Overview,
 				TVNetwork);
 
-			if(ArtworkPath!=null)
+			if(ArtworkPaths!=null)
 			{
-				Arguments += String.Format(" --artwork \"{0}\"", ArtworkPath);
+				foreach(String ArtworkPath in ArtworkPaths)
+				{
+					Arguments += String.Format(" --artwork \"{0}\"", ArtworkPath);
+				}
 			}
 
 			String Output = Run(Arguments);

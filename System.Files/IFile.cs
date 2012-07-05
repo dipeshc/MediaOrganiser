@@ -10,6 +10,7 @@ namespace System.Files
 		String NameWithoutExtension { get; }
 		String FullNameWithoutExtension { get; }
 		Boolean Exists { get ; }
+		IDirectory Directory { get; }
 		void Create();
 		void CopyTo(IFile CopyToFile, Boolean Overwrite=false);
 		void MoveTo(String Path, Boolean Overwrite=false);

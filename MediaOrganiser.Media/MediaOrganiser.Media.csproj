@@ -76,6 +76,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Externals\AtomicParsley" />
+    <EmbeddedResource Include="Externals\AtomicParsley.exe" />
   </ItemGroup>
 </Project>

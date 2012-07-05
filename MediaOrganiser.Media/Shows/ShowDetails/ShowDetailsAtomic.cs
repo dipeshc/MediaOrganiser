@@ -71,12 +71,12 @@ namespace MediaOrganiser.Media.Shows.Details
 			}
 		}
 
-		private IFile _Artwork;
-		public IFile Artwork
+		private IEnumerable<IFile> _Artworks;
+		public IEnumerable<IFile> Artworks
 		{
 			get
 			{
-				return _Artwork;
+				return _Artworks;
 			}
 		}
 
@@ -107,7 +107,7 @@ namespace MediaOrganiser.Media.Shows.Details
 			_AiredDate = null;
 			_Overview = null;
 			_TVNetwork = null;
-			_Artwork = null;
+			_Artworks = null;
 
 			if(Details.ContainsKey("tvsn"))
 			{

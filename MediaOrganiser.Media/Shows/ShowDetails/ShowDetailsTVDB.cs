@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Files;
+using System.Reflection;
 using System.Collections.Generic;
 using TvdbLib;
 using TvdbLib.Data;
@@ -11,7 +12,7 @@ namespace MediaOrganiser.Media.Shows.Details
 {
 	public class ShowDetailsTVDB : IShowDetailsBasic, IShowDetailsAdditional
 	{
-		private static Directory CacheDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), "MediaOrganiser", "TVDBCache"));
+		private static Directory CacheDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), Assembly.GetExecutingAssembly().GetName().Name, "TVDBCache"));
 		private static TvdbHandler TVDB = new TvdbHandler(new XmlCacheProvider(CacheDirectory.FullName), "416920BF8A4C278C");
 
 		private String _ShowName;
@@ -77,12 +78,12 @@ namespace MediaOrganiser.Media.Shows.Details
 			}
 		}
 
-		private IFile _Artwork;
-		public IFile Artwork
+		private IEnumerable<IFile> _Artworks;
+		public IEnumerable<IFile> Artworks
 		{
 			get
 			{
-				return _Artwork;
+				return _Artworks;
 			}
 		}
 
@@ -127,8 +128,13 @@ namespace MediaOrganiser.Media.Shows.Details
 				true
 			);
 
-			// Get banner.
+			// Get banners
+			TvdbBanner SeriesBanner = Series.SeriesBanners.FirstOrDefault();
 			TvdbBanner SeasonBanner = Series.SeasonBanners.Where(B=>B.Season==ShowDetailsBasic.SeasonNumber).FirstOrDefault();
+			if(SeriesBanner!=null)
+			{
+				SeriesBanner.LoadBanner();
+			}
 			if(SeasonBanner!=null)
 			{
 				SeasonBanner.LoadBanner();
@@ -144,7 +150,7 @@ namespace MediaOrganiser.Media.Shows.Details
 			_AiredDate = Episode.FirstAired;
 			_Overview = Episode.Overview;
 			_TVNetwork = Series.Network;
-			_Artwork = SeasonBanner==null?null:GetBannerCacheFile(SeasonBanner);
+			_Artworks = (SeriesBanner==null&&SeasonBanner==null)?null:new List<IFile> {GetBannerCacheFile(SeriesBanner), GetBannerCacheFile(SeasonBanner)};
 			_HasDetails = true;
 			return true;
 		}

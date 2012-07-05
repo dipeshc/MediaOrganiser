@@ -49,6 +49,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Externals\HandBrakeCLI" />
+    <EmbeddedResource Include="Externals\HandBrakeCLI.exe" />
   </ItemGroup>
 </Project>

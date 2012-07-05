@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Files;
 using System.Logging;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Threading.Helpers;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace MediaOrganiser
 			// Setup folders.
 			this.InputPaths = InputPaths;
 			this.OutputDirectory = OutputDirectory;
-			this.WorkingDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), "MediaOrganiser", "WorkingArea"));
+			this.WorkingDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), Assembly.GetExecutingAssembly().GetName().Name, "WorkingArea"));
 			this.AddToiTunes = AddToiTunes;
 
 			this.ExcludedPaths = ExcludedPaths??new List<IPath>();

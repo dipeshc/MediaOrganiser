@@ -1,25 +1,24 @@
 using System;
-using System.IO;
 
 namespace System.Files
 {
 	public class File : IFile
 	{
-		private FileInfo theFile = null;
+		private System.IO.FileInfo theFile = null;
 
 		public File (String Path)
 		{
-			theFile = new FileInfo(Path);
+			theFile = new System.IO.FileInfo(Path);
 		}
 
-		public File (FileInfo aFile)
+		public File (System.IO.FileInfo aFile)
 		{
 			theFile = aFile;
 		}
 
 		public File(IPath Path)
 		{
-			theFile = new FileInfo(Path.FullName);
+			theFile = new System.IO.FileInfo(Path.FullName);
 		}
 
 		public String Name
@@ -67,6 +66,14 @@ namespace System.Files
 			get
 			{
 				return theFile.Exists;
+			}
+		}
+
+		public IDirectory Directory
+		{
+			get
+			{
+				return new Directory(theFile.Directory);
 			}
 		}
 
