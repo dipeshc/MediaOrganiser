@@ -16,8 +16,8 @@ namespace MediaOrganiser
 		private IEnumerable<IPath> InputPaths;
 		private IDirectory OutputDirectory;
 		private IEnumerable<IPath> ExcludedPaths;
-		private IDirectory WorkingDirectory;
 		private Boolean AddToiTunes;
+		private IDirectory WorkingDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), Assembly.GetExecutingAssembly().GetName().Name, "WorkingArea"));
 
 		// ThreadAvailability for each action.
 		private LockableInt CopyMediaToWorkingAreaThreadAvailability = new LockableInt(1);
@@ -34,7 +34,6 @@ namespace MediaOrganiser
 			// Setup folders.
 			this.InputPaths = InputPaths;
 			this.OutputDirectory = OutputDirectory;
-			this.WorkingDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), Assembly.GetExecutingAssembly().GetName().Name, "WorkingArea"));
 			this.AddToiTunes = AddToiTunes;
 
 			this.ExcludedPaths = ExcludedPaths??new List<IPath>();

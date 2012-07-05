@@ -24,8 +24,7 @@
     <Commandlineparameters>-a -e -i ~/Desktop/[Narutoverse]_NARUTO_Shippuden_269.mp4</Commandlineparameters>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="rm -rf Output;mkdir Output" workingdir="${SolutionDir}/../" />
-        <Command type="AfterBuild" command="mono ../../Externals/ILRepack.exe /out:${SolutionDir}/../Output/MediaOrganiserCLI.exe MediaOrganiserCLI.exe *.dll" workingdir="${TargetDir}" externalConsole="true" />
+        <Command type="AfterBuild" command="rm -rf ${SolutionDir}/../Output; mkdir ${SolutionDir}/../Output; mono ../../Externals/ILRepack.exe /out:${SolutionDir}/../Output/MediaOrganiserCLI.exe MediaOrganiserCLI.exe *.dll" workingdir="${TargetDir}" externalConsole="true" pauseExternalConsole="true" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
