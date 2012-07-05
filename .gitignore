@@ -1,4 +1,5 @@
-bin/
-obj/
+[Bb]in/
+[Oo]bj/
+[Oo]utput/
 .DS_Store
 *.userprefs
