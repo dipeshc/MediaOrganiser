@@ -1,5 +1,5 @@
 
-namespace MediaOrganiserApp
+namespace MediaOrganiserGUI
 {
 		// Should subclass MonoMac.AppKit.NSResponder
 		[MonoMac.Foundation.Register("AppDelegate")]

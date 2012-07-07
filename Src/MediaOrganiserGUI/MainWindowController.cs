@@ -6,7 +6,7 @@ using MonoMac.Foundation;
 using MonoMac.AppKit;
 using MediaOrganiser;
 
-namespace MediaOrganiserApp
+namespace MediaOrganiserGUI
 {
 	public partial class MainWindowController : MonoMac.AppKit.NSWindowController
 	{

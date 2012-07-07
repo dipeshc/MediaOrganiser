@@ -6,7 +6,7 @@
 //
 using MonoMac.Foundation;
 
-namespace MediaOrganiserApp
+namespace MediaOrganiserGUI
 {
 	[Register ("MainWindowController")]
 	partial class MainWindowController

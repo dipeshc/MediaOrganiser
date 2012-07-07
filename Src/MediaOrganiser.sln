@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiserCLI", "MediaO
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.iTunes", "Apple.iTunes\Apple.iTunes.csproj", "{F15396F9-463B-4407-8C87-2F464902382A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiserApp", "MediaOrganiserApp\MediaOrganiserApp.csproj", "{0400A34E-8CFC-4D5F-8771-5B06BF82229F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiserGUI", "MediaOrganiserGUI\MediaOrganiserGUI.csproj", "{0400A34E-8CFC-4D5F-8771-5B06BF82229F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,7 +66,7 @@ Global
 		{F15396F9-463B-4407-8C87-2F464902382A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = MediaOrganiserApp\MediaOrganiserApp.csproj
+		StartupItem = MediaOrganiserGUI\MediaOrganiserGUI.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

@@ -8,8 +8,8 @@
     <ProjectGuid>{0400A34E-8CFC-4D5F-8771-5B06BF82229F}</ProjectGuid>
     <ProjectTypeGuids>{948B3504-5B70-4649-8FE4-BDE1FB46EC69};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Exe</OutputType>
-    <RootNamespace>MediaOrganiserApp</RootNamespace>
-    <AssemblyName>MediaOrganiserApp</AssemblyName>
+    <RootNamespace>MediaOrganiserGUI</RootNamespace>
+    <AssemblyName>MediaOrganiserGUI</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
