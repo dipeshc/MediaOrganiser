@@ -30,6 +30,14 @@ namespace System.Files
 			}
 			return Path;
 		}
+
+		public static Char DirectorySeperator
+		{
+			get
+			{
+				return System.IO.Path.DirectorySeparatorChar;
+			}
+		}
 	}
 }
 

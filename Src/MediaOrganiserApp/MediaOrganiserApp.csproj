@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0400A34E-8CFC-4D5F-8771-5B06BF82229F}</ProjectGuid>
+    <ProjectTypeGuids>{948B3504-5B70-4649-8FE4-BDE1FB46EC69};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MediaOrganiserApp</RootNamespace>
+    <AssemblyName>MediaOrganiserApp</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <PlatformTarget>x86</PlatformTarget>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <ConsolePause>false</ConsolePause>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <CodeSigningKey>Mac Developer</CodeSigningKey>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <LinkMode>Full</LinkMode>
+    <PlatformTarget>x86</PlatformTarget>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <ConsolePause>false</ConsolePause>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <CodeSigningKey>Mac Developer</CodeSigningKey>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\x86\AppStore</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <IncludeMonoRuntime>true</IncludeMonoRuntime>
+    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+    <PlatformTarget>x86</PlatformTarget>
+    <LinkMode>Full</LinkMode>
+    <EnableCodeSigning>true</EnableCodeSigning>
+    <ConsolePause>false</ConsolePause>
+    <EnablePackageSigning>true</EnablePackageSigning>
+    <CreatePackage>true</CreatePackage>
+    <CodeSigningKey>3rd Party Mac Developer Application</CodeSigningKey>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="MonoMac" />
+    <Reference Include="CommandLine">
+      <HintPath>..\MediaOrganiserCLI\Externals\CommandLine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MainWindow.cs" />
+    <Compile Include="MainWindowController.cs" />
+    <Compile Include="MainWindow.designer.cs">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Main.cs" />
+    <Compile Include="AppDelegate.cs" />
+    <Compile Include="AppDelegate.designer.cs">
+      <DependentUpon>AppDelegate.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="MainWindow.xib" />
+    <InterfaceDefinition Include="MainMenu.xib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Info.plist" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\MediaOrganiser\MediaOrganiser.csproj">
+      <Project>{039420CF-CF63-421A-8EFC-71109C909D30}</Project>
+      <Name>MediaOrganiser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Files\System.Files.csproj">
+      <Project>{E7EB41D8-6079-4BCA-BC6B-8EA46489B60F}</Project>
+      <Name>System.Files</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
