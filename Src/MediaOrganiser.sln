@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiserCLI", "MediaO
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.iTunes", "Apple.iTunes\Apple.iTunes.csproj", "{F15396F9-463B-4407-8C87-2F464902382A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiserGUI", "MediaOrganiserGUI\MediaOrganiserGUI.csproj", "{0400A34E-8CFC-4D5F-8771-5B06BF82229F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiserApp", "MediaOrganiserApp\MediaOrganiserApp.csproj", "{FE5F547A-A05E-4BA0-A941-65C0BF283552}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,12 +30,6 @@ Global
 		{039420CF-CF63-421A-8EFC-71109C909D30}.Debug|x86.Build.0 = Debug|x86
 		{039420CF-CF63-421A-8EFC-71109C909D30}.Release|x86.ActiveCfg = Release|x86
 		{039420CF-CF63-421A-8EFC-71109C909D30}.Release|x86.Build.0 = Release|x86
-		{0400A34E-8CFC-4D5F-8771-5B06BF82229F}.AppStore|x86.ActiveCfg = AppStore|x86
-		{0400A34E-8CFC-4D5F-8771-5B06BF82229F}.AppStore|x86.Build.0 = AppStore|x86
-		{0400A34E-8CFC-4D5F-8771-5B06BF82229F}.Debug|x86.ActiveCfg = Debug|x86
-		{0400A34E-8CFC-4D5F-8771-5B06BF82229F}.Debug|x86.Build.0 = Debug|x86
-		{0400A34E-8CFC-4D5F-8771-5B06BF82229F}.Release|x86.ActiveCfg = Release|x86
-		{0400A34E-8CFC-4D5F-8771-5B06BF82229F}.Release|x86.Build.0 = Release|x86
 		{1BD63904-18F6-437A-AE3F-B1A79AD566DD}.Debug|x86.ActiveCfg = Debug|x86
 		{1BD63904-18F6-437A-AE3F-B1A79AD566DD}.Debug|x86.Build.0 = Debug|x86
 		{1BD63904-18F6-437A-AE3F-B1A79AD566DD}.Release|x86.ActiveCfg = Release|x86
@@ -64,9 +58,15 @@ Global
 		{F15396F9-463B-4407-8C87-2F464902382A}.Debug|x86.Build.0 = Debug|x86
 		{F15396F9-463B-4407-8C87-2F464902382A}.Release|x86.ActiveCfg = Release|x86
 		{F15396F9-463B-4407-8C87-2F464902382A}.Release|x86.Build.0 = Release|x86
+		{FE5F547A-A05E-4BA0-A941-65C0BF283552}.AppStore|x86.ActiveCfg = AppStore|x86
+		{FE5F547A-A05E-4BA0-A941-65C0BF283552}.AppStore|x86.Build.0 = AppStore|x86
+		{FE5F547A-A05E-4BA0-A941-65C0BF283552}.Debug|x86.ActiveCfg = Debug|x86
+		{FE5F547A-A05E-4BA0-A941-65C0BF283552}.Debug|x86.Build.0 = Debug|x86
+		{FE5F547A-A05E-4BA0-A941-65C0BF283552}.Release|x86.ActiveCfg = Release|x86
+		{FE5F547A-A05E-4BA0-A941-65C0BF283552}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = MediaOrganiserGUI\MediaOrganiserGUI.csproj
+		StartupItem = MediaOrganiserCLI\MediaOrganiserCLI.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

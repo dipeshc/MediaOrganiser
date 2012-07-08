@@ -4,7 +4,7 @@ using MonoMac.Foundation;
 using MonoMac.AppKit;
 using MonoMac.ObjCRuntime;
 
-namespace MediaOrganiserGUI
+namespace MediaOrganiserApp
 {
 	class MainClass
 	{
@@ -12,7 +12,7 @@ namespace MediaOrganiserGUI
 		{
 			NSApplication.Init();
 			NSApplication.Main(args);
-        }
+		}
 	}
 }	
 

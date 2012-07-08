@@ -1,42 +1,46 @@
+
 using System;
 using System.Linq;
 using System.Files;
+using System.Logging;
+using System.Threading;
 using System.Collections.Generic;
 using MonoMac.Foundation;
 using MonoMac.AppKit;
 using MediaOrganiser;
 
-namespace MediaOrganiserGUI
+
+namespace MediaOrganiserApp
 {
 	public partial class MainWindowController : MonoMac.AppKit.NSWindowController
 	{
-		private IEnumerable<IPath> InputPaths;
-		private IDirectory OutputDirectory;
-
+		#region Constructors
 		// Called when created from unmanaged code
 		public MainWindowController (IntPtr handle) : base (handle)
 		{
-			Initialize();
+				Initialize();
 		}
 
 		// Called when created directly from a XIB file
 		[Export ("initWithCoder:")]
 		public MainWindowController (NSCoder coder) : base (coder)
 		{
-			Initialize();
+				Initialize();
 		}
 
 		// Call to load from the XIB/NIB file
 		public MainWindowController () : base ("MainWindow")
 		{
-			Initialize();
+				Initialize();
 		}
 
 		// Shared initialization code
 		void Initialize()
 		{
 		}
+		#endregion
 
+		#region MainWindow
 		// Strongly typed window accessor
 		public new MainWindow Window
 		{
@@ -45,9 +49,9 @@ namespace MediaOrganiserGUI
 				return (MainWindow)base.Window;
 			}
 		}
+		#endregion
 
-		#region handlers
-
+		#region Handlers
 		partial void InputBrowseButtonPressed (NSObject sender)
 		{
 			OpenInputFileBrowser();
@@ -60,10 +64,13 @@ namespace MediaOrganiserGUI
 
 		partial void OrganiseButtonPressed (NSObject sender)
 		{
-			Organise();
+			DoOrganise();
 		}
+		#endregion
 
-		#endregion handlers
+		#region CodeBody
+		private IEnumerable<IPath> InputPaths;
+		private IDirectory OutputDirectory;
 
 		private void OpenInputFileBrowser()
 		{
@@ -82,12 +89,14 @@ namespace MediaOrganiserGUI
 
 				foreach(NSUrl Url in Dialog.Urls)
 				{
-					InputPathsString += Url.AbsoluteUrl.Path + ";";
-					InputPathsList.Add(new Path(Url.AbsoluteUrl.Path));
+					IPath Path = new Path(Url.AbsoluteUrl.Path);
+
+					InputPathsString += Path.Name + ";";
+					InputPathsList.Add(Path);
 				}
 
 				// Assign.
-				InputPathsTextField.StringValue = InputPathsString;
+				InputDisplayLabel.StringValue = InputPathsString;
 				InputPaths = InputPathsList;
 			}
 		}
@@ -103,21 +112,54 @@ namespace MediaOrganiserGUI
 
 			if(Dialog.RunModal()!=0)
 			{
+				IDirectory Directory = new Directory(Dialog.Url.AbsoluteUrl.Path);
+
 				// Assign.
-				OutputPathTextField.StringValue = Dialog.Url.AbsoluteUrl.Path;
-				OutputDirectory = new Directory(Dialog.Url.AbsoluteUrl.Path);
+				OutputDisplayLabel.StringValue = Directory.Name;
+				OutputDirectory = Directory;
 			}
 		}
 
-		// Do organisation.
-		public void Organise()
+		public void DoOrganise()
 		{
+			// Get values.
 			Boolean AddToiTunes = AddToiTunesCheckbox.State==NSCellStateValue.On;
 			Boolean ExcludeiTunesMedia = ExcludeiTunesMediaCheckbox.State==NSCellStateValue.On;
 
+			// Check values.
+			if(InputPaths==null || InputPaths.Count()==0)
+			{
+				InputDisplayLabel.StringValue = "Please select input";
+				return;
+			}
+
+			// UI update before work.
+			OrganiseButton.Enabled = false;
+
 			Organiser Organiser = new Organiser(InputPaths, OutputDirectory, new List<IPath>(), false, AddToiTunes, ExcludeiTunesMedia);
 			Organiser.Organise();
+
+			// Do organisation. Main work in another thread to prevent UI lockup.
+			/**
+			(new Thread(() =>
+			{
+				try
+				{
+					Organiser Organiser = new Organiser(InputPaths, OutputDirectory, new List<IPath>(), false, AddToiTunes, ExcludeiTunesMedia);
+					Organiser.Organise();
+				}
+				finally
+				{
+					OrganiseButton.Enabled = true;
+				}
+			})
+			{
+				Name = "Organiser Thread",
+				Priority = ThreadPriority.BelowNormal
+			}).Start();
+			**/
 		}
+		#endregion
 	}
 }
 

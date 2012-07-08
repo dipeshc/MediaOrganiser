@@ -6,22 +6,25 @@
 //
 using MonoMac.Foundation;
 
-namespace MediaOrganiserGUI
+namespace MediaOrganiserApp
 {
 	[Register ("MainWindowController")]
 	partial class MainWindowController
 	{
 		[Outlet]
-		MonoMac.AppKit.NSTextField InputPathsTextField { get; set; }
+		MonoMac.AppKit.NSTextField InputDisplayLabel { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSTextField OutputPathTextField { get; set; }
+		MonoMac.AppKit.NSTextField OutputDisplayLabel { get; set; }
+
+		[Outlet]
+		MonoMac.AppKit.NSButton AddToiTunesCheckbox { get; set; }
 
 		[Outlet]
 		MonoMac.AppKit.NSButton ExcludeiTunesMediaCheckbox { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSButton AddToiTunesCheckbox { get; set; }
+		MonoMac.AppKit.NSButton OrganiseButton { get; set; }
 
 		[Action ("InputBrowseButtonPressed:")]
 		partial void InputBrowseButtonPressed (MonoMac.Foundation.NSObject sender);
@@ -34,14 +37,19 @@ namespace MediaOrganiserGUI
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (InputPathsTextField != null) {
-				InputPathsTextField.Dispose ();
-				InputPathsTextField = null;
+			if (InputDisplayLabel != null) {
+				InputDisplayLabel.Dispose ();
+				InputDisplayLabel = null;
 			}
 
-			if (OutputPathTextField != null) {
-				OutputPathTextField.Dispose ();
-				OutputPathTextField = null;
+			if (OutputDisplayLabel != null) {
+				OutputDisplayLabel.Dispose ();
+				OutputDisplayLabel = null;
+			}
+
+			if (AddToiTunesCheckbox != null) {
+				AddToiTunesCheckbox.Dispose ();
+				AddToiTunesCheckbox = null;
 			}
 
 			if (ExcludeiTunesMediaCheckbox != null) {
@@ -49,9 +57,9 @@ namespace MediaOrganiserGUI
 				ExcludeiTunesMediaCheckbox = null;
 			}
 
-			if (AddToiTunesCheckbox != null) {
-				AddToiTunesCheckbox.Dispose ();
-				AddToiTunesCheckbox = null;
+			if (OrganiseButton != null) {
+				OrganiseButton.Dispose ();
+				OrganiseButton = null;
 			}
 		}
 	}
