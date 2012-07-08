@@ -73,12 +73,7 @@ namespace MediaOrganiser
 				Boolean Found = false;
 				foreach(IShow ExlcudedShow in ExcludedShows)
 				{
-					if(ExlcudedShow.ShowName.Contains("Crowd"))
-					{
-						Console.WriteLine("Aa");
-					}
-
-					if(InputShow.ShowName == ExlcudedShow.ShowName &&
+					if(InputShow.ShowName.ToLower() == ExlcudedShow.ShowName.ToLower() &&
 					   InputShow.SeasonNumber == ExlcudedShow.SeasonNumber &&
 					   InputShow.EpisodeNumber == ExlcudedShow.EpisodeNumber)
 					{
