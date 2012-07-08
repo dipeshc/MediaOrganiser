@@ -24,7 +24,7 @@
     <Commandlineparameters>-a -e -i ~/Desktop/ITCrowd/</Commandlineparameters>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="mono ${SolutionDir}/../Build/ILRepack.exe /out:${SolutionDir}/../Output/MediaOrganiserCLI.exe MediaOrganiserCLI.exe *.dll" workingdir="${TargetDir}" externalConsole="true" pauseExternalConsole="true" />
+        <Command type="AfterBuild" command="rm -rf ${SolutionDir}/../Output; mkdir ${SolutionDir}/../Output; mono ${SolutionDir}/../Build/ILRepack.exe /out:${SolutionDir}/../Output/MediaOrganiserCLI.exe MediaOrganiserCLI.exe *.dll" workingdir="${TargetDir}" externalConsole="true" pauseExternalConsole="true" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>

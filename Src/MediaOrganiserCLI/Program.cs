@@ -91,8 +91,7 @@ namespace MediaOrganiserCLI
 		{
 			// Parse out options.
 			Options Options = new Options();
-			var a = new CommandLineParserSettings(Console.Error);
-            CommandLineParser Parser = new CommandLineParser(a);
+            CommandLineParser Parser = new CommandLineParser(new CommandLineParserSettings(Console.Error));
             if (!Parser.ParseArguments(Args, Options))
 			{
 				// Exit 1.
