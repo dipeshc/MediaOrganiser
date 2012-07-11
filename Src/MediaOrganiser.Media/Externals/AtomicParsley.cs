@@ -79,13 +79,13 @@ namespace AtomicParsley
 			String Arguments = String.Format(
 				"\"{0}\" --overWrite --stik \"TV Show\" --TVShowName \"{1}\" --TVSeasonNum \"{2}\" --TVEpisodeNum \"{3}\" --tracknum \"{3}\" --title \"{4}\" --year \"{5}\" --description \"{6}\" --TVNetwork \"{7}\"",
 				FilePath,
-				ShowName,
+				ShowName.Replace("\\", "\\\\").Replace("\"", "\\\""),
 				SeasonNumber,
 				EpisodeNumber,
-				EpisodeName,
+				EpisodeName.Replace("\\", "\\\\").Replace("\"", "\\\""),
 				(AiredDate==null?"":((DateTime)AiredDate).ToString("u").Replace(" ", "T")),
-				Overview,
-				TVNetwork);
+				Overview.Replace("\\", "\\\\").Replace("\"", "\\\""),
+				TVNetwork.Replace("\\", "\\\\").Replace("\"", "\\\""));
 
 			if(ArtworkPaths!=null)
 			{

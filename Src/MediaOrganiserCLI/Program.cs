@@ -57,7 +57,8 @@ namespace MediaOrganiserCLI
 			[HelpOption]
             public string GetUsage()
             {
-                HelpText Help = new HelpText {
+                HelpText Help = new HelpText
+				{
 					Heading = "MediaOrganiserCLI",
 					Copyright = new CopyrightInfo("Dipesh Chauhan", DateTime.Now.Year),
                 	AdditionalNewLineAfterOption = true,
@@ -65,10 +66,6 @@ namespace MediaOrganiserCLI
 					MaximumDisplayWidth = Console.LargestWindowWidth
 				};
                	HandleParsingErrorsInHelp(Help);
-				Help.AddPreOptionsLine("Usage: MediaOrganiserCLI -i <input folder path>,<another input folder path> -o <output folder path>");
-				Help.AddPreOptionsLine("Usage: MediaOrganiserCLI --inputs <input folder path>,<another input folder path> --output <output folder path>");
-				Help.AddPreOptionsLine("Usage: MediaOrganiserCLI -i <input folder path>,<another input folder path> -o <output folder path> -e <excluded folder path>,<another excluded folder path>");
-				Help.AddPreOptionsLine("Usage: MediaOrganiserCLI --inputs <input folder path>,<another input folder path> --output <output folder path> --Excludes <excluded folder path>,<another excluded folder path>");
 				Help.AddOptions(this);
                 return Help;
             }

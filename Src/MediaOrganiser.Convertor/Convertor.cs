@@ -8,7 +8,8 @@ namespace MediaOrganiser.Convertor
 	{
 		public static String ConvertForiPad(IFile InputFile, IFile OutputFile)
 		{
-			return HandBrake.HandBrake.Run(String.Format(@"-i '{0}' -o '{1}' --preset=iPad --subtitle-burn", InputFile.FullName, OutputFile.FullName));
+			String EscapedInputFullName = InputFile.FullName.Replace("\\", "\\\\").Replace("\"", "\\\"");
+			return HandBrake.HandBrake.Run(String.Format("-i \"{0}\" -o \"{1}\" --preset=iPad --subtitle-burn", EscapedInputFullName, OutputFile.FullName));
 		}
 	}
 }
