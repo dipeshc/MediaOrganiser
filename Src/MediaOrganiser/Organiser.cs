@@ -3,8 +3,10 @@ using System.Linq;
 using System.Files;
 using System.Logging;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Helpers;
+using System.Collections;
 using System.Collections.Generic;
 using MediaOrganiser.Media;
 using Apple.iTunes;
@@ -13,9 +15,7 @@ namespace MediaOrganiser
 {
 	public class Organiser
 	{
-		private IEnumerable<IPath> InputPaths;
 		private IDirectory OutputDirectory;
-		private IEnumerable<IPath> ExcludedPaths;
 		private Boolean AddToiTunes;
 		private IDirectory WorkingDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), Assembly.GetExecutingAssembly().GetName().Name, "WorkingArea"));
 
@@ -29,22 +29,11 @@ namespace MediaOrganiser
 		private LockableInt DeleteMediaThreadAvailability = new LockableInt(10);
 		private LockableInt MoveMediaToOutputDirectoryThreadAvailability = new LockableInt(5);
 
-		public Organiser (IEnumerable<IPath> InputPaths, IDirectory OutputDirectory, IEnumerable<IPath> ExcludedPaths, Boolean Clean, Boolean AddToiTunes, Boolean ExcludeiTunesMedia)
+		public Organiser (IDirectory OutputDirectory, Boolean Clean, Boolean AddToiTunes)
 		{
 			// Setup folders.
-			this.InputPaths = InputPaths;
 			this.OutputDirectory = OutputDirectory;
 			this.AddToiTunes = AddToiTunes;
-
-			this.ExcludedPaths = ExcludedPaths??new List<IPath>();
-			if(OutputDirectory!=null)
-			{
-				Enumerable.Union<IPath>(new List<IPath>{new Path(OutputDirectory.FullName)}, this.ExcludedPaths);
-			}
-			if(ExcludeiTunesMedia)
-			{
-				this.ExcludedPaths = Enumerable.Union<IPath>(new List<IPath>{new Path(Apple.iTunes.Properties.RootMediaDirectory.FullName)}, this.ExcludedPaths);
-			}
 
 			// Clean working directory if required.
 			if(Clean && WorkingDirectory.Parent.Exists)
@@ -59,68 +48,75 @@ namespace MediaOrganiser
 			}
 		}
 
-		public void Organise()
+		public void Organise(IEnumerable<IMedia> Medias)
 		{
-			// Find media that needs to be organised.
-			Log.WriteLine("Getting media to be organised");
-			IEnumerable<IMedia> MediaToOrganise = ShowFinder.FindShowsToOrganise(InputPaths, ExcludedPaths);
-			Log.WriteLine("MediaToOrganise Found. Number: {0}", new List<IMedia>(MediaToOrganise).Count);
-
-			// Organise media.
-			Parallel.ForEach(MediaToOrganise, Media =>
+			Parallel.ForEach(Medias, Media=>
 			{
-				// Copy media to working area.
-				Helper.RunWhenThreadAvailable(CopyMediaToWorkingAreaThreadAvailability, 1, () =>
-				{
-					CopyMediaToWorkingArea(Media);
-				});
-
-				if(Media.RequiresConversion)
-				{
-					Helper.RunWhenThreadAvailable(ConvertMediaThreadAvailability, 1, () =>
-					{
-						ConvertMedia(Media);
-					});
-				}
-
-				Helper.RunWhenThreadAvailable(ExtractExhaustiveMediaDetailsThreadAvailability, 1, () =>
-				{
-					ExtractExhaustiveMediaDetails(Media);
-				});
-
-				Helper.RunWhenThreadAvailable(SaveMediaMetaDataThreadAvailability, 1, () =>
-				{
-					SaveMediaMetaData(Media);
-				});
-
-				Helper.RunWhenThreadAvailable(RenameMediaToCleanNameThreadAvailability, 1, () =>
-				{
-					RenameMediaToCleanFileName(Media);
-				});
-
-				if(AddToiTunes)
-				{
-					Helper.RunWhenThreadAvailable(AddMediaToiTunesThreadAvailability, 1, () =>
-					{
-						AddMediaToiTunes(Media);
-					});
-				}
-
-				if(OutputDirectory==null)
-				{
-					Helper.RunWhenThreadAvailable(DeleteMediaThreadAvailability, 1, () =>
-					{
-						DeleteMedia(Media);
-					});
-				}
-				else
-				{
-					Helper.RunWhenThreadAvailable(MoveMediaToOutputDirectoryThreadAvailability, 1, () =>
-					{
-						MoveMediaToOutputDirectory(Media);
-					});
-				}
+				Log.WriteLine("Organising {0}.", Media.MediaFile.FullName);
+				Organise(Media);
+				Log.WriteLine("Organised {0}.", Media.MediaFile.FullName);
 			});
+		}
+
+		public void Organise(IMedia Media)
+		{
+			// Copy to working area.
+			Helper.RunWhenThreadAvailable(CopyMediaToWorkingAreaThreadAvailability, 1, () =>
+			{
+				CopyMediaToWorkingArea(Media);
+			});
+
+			// Convert if required.
+			if(Media.RequiresConversion)
+			{
+				Helper.RunWhenThreadAvailable(ConvertMediaThreadAvailability, 1, () =>
+				{
+					ConvertMedia(Media);
+				});
+			}
+
+			// Extract media details exhaustivly.
+			Helper.RunWhenThreadAvailable(ExtractExhaustiveMediaDetailsThreadAvailability, 1, () =>
+			{
+				ExtractExhaustiveMediaDetails(Media);
+			});
+
+			// Save media meta data.
+			Helper.RunWhenThreadAvailable(SaveMediaMetaDataThreadAvailability, 1, () =>
+			{
+				SaveMediaMetaData(Media);
+			});
+
+			// Rename media.
+			Helper.RunWhenThreadAvailable(RenameMediaToCleanNameThreadAvailability, 1, () =>
+			{
+				RenameMediaToCleanFileName(Media);
+			});
+
+			// Add to iTunes.
+			if(AddToiTunes)
+			{
+				Helper.RunWhenThreadAvailable(AddMediaToiTunesThreadAvailability, 1, () =>
+				{
+					AddMediaToiTunes(Media);
+				});
+			}
+
+			// If output directory not provided, delete file. Otherwise move to output directory.
+			if(OutputDirectory==null)
+			{
+				Helper.RunWhenThreadAvailable(DeleteMediaThreadAvailability, 1, () =>
+				{
+					DeleteMedia(Media);
+				});
+			}
+			else
+			{
+				Helper.RunWhenThreadAvailable(MoveMediaToOutputDirectoryThreadAvailability, 1, () =>
+				{
+					MoveMediaToOutputDirectory(Media);
+				});
+			}
 		}
 
 		private void CopyMediaToWorkingArea(IMedia Media)

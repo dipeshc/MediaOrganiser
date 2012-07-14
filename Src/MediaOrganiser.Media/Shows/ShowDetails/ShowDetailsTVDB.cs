@@ -12,7 +12,7 @@ namespace MediaOrganiser.Media.Shows.Details
 {
 	public class ShowDetailsTVDB : IShowDetailsBasic, IShowDetailsAdditional
 	{
-		private static Directory CacheDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), Assembly.GetExecutingAssembly().GetName().Name, "TVDBCache"));
+		private static Directory CacheDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), Assembly.GetExecutingAssembly().GetName().Name.Replace(".", FileSystem.DirectorySeperator.ToString()), "TVDBCache"));
 		private static TvdbHandler TVDB = new TvdbHandler(new XmlCacheProvider(CacheDirectory.FullName), "416920BF8A4C278C");
 
 		private String _ShowName;
