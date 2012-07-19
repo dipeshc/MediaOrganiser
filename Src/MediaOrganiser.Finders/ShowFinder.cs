@@ -37,19 +37,23 @@ namespace MediaOrganiser.Finders
 		{
 			this._InputPaths = InputPaths;
 			this._ExcludedPaths = ExcludedPaths;
-			this.InputShows = new List<IShow>(GetShowsAtPaths(InputPaths));
-			this.ExcludedShows = new List<IShow>(GetShowsAtPaths(ExcludedPaths));
 		}
 
 
 		public IEnumerable<IMedia> Scan()
 		{
-			Parallel.ForEach(Enumerable.Union<IMedia>(InputShows, ExcludedShows), Show =>
+			List<IShow> InputShowsTemp = new List<IShow>(GetShowsAtPaths(InputPaths));
+			List<IShow> ExcludedShowsTemp = new List<IShow>(GetShowsAtPaths(ExcludedPaths));
+
+			Parallel.ForEach(Enumerable.Union<IMedia>(InputShowsTemp, ExcludedShowsTemp), Show =>
 			{
 				Log.WriteLine("Extracting show details (not full) for {0}", Show.MediaFile.FullName);
 				Show.ExtractDetails(false);
 				Log.WriteLine("Extracted show details (not full) for {0}", Show.MediaFile.FullName);
 			});
+
+			this.InputShows = InputShowsTemp.FindAll(Show => Show.HasDetails);
+			this.ExcludedShows = ExcludedShowsTemp.FindAll(Show => Show.HasDetails);
 
 			return new List<IShow>(InputShows).FindAll(InputShow=>
 			{
