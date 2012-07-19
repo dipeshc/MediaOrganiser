@@ -11,13 +11,36 @@ using System.Collections.Generic;
 using MediaOrganiser.Media;
 using Apple.iTunes;
 
-namespace MediaOrganiser
+namespace MediaOrganiser.Organisers
 {
-	public class Organiser
+	public class Organiser : IOrganiser
 	{
-		private IDirectory OutputDirectory;
-		private Boolean AddToiTunes;
-		private IDirectory WorkingDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), Assembly.GetExecutingAssembly().GetName().Name, "WorkingArea"));
+		private IDirectory _OutputDirectory;
+		public IDirectory OutputDirectory
+		{
+			get
+			{
+				return _OutputDirectory;
+			}
+		}
+
+		private Boolean _AddToiTunes;
+		public Boolean AddToiTunes
+		{
+			get
+			{
+				return _AddToiTunes;
+			}
+		}
+
+		private IDirectory _WorkingDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), Assembly.GetExecutingAssembly().GetName().Name, "WorkingArea"));
+		public IDirectory WorkingDirectory
+		{
+			get
+			{
+				return _WorkingDirectory;
+			}
+		}
 
 		// ThreadAvailability for each action.
 		private LockableInt CopyMediaToWorkingAreaThreadAvailability = new LockableInt(1);
@@ -29,11 +52,11 @@ namespace MediaOrganiser
 		private LockableInt DeleteMediaThreadAvailability = new LockableInt(10);
 		private LockableInt MoveMediaToOutputDirectoryThreadAvailability = new LockableInt(5);
 
-		public Organiser (IDirectory OutputDirectory, Boolean Clean, Boolean AddToiTunes)
+		public Organiser (IDirectory OutputDirectory, Boolean AddToiTunes, Boolean Clean)
 		{
 			// Setup folders.
-			this.OutputDirectory = OutputDirectory;
-			this.AddToiTunes = AddToiTunes;
+			this._OutputDirectory = OutputDirectory;
+			this._AddToiTunes = AddToiTunes;
 
 			// Clean working directory if required.
 			if(Clean && WorkingDirectory.Parent.Exists)

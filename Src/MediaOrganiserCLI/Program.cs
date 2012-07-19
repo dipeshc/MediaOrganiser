@@ -5,18 +5,11 @@ using System.Collections.Generic;
 using CommandLine;
 using CommandLine.Text;
 using MediaOrganiser;
-using MediaOrganiser.Media;
-using MediaOrganiser.Finders;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Logging;
 
 namespace MediaOrganiserCLI
 {
 	class Program
 	{
-		private static Int32 DaemonModeThreadWaitTimeInMilliseconds = 5000;
-
 		private sealed class Options : CommandLineOptionsBase
         {
             [OptionList("i", "input", Required=true, Separator=',', HelpText = "The Input folders from which media will be found. Comma seperated for mutiple folders.")]
@@ -31,11 +24,11 @@ namespace MediaOrganiserCLI
 			[Option("a", "addToiTunes", Required=false, HelpText = "Adds the converted media to iTunes.")]
 			public Boolean AddToiTunes { get; set; }
 
-			[Option("e", "excludeiTunesMedia", Required=false, HelpText = "Adds the iTunes media location to the list of excludes.")]
+			[Option("x", "excludeiTunesMedia", Required=false, HelpText = "Adds the iTunes media location to the list of excludes.")]
             public Boolean ExcludeiTunesMedia { get; set; }
 
-			[Option("d", "daemon", Required=false, HelpText = "Runs the application as a daemon task.")]
-            public Boolean Daemon { get; set; }
+			[Option("w", "watcherMode", Required=false, HelpText = "Runs the application in watcher mode. The application will not exit, instead it wil continue to watch the input directories.")]
+            public Boolean WatcherMode { get; set; }
 
 			[Option("c", "clean", Required=false, HelpText = "Removes any temporary files and/or cache.")]
 			public Boolean Clean { get; set; }
@@ -60,16 +53,11 @@ namespace MediaOrganiserCLI
 			{
 				get
 				{
-					List<IPath> _ExcludedPaths = new List<IPath>();
-					if(OutputDirectory!=null)
+					if(Excludes==null)
 					{
-						_ExcludedPaths.Add(new Path(OutputDirectory.FullName));
+						return new List<IPath>();
 					}
-					if(ExcludeiTunesMedia)
-					{
-						_ExcludedPaths.Add(new Path(Apple.iTunes.Properties.RootMediaDirectory.FullName));
-					}
-					return _ExcludedPaths;
+					return Excludes.Select(aPath => new Path(aPath));
 				}
 			}
 
@@ -114,59 +102,21 @@ namespace MediaOrganiserCLI
                 Environment.Exit(1);
 			}
 
-			// Create organiser and finders.
-			Organiser Organiser = new Organiser(Options.OutputDirectory, Options.Clean, Options.AddToiTunes);
-			IMediaFinder ShowFinder = new ShowFinder(Options.InputPaths, Options.ExcludedPaths);
+			// Create media organiser.
+			MediaOrganiser.MediaOrganiser MediaOrganiser = new MediaOrganiser.MediaOrganiser(Options.InputPaths, Options.ExcludedPaths, Options.OutputDirectory, Options.AddToiTunes, Options.ExcludeiTunesMedia, Options.Clean);
 
 			// Check if need to run as daemon or one off.
-			if(Options.Daemon)
+			if(Options.WatcherMode)
 			{
-				RunAsDaemon(Organiser, ShowFinder);
+				MediaOrganiser.ExecuteInWatcherMode();
 			}
 			else
 			{
-				Organiser.Organise(ShowFinder.Scan());
+				MediaOrganiser.Execute();
 			}
 
 			// Exit 0.
 			Environment.Exit(0);
-		}
-
-		private static void RunAsDaemon(Organiser Organiser, IMediaFinder MediaFinder)
-		{
-			// Create queue.
-			Queue<IMedia> MediaToBeOrganised = new Queue<IMedia>();
-
-			// Create new thread to do inital scan and setup watchers.
-			(new Thread(() =>
-			{
-				MediaFinder.ScanAndWatch((Sender, Media) =>
-				{
-					Log.WriteLine("Enqueing {0}.", Media.MediaFile.FullName);
-					MediaToBeOrganised.Enqueue(Media);
-					Log.WriteLine("Enqueued {0}.", Media.MediaFile.FullName);
-				});
-			})
-			{
-				Name = "Scan and Watch Thread",
-				Priority = ThreadPriority.BelowNormal
-			}).Start();
-
-			// Run forever and take of queue as required.
-			while(true)
-			{
-				Log.WriteLine("Media queue length {0}.", MediaToBeOrganised.Count);
-				while(MediaToBeOrganised.Count!=0)
-				{
-					IMedia Media = MediaToBeOrganised.Dequeue();
-					Log.WriteLine("Organising {0}.", Media.MediaFile.FullName);
-					Organiser.Organise(Media);
-					Log.WriteLine("Organised {0}.", Media.MediaFile.FullName);
-
-				}
-				Log.WriteLine("Waiting...");
-				Thread.Sleep(DaemonModeThreadWaitTimeInMilliseconds);
-			}
 		}
 	}
 }
