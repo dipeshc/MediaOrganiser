@@ -82,10 +82,10 @@ namespace AtomicParsley
 				ShowName.Replace("\\", "\\\\").Replace("\"", "\\\""),
 				SeasonNumber,
 				EpisodeNumber,
-				EpisodeName.Replace("\\", "\\\\").Replace("\"", "\\\""),
+				EpisodeName==null?"":EpisodeName.Replace("\\", "\\\\").Replace("\"", "\\\""),
 				(AiredDate==null?"":((DateTime)AiredDate).ToString("u").Replace(" ", "T")),
-				Overview.Replace("\\", "\\\\").Replace("\"", "\\\""),
-				TVNetwork.Replace("\\", "\\\\").Replace("\"", "\\\""));
+				Overview==null?"":Overview.Replace("\\", "\\\\").Replace("\"", "\\\""),
+				TVNetwork==null?"":TVNetwork.Replace("\\", "\\\\").Replace("\"", "\\\""));
 
 			if(ArtworkPaths!=null)
 			{
