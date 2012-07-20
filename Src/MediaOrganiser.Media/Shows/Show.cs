@@ -190,7 +190,7 @@ namespace MediaOrganiser.Media.Shows
 		public void Convert()
 		{
 			// Create file for converted version of show.
-			IFile ConvertedMediaFile = new File(MediaFile.FullNameWithoutExtension + "." + OutputFileType);
+			IFile ConvertedMediaFile = new File(MediaFile.FullNameWithoutExtension + ".converted." + OutputFileType);
 
 			// Convert show.
 			Convertor.Convertor.ConvertForiPad(MediaFile, ConvertedMediaFile);

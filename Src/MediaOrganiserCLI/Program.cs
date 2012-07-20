@@ -27,6 +27,9 @@ namespace MediaOrganiserCLI
 			[Option("x", "excludeiTunesMedia", Required=false, HelpText = "Adds the iTunes media location to the list of excludes.")]
             public Boolean ExcludeiTunesMedia { get; set; }
 
+			[Option("f", "forceConversion", Required=false, HelpText = "Forces the conversion of all input media, even if the media is already in the correct format.")]
+            public Boolean ForceConversion { get; set; }
+
 			[Option("w", "watcherMode", Required=false, HelpText = "Runs the application in watcher mode. The application will not exit, instead it wil continue to watch the input directories.")]
             public Boolean WatcherMode { get; set; }
 
@@ -103,7 +106,7 @@ namespace MediaOrganiserCLI
 			}
 
 			// Create media organiser.
-			MediaOrganiser.MediaOrganiser MediaOrganiser = new MediaOrganiser.MediaOrganiser(Options.InputPaths, Options.ExcludedPaths, Options.OutputDirectory, Options.AddToiTunes, Options.ExcludeiTunesMedia, Options.Clean);
+			MediaOrganiser.MediaOrganiser MediaOrganiser = new MediaOrganiser.MediaOrganiser(Options.InputPaths, Options.ExcludedPaths, Options.OutputDirectory, Options.AddToiTunes, Options.ExcludeiTunesMedia, Options.ForceConversion, Options.Clean);
 
 			// Check if need to run as daemon or one off.
 			if(Options.WatcherMode)

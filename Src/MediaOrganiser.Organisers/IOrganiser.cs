@@ -9,6 +9,7 @@ namespace MediaOrganiser.Organisers
 	{
 		IDirectory OutputDirectory { get; }
 		Boolean AddToiTunes { get; }
+		Boolean ForceConversion { get; }
 		IDirectory WorkingDirectory { get; }
 
 		void Organise(IEnumerable<IMedia> Medias);

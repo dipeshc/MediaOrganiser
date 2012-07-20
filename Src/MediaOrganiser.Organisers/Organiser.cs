@@ -33,7 +33,16 @@ namespace MediaOrganiser.Organisers
 			}
 		}
 
-		private IDirectory _WorkingDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), Assembly.GetExecutingAssembly().GetName().Name, "WorkingArea"));
+		private Boolean _ForceConversion;
+		public Boolean ForceConversion
+		{
+			get
+			{
+				return _ForceConversion;
+			}
+		}
+
+		private IDirectory _WorkingDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), Assembly.GetExecutingAssembly().GetName().Name.Replace(".", FileSystem.DirectorySeperator.ToString()), "WorkingArea"));
 		public IDirectory WorkingDirectory
 		{
 			get
@@ -52,11 +61,12 @@ namespace MediaOrganiser.Organisers
 		private LockableInt DeleteMediaThreadAvailability = new LockableInt(10);
 		private LockableInt MoveMediaToOutputDirectoryThreadAvailability = new LockableInt(5);
 
-		public Organiser (IDirectory OutputDirectory, Boolean AddToiTunes, Boolean Clean)
+		public Organiser (IDirectory OutputDirectory, Boolean AddToiTunes, Boolean ForceConversion, Boolean Clean)
 		{
 			// Setup folders.
 			this._OutputDirectory = OutputDirectory;
 			this._AddToiTunes = AddToiTunes;
+			this._ForceConversion = ForceConversion;
 
 			// Clean working directory if required.
 			if(Clean && WorkingDirectory.Parent.Exists)
@@ -90,7 +100,7 @@ namespace MediaOrganiser.Organisers
 			});
 
 			// Convert if required.
-			if(Media.RequiresConversion)
+			if(ForceConversion || Media.RequiresConversion)
 			{
 				Helper.RunWhenThreadAvailable(ConvertMediaThreadAvailability, 1, () =>
 				{

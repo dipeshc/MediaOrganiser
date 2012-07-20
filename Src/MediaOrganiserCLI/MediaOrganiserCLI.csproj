@@ -21,7 +21,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
-    <Commandlineparameters>-a -e -w -i ~/Desktop/In/</Commandlineparameters>
+    <Commandlineparameters>-a -x -f -i ~/Desktop/Suits.S02E05.HDTV.x264-COMPULSiON.\[VTV\].mp4</Commandlineparameters>
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="rm -rf ${SolutionDir}/../Output; mkdir ${SolutionDir}/../Output; mono ${SolutionDir}/../Build/ILRepack.exe /out:${SolutionDir}/../Output/MediaOrganiserCLI.exe MediaOrganiserCLI.exe *.dll" workingdir="${TargetDir}" externalConsole="true" pauseExternalConsole="true" />
