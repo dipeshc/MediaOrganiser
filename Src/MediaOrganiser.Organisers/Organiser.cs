@@ -2,10 +2,10 @@ using System;
 using System.Linq;
 using System.Files;
 using System.Logging;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Helpers;
+using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using MediaOrganiser.Media;
@@ -61,18 +61,12 @@ namespace MediaOrganiser.Organisers
 		private LockableInt DeleteMediaThreadAvailability = new LockableInt(10);
 		private LockableInt MoveMediaToOutputDirectoryThreadAvailability = new LockableInt(5);
 
-		public Organiser (IDirectory OutputDirectory, Boolean AddToiTunes, Boolean ForceConversion, Boolean Clean)
+		public Organiser (IDirectory OutputDirectory, Boolean AddToiTunes, Boolean ForceConversion)
 		{
 			// Setup folders.
 			this._OutputDirectory = OutputDirectory;
 			this._AddToiTunes = AddToiTunes;
 			this._ForceConversion = ForceConversion;
-
-			// Clean working directory if required.
-			if(Clean && WorkingDirectory.Parent.Exists)
-			{
-				WorkingDirectory.Parent.Delete(true);
-			}
 
 			// Create working directory if it does not exist.
 			if(!WorkingDirectory.Exists)

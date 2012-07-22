@@ -1,9 +1,11 @@
 using System;
 using System.Files;
 using System.Logging;
-using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using MediaOrganiser.Media;
 using MediaOrganiser.Finders;
 using MediaOrganiser.Organisers;
@@ -29,8 +31,14 @@ namespace MediaOrganiser
 				_ExcludedPaths.Add(new Path(Apple.iTunes.Properties.RootMediaDirectory.FullName));
 			}
 
+			// Clean.
+			if(Clean)
+			{
+				new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), Assembly.GetExecutingAssembly().GetName().Name)).Delete(true);
+			}
+
 			// Create organiser and finders.
-			Organiser = new Organiser(OutputDirectory, AddToiTunes, ForceConversion, Clean);
+			Organiser = new Organiser(OutputDirectory, AddToiTunes, ForceConversion);
 			MediaFinder = new ShowFinder(InputPaths, _ExcludedPaths);
 		}
 
@@ -59,17 +67,20 @@ namespace MediaOrganiser
 				Priority = ThreadPriority.Normal
 			}).Start();
 
-			// Run forever and take of queue as required.
+			// Run forever and take off queue as required.
 			while(true)
 			{
 				Log.WriteLine("Media queue length {0}.", MediaToBeOrganised.Count);
 				while(MediaToBeOrganised.Count!=0)
 				{
-					IMedia Media = MediaToBeOrganised.Dequeue();
-					Log.WriteLine("Organising {0}.", Media.MediaFile.FullName);
-					Organiser.Organise(Media);
-					Log.WriteLine("Organised {0}.", Media.MediaFile.FullName);
-
+					Parallel.For(0, MediaToBeOrganised.Count, LoopNumber =>
+					{
+						IMedia Media = MediaToBeOrganised.Dequeue();
+						Log.WriteLine("Media queue length {0}.", MediaToBeOrganised.Count);
+						Log.WriteLine("Organising {0}.", Media.MediaFile.FullName);
+						Organiser.Organise(Media);
+						Log.WriteLine("Organised {0}.", Media.MediaFile.FullName);
+					});
 				}
 				Log.WriteLine("Waiting...");
 				Thread.Sleep(DaemonModeThreadWaitTimeInMilliseconds);

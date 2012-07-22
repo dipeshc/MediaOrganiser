@@ -128,19 +128,35 @@ namespace MediaOrganiser.Media.Shows.Details
 				true
 			);
 
-			// Get banners
-			TvdbBanner SeriesBanner = Series.SeriesBanners.FirstOrDefault();
-			TvdbBanner SeasonBanner = Series.SeasonBanners.Where(B=>B.Season==ShowDetailsBasic.SeasonNumber).FirstOrDefault();
-			if(SeriesBanner!=null)
+			// Get episode details and banners.
+			TvdbEpisode Episode  = null;
+			TvdbBanner Banner = null;
+			if(ShowDetailsBasic.SeasonNumber == null)
 			{
-				SeriesBanner.LoadBanner();
-			}
-			if(SeasonBanner!=null)
-			{
-				SeasonBanner.LoadBanner();
-			}
+				// Get episode details.
+				Episode = Series.GetEpisodesAbsoluteOrder().FindAll(E=>E.IsSpecial==false)[(Int32)ShowDetailsBasic.EpisodeNumber - 1];
 
-			TvdbEpisode Episode = Series.GetEpisodes(ShowDetailsBasic.SeasonNumber ?? 0).Find(anEpisode => anEpisode.EpisodeNumber == ShowDetailsBasic.EpisodeNumber);
+				// Poster banner.
+				TvdbBanner PosterBanner = Series.PosterBanners.FirstOrDefault();
+				if(Banner == null && PosterBanner!=null)
+				{
+					PosterBanner.LoadBanner();
+					Banner = PosterBanner;
+				}
+			}
+			else
+			{
+				// Get episode details.
+				Episode = Series.GetEpisodes(ShowDetailsBasic.SeasonNumber ?? 0).Find(anEpisode => anEpisode.EpisodeNumber == ShowDetailsBasic.EpisodeNumber);
+			
+				// Season banner;
+				TvdbBanner SeasonBanner = Series.SeasonBanners.Where(B=>B.Season==ShowDetailsBasic.SeasonNumber).FirstOrDefault();
+				if(SeasonBanner!=null)
+				{
+					SeasonBanner.LoadBanner();
+					Banner = SeasonBanner;
+				}
+			}
 
 			// Set details.
 			_ShowName = Series.SeriesName;
@@ -150,7 +166,7 @@ namespace MediaOrganiser.Media.Shows.Details
 			_AiredDate = Episode.FirstAired;
 			_Overview = Episode.Overview;
 			_TVNetwork = Series.Network;
-			_Artworks = (SeriesBanner==null&&SeasonBanner==null)?null:new List<IFile> {GetBannerCacheFile(SeriesBanner), GetBannerCacheFile(SeasonBanner)};
+			_Artworks = (Banner==null)?null:new List<IFile> {GetBannerCacheFile(Banner)};
 			_HasDetails = true;
 			return true;
 		}

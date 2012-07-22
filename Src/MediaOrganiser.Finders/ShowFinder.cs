@@ -103,7 +103,7 @@ namespace MediaOrganiser.Finders
 			}
 
 			// Run handler on inital scan.
-			new List<IMedia>(Scan()).ForEach(Show=>
+			new List<IMedia>(Scan()).ForEach(Show =>
 			{
 				Handler.Invoke(this, Show);
 			});

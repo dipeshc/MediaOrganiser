@@ -193,7 +193,7 @@ namespace MediaOrganiser.Media.Shows
 			IFile ConvertedMediaFile = new File(MediaFile.FullNameWithoutExtension + ".converted." + OutputFileType);
 
 			// Convert show.
-			Convertor.Convertor.ConvertForiPad(MediaFile, ConvertedMediaFile);
+			Convertor.Convertor.ConvertForRetina(MediaFile, ConvertedMediaFile);
 
 			// Delete old file and assign the new converted file to the show.
 			IFile OldFile = MediaFile;
