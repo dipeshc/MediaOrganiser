@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using CommandLine;
 using CommandLine.Text;
 using MediaOrganiser;
+using MediaOrganiser.Media;
 
 namespace MediaOrganiserCLI
 {
@@ -26,6 +27,9 @@ namespace MediaOrganiserCLI
 
 			[Option("x", "excludeiTunesMedia", Required=false, HelpText = "Adds the iTunes media location to the list of excludes.")]
             public Boolean ExcludeiTunesMedia { get; set; }
+
+			[Option("q", "quality", Required=false, HelpText = "Specifies the level of quality to convert the files. Possible values are High, Medium, Low, and Default.")]
+			public String Quality { get; set; }
 
 			[Option("f", "forceConversion", Required=false, HelpText = "Forces the conversion of all input media, even if the media is already in the correct format.")]
             public Boolean ForceConversion { get; set; }
@@ -61,6 +65,24 @@ namespace MediaOrganiserCLI
 						return new List<IPath>();
 					}
 					return Excludes.Select(aPath => new Path(aPath));
+				}
+			}
+
+			public MediaQuality MediaQuality
+			{
+				get
+				{
+					switch(Quality.ToLower())
+					{
+						case "high":
+							return MediaQuality.High;
+						case "medium":
+							return MediaQuality.Medium;
+						case "low":
+							return MediaQuality.Low;
+						default:
+							return MediaQuality.Default;
+					}
 				}
 			}
 
@@ -106,7 +128,7 @@ namespace MediaOrganiserCLI
 			}
 
 			// Create media organiser.
-			MediaOrganiser.MediaOrganiser MediaOrganiser = new MediaOrganiser.MediaOrganiser(Options.InputPaths, Options.ExcludedPaths, Options.OutputDirectory, Options.AddToiTunes, Options.ExcludeiTunesMedia, Options.ForceConversion, Options.Clean);
+			MediaOrganiser.MediaOrganiser MediaOrganiser = new MediaOrganiser.MediaOrganiser(Options.InputPaths, Options.ExcludedPaths, Options.OutputDirectory, Options.AddToiTunes, Options.ExcludeiTunesMedia, Options.MediaQuality, Options.ForceConversion, Options.Clean);
 
 			// Check if need to run as daemon or one off.
 			if(Options.WatcherMode)

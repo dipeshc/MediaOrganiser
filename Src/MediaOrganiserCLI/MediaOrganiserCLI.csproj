@@ -66,6 +66,10 @@
       <Project>{F15396F9-463B-4407-8C87-2F464902382A}</Project>
       <Name>Apple.iTunes</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MediaOrganiser.Media\MediaOrganiser.Media.csproj">
+      <Project>{74BB1CC6-9E2C-4BDA-BEC3-F40EC694E187}</Project>
+      <Name>MediaOrganiser.Media</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Externals\" />

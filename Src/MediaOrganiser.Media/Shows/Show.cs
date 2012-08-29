@@ -187,13 +187,28 @@ namespace MediaOrganiser.Media.Shows
 			}
 		}
 
-		public void Convert()
+		public void Convert(MediaQuality MediaQuality)
 		{
 			// Create file for converted version of show.
 			IFile ConvertedMediaFile = new File(MediaFile.FullNameWithoutExtension + ".converted." + OutputFileType);
 
 			// Convert show.
-			Convertor.Convertor.ConvertForRetina(MediaFile, ConvertedMediaFile);
+			if(MediaQuality==MediaQuality.High)
+			{
+				Convertor.Convertor.Convert(MediaFile, ConvertedMediaFile, Convertor.Convertor.Quality.Retina);
+			}
+			else if(MediaQuality==MediaQuality.Medium)
+			{
+				Convertor.Convertor.Convert(MediaFile, ConvertedMediaFile, Convertor.Convertor.Quality.iPad);
+			}
+			else if(MediaQuality==MediaQuality.Low)
+			{
+				Convertor.Convertor.Convert(MediaFile, ConvertedMediaFile, Convertor.Convertor.Quality.iPhone);
+			}
+			else
+			{
+				Convertor.Convertor.Convert(MediaFile, ConvertedMediaFile, Convertor.Convertor.Quality.Default);
+			}
 
 			// Delete old file and assign the new converted file to the show.
 			IFile OldFile = MediaFile;

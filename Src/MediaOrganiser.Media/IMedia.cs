@@ -3,6 +3,14 @@ using System.Files;
 
 namespace MediaOrganiser.Media
 {
+	public enum MediaQuality
+	{
+		Default,
+		Low,
+		Medium,
+		High
+	}
+
 	public interface IMedia
 	{
 		IFile MediaFile { get ; set; }
@@ -15,7 +23,7 @@ namespace MediaOrganiser.Media
 		void SaveDetails();
 
 		Boolean RequiresConversion { get; }
-		void Convert();
+		void Convert(MediaQuality MediaQuality);
 	}
 }
 

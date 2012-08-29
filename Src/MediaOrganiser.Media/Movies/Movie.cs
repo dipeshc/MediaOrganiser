@@ -87,13 +87,13 @@ namespace MediaOrganiser.Media.Movies
 			}
 		}
 
-		public void Convert()
+		public void Convert(MediaQuality Quality)
 		{
 			// Create file for converted version of show.
 			IFile ConvertedMediaFile = new File(MediaFile.FullNameWithoutExtension + "." + OutputFileType);
 
 			// Convert show.
-			Convertor.Convertor.ConvertForiPad(MediaFile, ConvertedMediaFile);
+			Convertor.Convertor.Convert(MediaFile, ConvertedMediaFile, Convertor.Convertor.Quality.Default);
 
 			// Delete old file and assign the new converted file to the show.
 			IFile OldFile = MediaFile;

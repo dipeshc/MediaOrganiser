@@ -18,7 +18,7 @@ namespace MediaOrganiser
 		private IOrganiser Organiser;
 		private IMediaFinder MediaFinder;
 
-		public MediaOrganiser(IEnumerable<IPath> InputPaths, IEnumerable<IPath> ExcludedPaths, IDirectory OutputDirectory, Boolean AddToiTunes, Boolean ExcludeiTunesMedia, Boolean ForceConversion, Boolean Clean)
+		public MediaOrganiser(IEnumerable<IPath> InputPaths, IEnumerable<IPath> ExcludedPaths, IDirectory OutputDirectory, Boolean AddToiTunes, Boolean ExcludeiTunesMedia, MediaQuality MediaQuality, Boolean ForceConversion, Boolean Clean)
 		{
 			// Colsoliate arguments.
 			List<IPath> _ExcludedPaths = new List<IPath>(ExcludedPaths);
@@ -38,7 +38,7 @@ namespace MediaOrganiser
 			}
 
 			// Create organiser and finders.
-			Organiser = new Organiser(OutputDirectory, AddToiTunes, ForceConversion);
+			Organiser = new Organiser(OutputDirectory, AddToiTunes, MediaQuality, ForceConversion);
 			MediaFinder = new ShowFinder(InputPaths, _ExcludedPaths);
 		}
 

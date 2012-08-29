@@ -42,6 +42,15 @@ namespace MediaOrganiser.Organisers
 			}
 		}
 
+		private MediaQuality _MediaQuality;
+		public MediaQuality MediaQuality
+		{
+			get
+			{
+				return _MediaQuality;
+			}
+		}
+
 		private IDirectory _WorkingDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), Assembly.GetExecutingAssembly().GetName().Name.Replace(".", FileSystem.DirectorySeperator.ToString()), "WorkingArea"));
 		public IDirectory WorkingDirectory
 		{
@@ -61,11 +70,12 @@ namespace MediaOrganiser.Organisers
 		private LockableInt DeleteMediaThreadAvailability = new LockableInt(10);
 		private LockableInt MoveMediaToOutputDirectoryThreadAvailability = new LockableInt(5);
 
-		public Organiser (IDirectory OutputDirectory, Boolean AddToiTunes, Boolean ForceConversion)
+		public Organiser (IDirectory OutputDirectory, Boolean AddToiTunes, MediaQuality MediaQuality, Boolean ForceConversion)
 		{
 			// Setup folders.
 			this._OutputDirectory = OutputDirectory;
 			this._AddToiTunes = AddToiTunes;
+			this._MediaQuality = MediaQuality;
 			this._ForceConversion = ForceConversion;
 
 			// Create working directory if it does not exist.
@@ -161,7 +171,7 @@ namespace MediaOrganiser.Organisers
 		private void ConvertMedia(IMedia Media)
 		{
 			Log.WriteLine("Starting media conversion. {0}", Media.MediaFile.FullName);
-			Media.Convert();
+			Media.Convert(MediaQuality);
 			Log.WriteLine("Converted media. {0}", Media.MediaFile.FullName);
 		}
 
