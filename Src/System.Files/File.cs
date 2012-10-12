@@ -111,6 +111,11 @@ namespace System.Files
 		{
 			theFile.Delete();
 		}
+
+		public override string ToString()
+		{
+			return theFile.ToString();
+		}
 	}
 }
 

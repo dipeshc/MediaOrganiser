@@ -21,7 +21,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>True</Externalconsole>
-    <Commandlineparameters>-a -i ~/Desktop/In/ -o ~/Desktop/Out</Commandlineparameters>
+    <Commandlineparameters>-o ~/Desktop/TEMP/ -i ~/Music/iTunes/iTunes\ Media/TV\ Shows/NCIS/</Commandlineparameters>
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="rm -rf ${SolutionDir}/../Output; mkdir ${SolutionDir}/../Output; mono ${SolutionDir}/../Build/ILRepack.exe /out:${SolutionDir}/../Output/MediaOrganiserCLI.exe MediaOrganiserCLI.exe *.dll" workingdir="${TargetDir}" externalConsole="True" pauseExternalConsole="True" />

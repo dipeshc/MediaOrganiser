@@ -182,7 +182,7 @@ namespace MediaOrganiser.Organisers
 		private void RenameMediaToCleanFileName(IMedia Media)
 		{
 			Log.WriteLine("Renaming media. {0}", Media.MediaFile.FullName);
-			IFile OrganisedMediaFile = new File(FileSystem.PathCombine(WorkingDirectory.FullName, Media.OrganisedMediaFile.FullName));
+			IFile OrganisedMediaFile = new File(FileSystem.PathCombine(WorkingDirectory.FullName, Media.OrganisedMediaFile.Name));
 			Media.MediaFile.MoveTo(OrganisedMediaFile.FullName, true);
 			Log.WriteLine("Renamed media. {0}", Media.MediaFile.FullName);
 		}
@@ -205,7 +205,7 @@ namespace MediaOrganiser.Organisers
 		private void MoveMediaToOutputDirectory(IMedia Media)
 		{
 			Log.WriteLine("Copying media to output directory. {0}", Media.MediaFile.FullName);
-			IFile OrganisedFile = new File(FileSystem.PathCombine(OutputDirectory.FullName, Media.OrganisedMediaFile.FullName));
+			IFile OrganisedFile = new File(FileSystem.PathCombine(OutputDirectory.FullName, Media.OrganisedMediaFile.ToString()));
 			if(!OrganisedFile.Directory.Exists)
 			{
 				OrganisedFile.Directory.Create();
