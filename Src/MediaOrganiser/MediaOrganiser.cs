@@ -18,15 +18,15 @@ namespace MediaOrganiser
 		private IOrganiser Organiser;
 		private IMediaFinder MediaFinder;
 
-		public MediaOrganiser(IEnumerable<IPath> InputPaths, IEnumerable<IPath> ExcludedPaths, IDirectory OutputDirectory, Boolean AddToiTunes, Boolean ExcludeiTunesMedia, Boolean ForceConversion, Boolean Clean)
+		public MediaOrganiser(IEnumerable<IPath> InputPaths, IEnumerable<IPath> ExcludedPaths, IDirectory OutputDirectory, Boolean AddToiTunes, Boolean ExcludeExisting, Boolean ForceConversion, Boolean Clean)
 		{
 			// Colsoliate arguments.
 			List<IPath> _ExcludedPaths = new List<IPath>(ExcludedPaths);
-			if(OutputDirectory!=null)
+			if(OutputDirectory!=null && ExcludeExisting)
 			{
 				_ExcludedPaths.Add(new Path(OutputDirectory.FullName));
 			}
-			if(ExcludeiTunesMedia)
+			if(AddToiTunes && ExcludeExisting)
 			{
 				_ExcludedPaths.Add(new Path(Apple.iTunes.Properties.RootMediaDirectory.FullName));
 			}

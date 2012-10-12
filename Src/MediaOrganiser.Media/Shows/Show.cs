@@ -18,14 +18,7 @@ namespace MediaOrganiser.Media.Shows
 		private ShowDetailsTVDB ShowDetailsTVDB = new ShowDetailsTVDB();
 		private ShowDetailsAtomic ShowDetailsAtomic = new ShowDetailsAtomic();
 
-		private static String _OutputFileType = "mp4";
-		public String OutputFileType
-		{
-			get
-			{
-				return _OutputFileType;
-			}
-		}
+		private static String OrganisedFileType = "mp4";
 
 		public Boolean HasDetails
 		{
@@ -111,7 +104,7 @@ namespace MediaOrganiser.Media.Shows
 		{
 			get
 			{
-				return (MediaFile.Extension.ToLower() != "."+OutputFileType);
+				return (MediaFile.Extension.ToLower() != "."+OrganisedFileType);
 			}
 		}
 
@@ -156,41 +149,49 @@ namespace MediaOrganiser.Media.Shows
 			AtomicParsley.AtomicParsley.SetDetails(MediaFile.FullName, ShowName, SeasonNumber, EpisodeNumber, EpisodeName, AiredDate, Overview, TVNetwork, Artworks==null?null:Artworks.Select(A=>A.FullName));
 		}
 
-		public String CleanFileName
+		public IFile OrganisedMediaFile
 		{
 			get
 			{
+				String ShowFilePath = "";
 				String ShowFileName = "";
-	
+				
 				// Add show name.
-				ShowFileName +=  ShowDetailsBasic.ShowName + " - ";
-	
+				ShowFilePath += ShowDetailsBasic.ShowName;
+				ShowFileName += ShowDetailsBasic.ShowName + " - ";
+				
 				// Add season number.
 				if(ShowDetailsBasic.SeasonNumber!=null)
 				{
+					ShowFilePath = FileSystem.PathCombine(ShowFilePath, String.Format("Season {0}", ShowDetailsBasic.SeasonNumber));
 					ShowFileName += String.Format("S{0:D2}", ShowDetailsBasic.SeasonNumber); 
 				}
-	
+				
 				// Add episode number.
 				ShowFileName += String.Format("E{0:D2}", ShowDetailsBasic.EpisodeNumber);
-	
+				
 				// Add epsisode name.
 				if(HasFullDetails && ShowDetailsAdditional.EpisodeName != null)
 				{
 					ShowFileName += " - "+ShowDetailsAdditional.EpisodeName;
 				}
-	
+				
 				// Add extension.
 				ShowFileName += MediaFile.Extension;
-	
-				return ShowFileName;
+				
+				// Sanitise.
+				ShowFilePath = ShowFilePath.Trim(FileSystem.GetInvalidPathChars());
+				ShowFileName = ShowFileName.Trim(FileSystem.GetInvalidFileNameChars());
+				
+				// Return the full file path.
+				return new File(FileSystem.PathCombine(ShowFilePath, ShowFileName));
 			}
 		}
 
 		public void Convert()
 		{
 			// Create file for converted version of show.
-			IFile ConvertedMediaFile = new File(MediaFile.FullNameWithoutExtension + ".converted." + OutputFileType);
+			IFile ConvertedMediaFile = new File(MediaFile.FullNameWithoutExtension + ".converted." + OrganisedFileType);
 
 			// Convert show.
 			Convertor.Convertor.ConvertForRetina(MediaFile, ConvertedMediaFile);

@@ -10,6 +10,7 @@ namespace System.Files
 		String NameWithoutExtension { get; }
 		String FullNameWithoutExtension { get; }
 		Boolean Exists { get ; }
+		long Length { get; }
 		IDirectory Directory { get; }
 		void Create();
 		void CopyTo(IFile CopyToFile, Boolean Overwrite=false);
@@ -17,4 +18,3 @@ namespace System.Files
 		void Delete();
 	}
 }
-

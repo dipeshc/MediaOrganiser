@@ -11,8 +11,8 @@ namespace System.Files
 		IDirectory Parent { get; }
 		void Create();
 		void Delete(Boolean Recursive);
+		IEnumerable<IDirectory> GetSubdirectories(String SearchPattern);
 		IEnumerable<IFile> GetFilesInTopDirectoryOnly(String SearchPattern);
 		IEnumerable<IFile> GetFilesInAllDirectories(String SearchPattern);
 	}
 }
-

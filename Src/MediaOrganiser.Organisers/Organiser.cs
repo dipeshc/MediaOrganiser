@@ -52,14 +52,14 @@ namespace MediaOrganiser.Organisers
 		}
 
 		// ThreadAvailability for each action.
-		private LockableInt CopyMediaToWorkingAreaThreadAvailability = new LockableInt(1);
+		private LockableInt CopyMediaToWorkingAreaThreadAvailability = new LockableInt(4);
 		private LockableInt ConvertMediaThreadAvailability = new LockableInt(1);
 		private LockableInt ExtractExhaustiveMediaDetailsThreadAvailability = new LockableInt(1);
-		private LockableInt SaveMediaMetaDataThreadAvailability = new LockableInt(2);
-		private LockableInt RenameMediaToCleanNameThreadAvailability = new LockableInt(5);
+		private LockableInt SaveMediaMetaDataThreadAvailability = new LockableInt(4);
+		private LockableInt RenameMediaToCleanNameThreadAvailability = new LockableInt(4);
 		private LockableInt AddMediaToiTunesThreadAvailability = new LockableInt(1);
 		private LockableInt DeleteMediaThreadAvailability = new LockableInt(10);
-		private LockableInt MoveMediaToOutputDirectoryThreadAvailability = new LockableInt(5);
+		private LockableInt MoveMediaToOutputDirectoryThreadAvailability = new LockableInt(4);
 
 		public Organiser (IDirectory OutputDirectory, Boolean AddToiTunes, Boolean ForceConversion)
 		{
@@ -182,7 +182,8 @@ namespace MediaOrganiser.Organisers
 		private void RenameMediaToCleanFileName(IMedia Media)
 		{
 			Log.WriteLine("Renaming media. {0}", Media.MediaFile.FullName);
-			Media.MediaFile.MoveTo(FileSystem.PathCombine(WorkingDirectory.FullName, Media.CleanFileName), true);
+			IFile OrganisedMediaFile = new File(FileSystem.PathCombine(WorkingDirectory.FullName, Media.OrganisedMediaFile.FullName));
+			Media.MediaFile.MoveTo(OrganisedMediaFile.FullName, true);
 			Log.WriteLine("Renamed media. {0}", Media.MediaFile.FullName);
 		}
 
@@ -204,7 +205,12 @@ namespace MediaOrganiser.Organisers
 		private void MoveMediaToOutputDirectory(IMedia Media)
 		{
 			Log.WriteLine("Copying media to output directory. {0}", Media.MediaFile.FullName);
-			Media.MediaFile.MoveTo(FileSystem.PathCombine(OutputDirectory.FullName, Media.MediaFile.Name));
+			IFile OrganisedFile = new File(FileSystem.PathCombine(OutputDirectory.FullName, Media.OrganisedMediaFile.FullName));
+			if(!OrganisedFile.Directory.Exists)
+			{
+				OrganisedFile.Directory.Create();
+			}
+			Media.MediaFile.MoveTo(OrganisedFile.FullName);
 			Log.WriteLine("Copied media to output directory. {0}", Media.MediaFile.FullName);
 		}
 	}

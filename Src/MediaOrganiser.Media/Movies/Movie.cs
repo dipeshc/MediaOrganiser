@@ -10,12 +10,12 @@ namespace MediaOrganiser.Media.Movies
 	{
 		public IFile MediaFile { get; set; }
 
-		private static String _OutputFileType = "mp4";
-		public String OutputFileType
+		private static String _OrganisedFileType = "mp4";
+		public String OrganisedFileType
 		{
 			get
 			{
-				return _OutputFileType;
+				return _OrganisedFileType;
 			}
 		}
 
@@ -57,7 +57,7 @@ namespace MediaOrganiser.Media.Movies
 		{
 			get
 			{
-				return (MediaFile.Extension.ToLower() != "."+OutputFileType);
+				return (MediaFile.Extension.ToLower() != "."+OrganisedFileType);
 			}
 		}
 
@@ -78,19 +78,19 @@ namespace MediaOrganiser.Media.Movies
 			//AtomicParsley.AtomicParsley.SetDetails(MediaFile.FullName, ShowName, SeasonNumber, EpisodeNumber, EpisodeName, AiredDate, Overview, TVNetwork);
 		}
 
-		public String CleanFileName
+		public IFile OrganisedMediaFile
 		{
 			get
 			{
 				// TODO.
-				return "";
+				return null;
 			}
 		}
 
 		public void Convert()
 		{
 			// Create file for converted version of show.
-			IFile ConvertedMediaFile = new File(MediaFile.FullNameWithoutExtension + "." + OutputFileType);
+			IFile ConvertedMediaFile = new File(MediaFile.FullNameWithoutExtension + "." + OrganisedFileType);
 
 			// Convert show.
 			Convertor.Convertor.ConvertForiPad(MediaFile, ConvertedMediaFile);

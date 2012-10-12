@@ -6,8 +6,7 @@ namespace MediaOrganiser.Media
 	public interface IMedia
 	{
 		IFile MediaFile { get ; set; }
-		String OutputFileType { get; }
-		String CleanFileName { get; }
+		IFile OrganisedMediaFile { get; }
 
 		Boolean ExtractDetails(Boolean GetFullDetails=true);
 		Boolean HasDetails { get; }

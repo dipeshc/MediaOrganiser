@@ -69,6 +69,14 @@ namespace System.Files
 			}
 		}
 
+		public long Length
+		{
+			get
+			{
+				return theFile.Length;
+			}
+		}
+
 		public IDirectory Directory
 		{
 			get

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace System.Files
 {
@@ -63,6 +64,11 @@ namespace System.Files
 		public void Delete(Boolean Recursive)
 		{
 			theDirectory.Delete(Recursive);
+		}
+
+		public IEnumerable<IDirectory> GetSubdirectories(String SearchPattern)
+		{
+			return theDirectory.GetDirectories(SearchPattern).ToList().Select(D => (IDirectory) new Directory(D));//.ForEach(D => Subdirectories.Add(new Directory(D)));
 		}
 
 		public IEnumerable<IFile> GetFilesInTopDirectoryOnly(String SearchPattern)

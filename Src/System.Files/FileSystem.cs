@@ -38,6 +38,16 @@ namespace System.Files
 				return System.IO.Path.DirectorySeparatorChar;
 			}
 		}
+
+		public static char[] GetInvalidFileNameChars()
+		{
+			return System.IO.Path.GetInvalidFileNameChars();
+		}
+
+		public static char[] GetInvalidPathChars()
+		{
+			return System.IO.Path.GetInvalidPathChars();
+		}
 	}
 }
 
