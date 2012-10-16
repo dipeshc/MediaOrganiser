@@ -115,17 +115,17 @@ namespace MediaOrganiser.Media.Shows
 
 		public Boolean ExtractDetails(Boolean DoExhaustiveExtraction=true)
 		{
-			// 1) Try getting directly from file meta data.
-			if(ShowDetailsAtomic.HasDetails || ShowDetailsAtomic.ExtractDetails(MediaFile))
+			// 1) Try getting from file name.
+			if(ShowDetailsRegex.HasDetails || ShowDetailsRegex.ExtractDetails(MediaFile.Name))
+			{
+				ShowDetailsBasic = ShowDetailsRegex;
+			}
+
+			// 2) If DoExhaustiveExtraction set then try getting directly from file meta data.
+			if(DoExhaustiveExtraction && (ShowDetailsAtomic.HasDetails || ShowDetailsAtomic.ExtractDetails(MediaFile)))
 			{
 				ShowDetailsBasic = ShowDetailsAtomic;
 				ShowDetailsAdditional = ShowDetailsAtomic;
-			}
-
-			// 2) If unable to get from file metadata then try getting from file name.
-			if(!HasDetails && (ShowDetailsRegex.HasDetails || ShowDetailsRegex.ExtractDetails(MediaFile.Name)))
-			{
-				ShowDetailsBasic = ShowDetailsRegex;
 			}
 
 			// 3) If HasDetails and DoExhaustiveExtraction then try getting additional details from online.
