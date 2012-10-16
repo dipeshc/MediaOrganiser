@@ -45,6 +45,9 @@
       <HintPath>Externals\CommandLine.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Files">
+      <HintPath>..\_bin_deployableAssemblies\System.Files.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -54,10 +57,6 @@
     <ProjectReference Include="..\MediaOrganiser\MediaOrganiser.csproj">
       <Project>{039420CF-CF63-421A-8EFC-71109C909D30}</Project>
       <Name>MediaOrganiser</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\System.Files\System.Files.csproj">
-      <Project>{E7EB41D8-6079-4BCA-BC6B-8EA46489B60F}</Project>
-      <Name>System.Files</Name>
     </ProjectReference>
     <ProjectReference Include="..\MediaOrganiser.Organisers\MediaOrganiser.Organisers.csproj">
       <Project>{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}</Project>

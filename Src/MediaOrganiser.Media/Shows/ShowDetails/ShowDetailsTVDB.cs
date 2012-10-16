@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Files;
+using System.Files.Interfaces;
 using System.Reflection;
 using System.Collections.Generic;
 using TvdbLib;

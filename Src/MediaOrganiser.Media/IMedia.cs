@@ -1,5 +1,5 @@
 using System;
-using System.Files;
+using System.Files.Interfaces;
 
 namespace MediaOrganiser.Media
 {

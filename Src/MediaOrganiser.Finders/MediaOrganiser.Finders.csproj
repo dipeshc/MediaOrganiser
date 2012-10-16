@@ -36,10 +36,6 @@
     <Compile Include="ShowFinder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\System.Files\System.Files.csproj">
-      <Project>{E7EB41D8-6079-4BCA-BC6B-8EA46489B60F}</Project>
-      <Name>System.Files</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MediaOrganiser.Media\MediaOrganiser.Media.csproj">
       <Project>{74BB1CC6-9E2C-4BDA-BEC3-F40EC694E187}</Project>
       <Name>MediaOrganiser.Media</Name>
@@ -52,5 +48,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Files">
+      <HintPath>..\_bin_deployableAssemblies\System.Files.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

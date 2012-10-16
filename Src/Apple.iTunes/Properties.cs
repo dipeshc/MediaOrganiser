@@ -1,5 +1,6 @@
 using System;
 using System.Files;
+using System.Files.Interfaces;
 
 namespace Apple.iTunes
 {

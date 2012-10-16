@@ -36,12 +36,9 @@
     <Compile Include="Properties.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\System.Files\System.Files.csproj">
-      <Project>{E7EB41D8-6079-4BCA-BC6B-8EA46489B60F}</Project>
-      <Name>System.Files</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Files">
+      <HintPath>..\_bin_deployableAssemblies\System.Files.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
