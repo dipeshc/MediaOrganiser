@@ -8,7 +8,7 @@
     <ProjectGuid>{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>MediaOrganiser.Organisers</RootNamespace>
-    <AssemblyName>MediaOrganiser.Organisers</AssemblyName>
+    <AssemblyName>MediaOrganiser.Core</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>True</DebugSymbols>
