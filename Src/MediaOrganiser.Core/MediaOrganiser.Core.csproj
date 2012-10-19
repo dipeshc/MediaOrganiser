@@ -48,6 +48,8 @@
     <Compile Include="Media\Shows\ShowDetails\ShowDetailsTVDB.cs" />
     <Compile Include="Convertor\Convertor.cs" />
     <Compile Include="Convertor\Externals\HandBrake.cs" />
+    <Compile Include="Finders\IMediaFinder.cs" />
+    <Compile Include="Finders\ShowFinder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Core" />
@@ -63,6 +65,7 @@
   <ItemGroup>
     <Folder Include="Media\" />
     <Folder Include="Convertor\" />
+    <Folder Include="Finders\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Convertor\Externals\HandBrakeCLI.exe" />
