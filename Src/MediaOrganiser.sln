@@ -1,23 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiser", "MediaOrganiser\MediaOrganiser.csproj", "{039420CF-CF63-421A-8EFC-71109C909D30}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiser.Media", "MediaOrganiser.Media\MediaOrganiser.Media.csproj", "{74BB1CC6-9E2C-4BDA-BEC3-F40EC694E187}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiser.Convertor", "MediaOrganiser.Convertor\MediaOrganiser.Convertor.csproj", "{E2CBAD9F-2047-4AEC-858D-C7F008E1D894}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Logging", "System.Logging\System.Logging.csproj", "{D0B1A5D1-64BE-416A-8522-EA6998C93C29}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Threading.Helpers", "System.Threading.Helpers\System.Threading.Helpers.csproj", "{1BD63904-18F6-437A-AE3F-B1A79AD566DD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiserCLI", "MediaOrganiserCLI\MediaOrganiserCLI.csproj", "{7415F673-9328-4198-B307-27E10A88E653}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.iTunes", "Apple.iTunes\Apple.iTunes.csproj", "{F15396F9-463B-4407-8C87-2F464902382A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiser.Finders", "MediaOrganiser.Finders\MediaOrganiser.Finders.csproj", "{48B2C36B-DF55-424E-9977-CF9B4FBD1731}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiser.Organisers", "MediaOrganiser.Organisers\MediaOrganiser.Organisers.csproj", "{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiser.Core", "MediaOrganiser.Core\MediaOrganiser.Core.csproj", "{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,49 +10,15 @@ Global
 		AppStore|x86 = AppStore|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{039420CF-CF63-421A-8EFC-71109C909D30}.Debug|x86.ActiveCfg = Debug|x86
-		{039420CF-CF63-421A-8EFC-71109C909D30}.Debug|x86.Build.0 = Debug|x86
-		{039420CF-CF63-421A-8EFC-71109C909D30}.Release|x86.ActiveCfg = Release|x86
-		{039420CF-CF63-421A-8EFC-71109C909D30}.Release|x86.Build.0 = Release|x86
-		{1BD63904-18F6-437A-AE3F-B1A79AD566DD}.Debug|x86.ActiveCfg = Debug|x86
-		{1BD63904-18F6-437A-AE3F-B1A79AD566DD}.Debug|x86.Build.0 = Debug|x86
-		{1BD63904-18F6-437A-AE3F-B1A79AD566DD}.Release|x86.ActiveCfg = Release|x86
-		{1BD63904-18F6-437A-AE3F-B1A79AD566DD}.Release|x86.Build.0 = Release|x86
-		{48B2C36B-DF55-424E-9977-CF9B4FBD1731}.AppStore|x86.ActiveCfg = Debug|x86
-		{48B2C36B-DF55-424E-9977-CF9B4FBD1731}.AppStore|x86.Build.0 = Debug|x86
-		{48B2C36B-DF55-424E-9977-CF9B4FBD1731}.Debug|x86.ActiveCfg = Debug|x86
-		{48B2C36B-DF55-424E-9977-CF9B4FBD1731}.Debug|x86.Build.0 = Debug|x86
-		{48B2C36B-DF55-424E-9977-CF9B4FBD1731}.Release|x86.ActiveCfg = Release|x86
-		{48B2C36B-DF55-424E-9977-CF9B4FBD1731}.Release|x86.Build.0 = Release|x86
-		{7415F673-9328-4198-B307-27E10A88E653}.Debug|x86.ActiveCfg = Debug|x86
-		{7415F673-9328-4198-B307-27E10A88E653}.Debug|x86.Build.0 = Debug|x86
-		{7415F673-9328-4198-B307-27E10A88E653}.Release|x86.ActiveCfg = Release|x86
-		{7415F673-9328-4198-B307-27E10A88E653}.Release|x86.Build.0 = Release|x86
-		{74BB1CC6-9E2C-4BDA-BEC3-F40EC694E187}.Debug|x86.ActiveCfg = Debug|x86
-		{74BB1CC6-9E2C-4BDA-BEC3-F40EC694E187}.Debug|x86.Build.0 = Debug|x86
-		{74BB1CC6-9E2C-4BDA-BEC3-F40EC694E187}.Release|x86.ActiveCfg = Release|x86
-		{74BB1CC6-9E2C-4BDA-BEC3-F40EC694E187}.Release|x86.Build.0 = Release|x86
-		{D0B1A5D1-64BE-416A-8522-EA6998C93C29}.Debug|x86.ActiveCfg = Debug|x86
-		{D0B1A5D1-64BE-416A-8522-EA6998C93C29}.Debug|x86.Build.0 = Debug|x86
-		{D0B1A5D1-64BE-416A-8522-EA6998C93C29}.Release|x86.ActiveCfg = Release|x86
-		{D0B1A5D1-64BE-416A-8522-EA6998C93C29}.Release|x86.Build.0 = Release|x86
 		{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}.AppStore|x86.ActiveCfg = Debug|x86
 		{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}.AppStore|x86.Build.0 = Debug|x86
 		{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}.Debug|x86.ActiveCfg = Debug|x86
 		{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}.Debug|x86.Build.0 = Debug|x86
 		{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}.Release|x86.ActiveCfg = Release|x86
 		{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}.Release|x86.Build.0 = Release|x86
-		{E2CBAD9F-2047-4AEC-858D-C7F008E1D894}.Debug|x86.ActiveCfg = Debug|x86
-		{E2CBAD9F-2047-4AEC-858D-C7F008E1D894}.Debug|x86.Build.0 = Debug|x86
-		{E2CBAD9F-2047-4AEC-858D-C7F008E1D894}.Release|x86.ActiveCfg = Release|x86
-		{E2CBAD9F-2047-4AEC-858D-C7F008E1D894}.Release|x86.Build.0 = Release|x86
-		{F15396F9-463B-4407-8C87-2F464902382A}.Debug|x86.ActiveCfg = Debug|x86
-		{F15396F9-463B-4407-8C87-2F464902382A}.Debug|x86.Build.0 = Debug|x86
-		{F15396F9-463B-4407-8C87-2F464902382A}.Release|x86.ActiveCfg = Release|x86
-		{F15396F9-463B-4407-8C87-2F464902382A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = MediaOrganiserCLI\MediaOrganiserCLI.csproj
+		StartupItem = MediaOrganiser.Organisers\MediaOrganiser.Core.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

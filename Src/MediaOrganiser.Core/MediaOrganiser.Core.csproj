@@ -33,30 +33,39 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="Organiser.cs" />
-    <Compile Include="IOrganiser.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Apple.iTunes\Apple.iTunes.csproj">
-      <Project>{F15396F9-463B-4407-8C87-2F464902382A}</Project>
-      <Name>Apple.iTunes</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MediaOrganiser.Media\MediaOrganiser.Media.csproj">
-      <Project>{74BB1CC6-9E2C-4BDA-BEC3-F40EC694E187}</Project>
-      <Name>MediaOrganiser.Media</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\System.Logging\System.Logging.csproj">
-      <Project>{D0B1A5D1-64BE-416A-8522-EA6998C93C29}</Project>
-      <Name>System.Logging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\System.Threading.Helpers\System.Threading.Helpers.csproj">
-      <Project>{1BD63904-18F6-437A-AE3F-B1A79AD566DD}</Project>
-      <Name>System.Threading.Helpers</Name>
-    </ProjectReference>
+    <Compile Include="Media\IMedia.cs" />
+    <Compile Include="Media\Externals\AtomicParsley.cs" />
+    <Compile Include="Media\Movies\IMovie.cs" />
+    <Compile Include="Media\Movies\IMovieDetailsBasic.cs" />
+    <Compile Include="Media\Movies\Movie.cs" />
+    <Compile Include="Media\Movies\MovieDetailsBasicRegex.cs" />
+    <Compile Include="Media\Shows\IShow.cs" />
+    <Compile Include="Media\Shows\Show.cs" />
+    <Compile Include="Media\Shows\ShowDetails\IShowDetailsAdditional.cs" />
+    <Compile Include="Media\Shows\ShowDetails\IShowDetailsBasic.cs" />
+    <Compile Include="Media\Shows\ShowDetails\ShowDetailsAtomic.cs" />
+    <Compile Include="Media\Shows\ShowDetails\ShowDetailsRegex.cs" />
+    <Compile Include="Media\Shows\ShowDetails\ShowDetailsTVDB.cs" />
+    <Compile Include="Convertor\Convertor.cs" />
+    <Compile Include="Convertor\Externals\HandBrake.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Core" />
     <Reference Include="System.Files">
       <HintPath>..\_bin_deployableAssemblies\System.Files.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
+    <Reference Include="Mono.Posix" />
+    <Reference Include="TvdbLib">
+      <HintPath>..\_bin_deployableAssemblies\TVDBLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Media\" />
+    <Folder Include="Convertor\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Convertor\Externals\HandBrakeCLI.exe" />
+    <EmbeddedResource Include="Media\Externals\AtomicParsley.exe" />
   </ItemGroup>
 </Project>
