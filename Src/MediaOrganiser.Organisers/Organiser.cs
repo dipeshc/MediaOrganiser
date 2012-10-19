@@ -205,8 +205,14 @@ namespace MediaOrganiser.Organisers
 
 		private void MoveMediaToOutputDirectory(IMedia Media)
 		{
-			Log.WriteLine("Copying media to output directory. {0}", Media.MediaFile.FullName);
 			IFile OrganisedFile = new File(FileSystem.PathCombine(OutputDirectory.FullName, Media.OrganisedMediaFile.ToString()));
+			if(OrganisedFile.Exists)
+			{
+				Log.WriteLine("Media file already exists. Will not overwriting. {0}", Media.MediaFile.FullName);
+				return;
+			}
+
+			Log.WriteLine("Copying media to output directory. {0}", Media.MediaFile.FullName);
 			if(!OrganisedFile.Directory.Exists)
 			{
 				OrganisedFile.Directory.Create();
