@@ -16,6 +16,12 @@ namespace HandBrake
 				// Get HandBrakeCLI file.
 				IFile _HandBrakeFile = new File(FileSystem.PathCombine(FileSystem.GetTempPath(), "HandBrakeCLI.exe"));
 
+				// Create directory if required.
+				if(!_HandBrakeFile.Directory.Exists)
+				{
+					_HandBrakeFile.Directory.Create();
+				}
+
 				// If HandBrake does not exist, then create it.
 				if(!_HandBrakeFile.Exists)
 				{

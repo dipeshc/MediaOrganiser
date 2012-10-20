@@ -19,7 +19,13 @@ namespace AtomicParsley
 			get
 			{
 				// Get AtomicParsely file.
-				IFile _AtomicParsleyFile = new File(FileSystem.PathCombine(FileSystem.GetTempPath(), "AtomicParsley.exe"));
+				IFile _AtomicParsleyFile = new File(FileSystem.PathCombine(FileSystem.GetTempPath(), "MediaOrganiser", "AtomicParsley.exe"));
+
+				// Create directory if required.
+				if(!_AtomicParsleyFile.Directory.Exists)
+				{
+					_AtomicParsleyFile.Directory.Create();
+				}
 
 				// If AtomicParsely does not exist, then create it.
 				if(!_AtomicParsleyFile.Exists)
