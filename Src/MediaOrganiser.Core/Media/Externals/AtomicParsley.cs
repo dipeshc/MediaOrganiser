@@ -31,7 +31,7 @@ namespace AtomicParsley
 					}
 
 					// Read bytes from assembly and create the file.
-					System.IO.Stream Stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MediaOrganiser.Media.Externals."+_AtomicParsleyFile.Name);
+					System.IO.Stream Stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MediaOrganiser.Core.Media.Externals."+_AtomicParsleyFile.Name);
 					byte[] Bytes = new byte[(int)Stream.Length];
 					Stream.Read(Bytes, 0, Bytes.Length);
 					System.IO.File.WriteAllBytes(_AtomicParsleyFile.FullName, Bytes);

@@ -26,7 +26,7 @@ namespace HandBrake
 					}
 
 					// Read bytes from assembly and create the HandBrake.
-					System.IO.Stream Stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MediaOrganiser.Convertor.Externals."+_HandBrakeFile.Name);
+					System.IO.Stream Stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MediaOrganiser.Core.Convertor.Externals."+_HandBrakeFile.Name);
 					byte[] Bytes = new byte[(int)Stream.Length];
 					Stream.Read(Bytes, 0, Bytes.Length);
 					System.IO.File.WriteAllBytes(_HandBrakeFile.FullName, Bytes);

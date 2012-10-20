@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>MediaOrganiser.Organisers</RootNamespace>
+    <RootNamespace>MediaOrganiser.Core</RootNamespace>
     <AssemblyName>MediaOrganiser.Core</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
