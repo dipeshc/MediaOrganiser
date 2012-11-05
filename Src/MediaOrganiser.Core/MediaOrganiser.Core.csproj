@@ -48,13 +48,13 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Core" />
-    <Reference Include="System.Files">
-      <HintPath>..\_bin_deployableAssemblies\System.Files.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="Mono.Posix" />
+    <Reference Include="System.Files">
+      <HintPath>_bin_deployableAssemblies\System.Files.dll</HintPath>
+    </Reference>
     <Reference Include="TvdbLib">
-      <HintPath>..\_bin_deployableAssemblies\TVDBLib.dll</HintPath>
+      <HintPath>_bin_deployableAssemblies\TVDBLib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
