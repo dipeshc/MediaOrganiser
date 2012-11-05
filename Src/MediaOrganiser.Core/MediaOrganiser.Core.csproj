@@ -35,10 +35,6 @@
     <Compile Include="Organiser.cs" />
     <Compile Include="Media\IMedia.cs" />
     <Compile Include="Media\Externals\AtomicParsley.cs" />
-    <Compile Include="Media\Movies\IMovie.cs" />
-    <Compile Include="Media\Movies\IMovieDetailsBasic.cs" />
-    <Compile Include="Media\Movies\Movie.cs" />
-    <Compile Include="Media\Movies\MovieDetailsBasicRegex.cs" />
     <Compile Include="Media\Shows\IShow.cs" />
     <Compile Include="Media\Shows\Show.cs" />
     <Compile Include="Media\Shows\ShowDetails\IShowDetailsAdditional.cs" />
@@ -48,8 +44,7 @@
     <Compile Include="Media\Shows\ShowDetails\ShowDetailsTVDB.cs" />
     <Compile Include="Convertor\Convertor.cs" />
     <Compile Include="Convertor\Externals\HandBrake.cs" />
-    <Compile Include="Finders\IMediaFinder.cs" />
-    <Compile Include="Finders\ShowFinder.cs" />
+    <Compile Include="Logger.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Core" />
@@ -65,7 +60,6 @@
   <ItemGroup>
     <Folder Include="Media\" />
     <Folder Include="Convertor\" />
-    <Folder Include="Finders\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Convertor\Externals\HandBrakeCLI.exe" />

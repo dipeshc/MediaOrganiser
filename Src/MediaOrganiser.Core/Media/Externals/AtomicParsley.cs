@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Files;
 using System.Files.Interfaces;
+using System.Logger;
 using System.Reflection;
 using System.Diagnostics;
 using System.Collections.Generic;
@@ -51,22 +52,51 @@ namespace AtomicParsley
 			}
 		}
 
-		public static String Run(String Arguments)
+		public static int Run(String Arguments, out string Output)
 		{
-			Process AtomicParsley = new Process();
-			AtomicParsley.StartInfo.FileName = AtomicParsleyFile.FullName;
-			AtomicParsley.StartInfo.Arguments = Arguments;
-			AtomicParsley.StartInfo.UseShellExecute = false;
-			AtomicParsley.StartInfo.RedirectStandardOutput = true;
-			AtomicParsley.Start();
-			return AtomicParsley.StandardOutput.ReadToEnd();
+			// Create StartInfo.
+			var AtomicParsleyProcessStartInfo = new ProcessStartInfo();
+			AtomicParsleyProcessStartInfo.FileName = AtomicParsleyFile.FullName;
+			AtomicParsleyProcessStartInfo.Arguments = Arguments;
+			AtomicParsleyProcessStartInfo.UseShellExecute = false;
+			AtomicParsleyProcessStartInfo.RedirectStandardOutput = true;
+			AtomicParsleyProcessStartInfo.RedirectStandardError = true;
+
+			// Run.
+			using(var AtomicParsleyProcess = Process.Start(AtomicParsleyProcessStartInfo))
+			{
+				// Write StdOut.
+				var LocalOutput = Output.ToString();
+				AtomicParsleyProcess.OutputDataReceived += (Sender, E) =>
+				{
+					LocalOutput += E.Data;
+					Logger.Log("AtomicParsley").StdOut.Write(E.Data);
+				};
+				
+				// Write StdErr.
+				AtomicParsleyProcess.ErrorDataReceived += (Sender, E) =>
+				{
+					Logger.Log("AtomicParsley").StdErr.Write(E.Data);
+				};
+				
+				// Wait for process to exit and then assign Output to LocalOuput.
+				AtomicParsleyProcess.WaitForExit();
+				Output = LocalOutput;
+
+				// Return exit code.
+				return AtomicParsleyProcess.ExitCode;
+			}
 		}
 
 		public static Dictionary<String, String> ExtractDetails(String FilePath)
 		{
 			Dictionary<String, String> Details = new Dictionary<String, String>();
 
-			String Output = Run(String.Format("\"{0}\" -t", FilePath));
+			string Output = "";
+			if(Run(String.Format("\"{0}\" -t", FilePath), out Output)!=0)
+			{
+				return Details;
+			}
 
 			Output.Split('\n').ToList().ForEach(Line =>
 			{
@@ -102,9 +132,8 @@ namespace AtomicParsley
 				}
 			}
 
-			String Output = Run(Arguments);
-
-			Console.WriteLine(Output);
+			String Output = "";
+			Run(Arguments, out Output);
 		}
 	}
 }

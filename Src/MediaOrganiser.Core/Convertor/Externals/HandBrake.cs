@@ -1,6 +1,7 @@
 using System;
 using System.Files;
 using System.Files.Interfaces;
+using System.Logger;
 using System.Reflection;
 using System.Diagnostics;
 using Mono.Unix.Native;
@@ -46,15 +47,35 @@ namespace HandBrake
 			}
 		}
 
-		public static String Run(String Arguments)
+		public static int Run(String Arguments)
 		{
-			Process HandBrake = new Process();
-			HandBrake.StartInfo.FileName = HandBrakeFile.FullName;
-			HandBrake.StartInfo.Arguments = Arguments;
-			HandBrake.StartInfo.UseShellExecute = false;
-			HandBrake.StartInfo.RedirectStandardOutput = true;
-			HandBrake.Start();
-			return HandBrake.StandardOutput.ReadToEnd();
+			// Create StartInfo.
+			var HandBrakeProcessStartInfo = new ProcessStartInfo();
+			HandBrakeProcessStartInfo.FileName = HandBrakeFile.FullName;
+			HandBrakeProcessStartInfo.Arguments = Arguments;
+			HandBrakeProcessStartInfo.UseShellExecute = false;
+			HandBrakeProcessStartInfo.RedirectStandardOutput = true;
+			HandBrakeProcessStartInfo.RedirectStandardError = true;
+
+			// Run.
+			using(var HandBrakeProcess = Process.Start(HandBrakeProcessStartInfo))
+			{
+				// Write StdOut.
+				HandBrakeProcess.OutputDataReceived += (Sender, E) =>
+				{
+					Logger.Log("HandBrake").StdOut.Write(E.Data);
+				};
+
+				// Write StdErr.
+				HandBrakeProcess.ErrorDataReceived += (Sender, E) =>
+				{
+					Logger.Log("HandBrake").StdErr.Write(E.Data);
+				};
+
+				// Wait for process to exit and then return exit code.
+				HandBrakeProcess.WaitForExit();
+				return HandBrakeProcess.ExitCode;
+			}
 		}
 	}
 }
