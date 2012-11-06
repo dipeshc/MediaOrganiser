@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -6,7 +7,29 @@ namespace MediaOrganiser.Media.Shows.Details
 {
 	public class ShowDetailsRegex : IShowDetailsBasic
 	{
-		private static Regex ShowPartsRegex = new Regex(@"^(?:\[\w*\][\W_]?)?(.*)(?=[\W_](?:[sS]?(\d+)[eExX])?(\d{2,}))");
+		private static string ShowNamePatternPreFix = @"\[\w*\][\W_]?";
+		private static string ShowNamePatternShowName = @"(?<ShowName>.+)";
+		private static string ShowNamePatternSeasonEpisode = @"[Ss](?<SeasonNumber>\d+)[Ee](?<EpisodeNumber>\d+)";
+		private static string ShowNamePatternSeasonEpisodeCross = @"(?<SeasonNumber>\d{2,})x(?<EpisodeNumber>\d{2,})";
+		private static string ShowNamePatternEpisodeOnly = @"E(?<EpisodeNumber>\d{2,})";
+		private static string ShowNamePatternEpisodeNumberOnly = @"(?<EpisodeNumber>\d{3,})";
+
+		private static IEnumerable<Regex> _Patterns = null;
+		private static IEnumerable<Regex> Patterns
+		{
+			get
+			{
+				if(_Patterns==null)
+				{
+					var ShowNamePattern1 = new Regex(string.Format(@"^(?:{0})?{1}(?=[\W_]{2})", ShowNamePatternPreFix, ShowNamePatternShowName, ShowNamePatternSeasonEpisode));
+					var ShowNamePattern2 = new Regex(string.Format(@"^(?:{0})?{1}(?=[\W_]{2})", ShowNamePatternPreFix, ShowNamePatternShowName, ShowNamePatternSeasonEpisodeCross));
+					var ShowNamePattern3 = new Regex(string.Format(@"^(?:{0})?{1}(?=[\W_]{2})", ShowNamePatternPreFix, ShowNamePatternShowName, ShowNamePatternEpisodeOnly));
+					var ShowNamePattern4 = new Regex(string.Format(@"^(?:{0})?{1}(?=[\W_]{2})", ShowNamePatternPreFix, ShowNamePatternShowName, ShowNamePatternEpisodeNumberOnly));
+					_Patterns = new List<Regex>() { ShowNamePattern1, ShowNamePattern2, ShowNamePattern3, ShowNamePattern4 };
+				}
+				return _Patterns;
+			}
+		}
 
 		private String _ShowName;
 		public String ShowName
@@ -47,24 +70,30 @@ namespace MediaOrganiser.Media.Shows.Details
 		public Boolean ExtractDetails(String SearchInput)
 		{
 			// Use regex to extract out details.
-			Match Match = ShowPartsRegex.Match(SearchInput);
-			if(!Match.Success)
+			foreach(var Pattern in Patterns)
 			{
-				return false;
-			}
-			
-			// Set the details.
-			_ShowName = Regex.Replace(Match.Groups[1].Value, @"[\W_]+", " ").Trim();
-			_ShowName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(_ShowName.ToLower());
-			
-			if(Match.Groups[2].Value != "")
-			{
-				_SeasonNumber = Int32.Parse(Match.Groups[2].Value);
-			}
-			_EpisodeNumber = Int32.Parse(Match.Groups[3].Value);
+				// Use regex to extract out details.
+				var Match = Pattern.Match(SearchInput);
+				if(!Match.Success)
+				{
+					continue;
+				}
 
-			_HasDetails = true;
-			return true;
+				// Set the details.
+				_ShowName = Regex.Replace(Match.Groups["ShowName"].Value, @"[\W_]+", " ").Trim();
+				_ShowName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(_ShowName.ToLower());
+				
+				if(!string.IsNullOrEmpty(Match.Groups["SeasonNumber"].Value))
+				{
+					_SeasonNumber = Int32.Parse(Match.Groups["SeasonNumber"].Value);
+				}
+				_EpisodeNumber = Int32.Parse(Match.Groups["EpisodeNumber"].Value);
+				
+				_HasDetails = true;
+				return true;
+			}
+
+			return false;
 		}
 	}
 }

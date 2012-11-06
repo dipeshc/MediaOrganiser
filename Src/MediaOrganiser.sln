@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiser.Core", "MediaOrganiser.Core\MediaOrganiser.Core.csproj", "{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiser.Core.Tests", "MediaOrganiser.Core.Tests\MediaOrganiser.Core.Tests.csproj", "{7F699C47-0EE4-461C-8D15-6062662CA892}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -10,6 +12,12 @@ Global
 		AppStore|x86 = AppStore|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7F699C47-0EE4-461C-8D15-6062662CA892}.AppStore|x86.ActiveCfg = Debug|x86
+		{7F699C47-0EE4-461C-8D15-6062662CA892}.AppStore|x86.Build.0 = Debug|x86
+		{7F699C47-0EE4-461C-8D15-6062662CA892}.Debug|x86.ActiveCfg = Debug|x86
+		{7F699C47-0EE4-461C-8D15-6062662CA892}.Debug|x86.Build.0 = Debug|x86
+		{7F699C47-0EE4-461C-8D15-6062662CA892}.Release|x86.ActiveCfg = Release|x86
+		{7F699C47-0EE4-461C-8D15-6062662CA892}.Release|x86.Build.0 = Release|x86
 		{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}.AppStore|x86.ActiveCfg = Debug|x86
 		{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}.AppStore|x86.Build.0 = Debug|x86
 		{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}.Debug|x86.ActiveCfg = Debug|x86
