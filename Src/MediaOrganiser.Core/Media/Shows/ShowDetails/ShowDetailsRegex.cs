@@ -10,7 +10,7 @@ namespace MediaOrganiser.Media.Shows.Details
 		private static string ShowNamePatternPreFix = @"\[\w*\][\W_]?";
 		private static string ShowNamePatternShowName = @"(?<ShowName>.+)";
 		private static string ShowNamePatternSeasonEpisode = @"[Ss](?<SeasonNumber>\d+)[Ee](?<EpisodeNumber>\d+)";
-		private static string ShowNamePatternSeasonEpisodeCross = @"(?<SeasonNumber>\d{2,})x(?<EpisodeNumber>\d{2,})";
+		private static string ShowNamePatternSeasonEpisodeCross = @"(?<SeasonNumber>\d+)x(?<EpisodeNumber>\d{2,})";
 		private static string ShowNamePatternEpisodeOnly = @"E(?<EpisodeNumber>\d{2,})";
 		private static string ShowNamePatternEpisodeNumberOnly = @"(?<EpisodeNumber>\d{3,})";
 

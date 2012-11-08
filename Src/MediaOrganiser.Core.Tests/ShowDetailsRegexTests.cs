@@ -101,6 +101,8 @@ namespace MediaOrganiser.Tests
 		[TestCase("Ugly.Americans.S02E15.HDTV.x264-2HD.mp4", "Ugly Americans", 2, 15)]
 		[TestCase("Ugly.Americans.S02E16.HDTV.x264-LOL.mp4", "Ugly Americans", 2, 16)]
 		[TestCase("Ugly.Americans.S03E02.HDTV.x264-ASAP.mp4", "Ugly Americans", 3, 2)]
+		[TestCase("Community S03E22 HDTV x264-LOL", "Community", 3, 22)]
+		[TestCase("Community 3x06 (HDTV-LOL) [VTV]", "Community", 3, 6)]
 		public void ParseTest(string SearchInput, string ShowName, int? SeasonNumber, int EpisodeNumber)
 		{
 			var ShowDetailsRegex = new ShowDetailsRegex();
