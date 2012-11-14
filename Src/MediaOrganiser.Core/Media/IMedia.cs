@@ -1,12 +1,12 @@
 using System;
-using System.Files.Interfaces;
+using System.IO.Abstractions;
 
 namespace MediaOrganiser.Media
 {
 	public interface IMedia
 	{
-		IFile MediaFile { get ; set; }
-		IFile OrganisedMediaFile { get; }
+		FileInfoBase MediaFile { get ; set; }
+		FileInfoBase OrganisedMediaFile { get; }
 
 		Boolean ExtractDetails(Boolean GetFullDetails=true);
 		Boolean HasDetails { get; }

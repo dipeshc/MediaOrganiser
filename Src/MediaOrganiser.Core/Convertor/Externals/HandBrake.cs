@@ -1,6 +1,5 @@
 using System;
-using System.Files;
-using System.Files.Interfaces;
+using System.IO.Abstractions;
 using System.Logger;
 using System.Reflection;
 using System.Diagnostics;
@@ -10,12 +9,14 @@ namespace HandBrake
 {
 	public static class HandBrake
 	{
-		private static IFile HandBrakeFile
+		private static IFileSystem fileSystem = new FileSystem();
+
+		private static FileInfoBase HandBrakeFile
 		{
 			get
 			{
 				// Get HandBrakeCLI file.
-				IFile _HandBrakeFile = new File(FileSystem.PathCombine(FileSystem.GetTempPath(), "HandBrakeCLI.exe"));
+				var _HandBrakeFile = fileSystem.FileInfo.FromFileName(fileSystem.Path.Combine(fileSystem.Path.GetTempPath(), "HandBrakeCLI.exe"));
 
 				// Create directory if required.
 				if(!_HandBrakeFile.Directory.Exists)

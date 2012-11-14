@@ -1,31 +1,35 @@
+using MediaOrganiser.Media;
 using System;
-using System.Linq;
-using System.Logger;
-using System.Files;
-using System.Files.Interfaces;
 using System.Collections;
 using System.Collections.Generic;
-using MediaOrganiser.Media;
+using System.IO;
+using System.IO.Abstractions;
+using System.Linq;
+using System.Logger;
 
 namespace MediaOrganiser.Organisers
 {
 	public class Organiser
 	{
-		public IDirectory WorkingDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), "WorkingArea"));
+		private IFileSystem fileSystem = new FileSystem();
+		public DirectoryInfoBase WorkingDirectory;
 
-		public System.IO.TextWriter StdOut
+		public TextWriter StdOut
 		{
 			get { return Logger.Log("Organiser").StdOut; }
 			set { Logger.Log("Organiser").StdOut = value; }
 		}
-		public System.IO.TextWriter StdErr
+		public TextWriter StdErr
 		{
 			get { return Logger.Log("Organiser").StdErr; }
 			set { Logger.Log("Organiser").StdErr = value; }
 		}
 
-		public void Organise(IMedia Media, IDirectory OutputDirectory, Boolean ForceConversion)
+		public void Organise(IMedia Media, DirectoryInfoBase OutputDirectory, Boolean ForceConversion)
 		{
+			// Create working directory.
+			WorkingDirectory = fileSystem.DirectoryInfo.FromDirectoryName(fileSystem.Path.Combine(fileSystem.Path.GetTempPath(), "WorkingArea"));
+
 			// Create working directory if it does not exist.
 			if(!WorkingDirectory.Exists)
 			{
@@ -58,10 +62,10 @@ namespace MediaOrganiser.Organisers
 		{
 			Logger.Log("Organiser").StdOut.WriteLine("Copying media to working area. {0}", Media.MediaFile.FullName);
 			// Create file for working area version of media.
-			IFile WorkingAreaMediaFile = new File(FileSystem.PathCombine(WorkingDirectory.FullName, Media.MediaFile.Name));
+			var WorkingAreaMediaFile = fileSystem.FileInfo.FromFileName(fileSystem.Path.Combine(WorkingDirectory.FullName, Media.MediaFile.Name));
 
 			// Copy the media and then assign the new file to the media.
-			Media.MediaFile.CopyTo(WorkingAreaMediaFile, true);
+			Media.MediaFile.CopyTo(WorkingAreaMediaFile.FullName, true);
 			Media.MediaFile = WorkingAreaMediaFile;
 			Logger.Log("Organiser").StdOut.WriteLine("Copied media to working area. {0}", Media.MediaFile.FullName);
 		}
@@ -90,14 +94,19 @@ namespace MediaOrganiser.Organisers
 		private void RenameMediaToCleanFileName(IMedia Media)
 		{
 			Logger.Log("Organiser").StdOut.WriteLine("Renaming media. {0}", Media.MediaFile.FullName);
-			IFile OrganisedMediaFile = new File(FileSystem.PathCombine(WorkingDirectory.FullName, Media.OrganisedMediaFile.Name));
-			Media.MediaFile.MoveTo(OrganisedMediaFile.FullName, true);
+			var OrganisedMediaFile = fileSystem.FileInfo.FromFileName(fileSystem.Path.Combine(WorkingDirectory.FullName, Media.OrganisedMediaFile.Name));
+			// Delete the file it already exists.
+			if(OrganisedMediaFile.Exists)
+			{
+				OrganisedMediaFile.Delete();
+			}
+			Media.MediaFile.MoveTo(OrganisedMediaFile.FullName);
 			Logger.Log("Organiser").StdOut.WriteLine("Renamed media. {0}", Media.MediaFile.FullName);
 		}
 
-		private void MoveMediaToOutputDirectory(IMedia Media, IDirectory OutputDirectory)
+		private void MoveMediaToOutputDirectory(IMedia Media, DirectoryInfoBase OutputDirectory)
 		{
-			IFile OrganisedFile = new File(FileSystem.PathCombine(OutputDirectory.FullName, Media.OrganisedMediaFile.ToString()));
+			var OrganisedFile = fileSystem.FileInfo.FromFileName(fileSystem.Path.Combine(OutputDirectory.FullName, Media.OrganisedMediaFile.ToString()));
 			if(OrganisedFile.Exists)
 			{
 				Logger.Log("Organiser").StdOut.WriteLine("Media file already exists. Will not overwriting. {0}", Media.MediaFile.FullName);
