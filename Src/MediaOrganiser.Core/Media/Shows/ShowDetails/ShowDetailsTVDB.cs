@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
+using System.Logger;
 using System.Reflection;
 using TvdbLib;
 using TvdbLib.Data;
@@ -112,11 +113,21 @@ namespace MediaOrganiser.Media.Shows.Details
 			}
 
 			// Get details from the TVDB.
-			List<TvdbSearchResult> SearchResults = TVDB.SearchSeries(ShowDetailsBasic.ShowName);
-			
+			List<TvdbSearchResult> SearchResults;
+			try
+			{
+				SearchResults = TVDB.SearchSeries(ShowDetailsBasic.ShowName);
+			}
+			catch(Exception E)
+			{
+				Logger.Log("TVDB").StdOut.WriteLine("Unable to resolve {0} at the TVDB. {1}", ShowDetailsBasic.ShowName, E.Message);
+				return false;
+			}
+
 			// If no details found then return false.
 			if(SearchResults.Count == 0)
 			{
+				Logger.Log("TVDB").StdOut.WriteLine("Unable to resolve {0} at the TVDB.", ShowDetailsBasic.ShowName);
 				return false;
 			}
 			
