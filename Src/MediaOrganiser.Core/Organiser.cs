@@ -2,6 +2,7 @@ using MediaOrganiser.Media;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Logger;
@@ -13,12 +14,12 @@ namespace MediaOrganiser.Organisers
 		private IFileSystem fileSystem = new FileSystem();
 		public DirectoryInfoBase WorkingDirectory;
 
-		public System.IO.TextWriter StdOut
+		public TextWriter StdOut
 		{
 			get { return Logger.Log("Organiser").StdOut; }
 			set { Logger.Log("Organiser").StdOut = value; }
 		}
-		public System.IO.TextWriter StdErr
+		public TextWriter StdErr
 		{
 			get { return Logger.Log("Organiser").StdErr; }
 			set { Logger.Log("Organiser").StdErr = value; }
