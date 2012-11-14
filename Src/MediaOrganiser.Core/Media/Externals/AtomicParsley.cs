@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Mono.Unix.Native;
 
-namespace AtomicParsley
+namespace MediaOrganiser.AtomicParsley
 {
 	public static class AtomicParsley
 	{

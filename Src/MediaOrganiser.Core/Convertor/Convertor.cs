@@ -1,4 +1,4 @@
-using HandBrake;
+using MediaOrganiser.HandBrake;
 using System;
 using System.IO.Abstractions;
 

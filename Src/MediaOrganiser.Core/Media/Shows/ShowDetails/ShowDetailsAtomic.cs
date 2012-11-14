@@ -2,7 +2,7 @@ using System;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Collections.Generic;
-using AtomicParsley;
+using MediaOrganiser.AtomicParsley;
 
 namespace MediaOrganiser.Media.Shows.Details
 {
