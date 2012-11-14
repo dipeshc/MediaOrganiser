@@ -1,16 +1,17 @@
-using System;
-using System.Linq;
-using System.Files;
-using System.Files.Interfaces;
-using System.Collections.Generic;
 using MediaOrganiser.Convertor;
 using MediaOrganiser.Media.Shows.Details;
+using System;
+using System.Collections.Generic;
+using System.IO.Abstractions;
+using System.Linq;
 
 namespace MediaOrganiser.Media.Shows
 {
 	public class Show : IShow
 	{
-		public IFile MediaFile { get; set; }
+		private IFileSystem fileSystem = new FileSystem();
+
+		public FileInfoBase MediaFile { get; set; }
 
 		private IShowDetailsBasic ShowDetailsBasic = null;
 		private IShowDetailsAdditional ShowDetailsAdditional = null;
@@ -93,7 +94,7 @@ namespace MediaOrganiser.Media.Shows
 			}
 		}
 
-		public IEnumerable<IFile> Artworks
+		public IEnumerable<FileInfoBase> Artworks
 		{
 			get
 			{
@@ -109,7 +110,7 @@ namespace MediaOrganiser.Media.Shows
 			}
 		}
 
-		public Show(IFile MediaFile)
+		public Show(FileInfoBase MediaFile)
 		{
 			this.MediaFile = MediaFile;
 		}
@@ -150,7 +151,7 @@ namespace MediaOrganiser.Media.Shows
 			AtomicParsley.AtomicParsley.SetDetails(MediaFile.FullName, ShowName, SeasonNumber, EpisodeNumber, EpisodeName, AiredDate, Overview, TVNetwork, Artworks==null?null:Artworks.Select(A=>A.FullName));
 		}
 
-		public IFile OrganisedMediaFile
+		public FileInfoBase OrganisedMediaFile
 		{
 			get
 			{
@@ -164,7 +165,7 @@ namespace MediaOrganiser.Media.Shows
 				// Add season number.
 				if(ShowDetailsBasic.SeasonNumber!=null)
 				{
-					ShowFilePath = FileSystem.PathCombine(ShowFilePath, String.Format("Season {0}", ShowDetailsBasic.SeasonNumber));
+					ShowFilePath = fileSystem.Path.Combine(ShowFilePath, String.Format("Season {0}", ShowDetailsBasic.SeasonNumber));
 					ShowFileName += String.Format("S{0:D2}", ShowDetailsBasic.SeasonNumber); 
 				}
 				
@@ -181,24 +182,25 @@ namespace MediaOrganiser.Media.Shows
 				ShowFileName += MediaFile.Extension;
 				
 				// Sanitise.
-				ShowFilePath = ShowFilePath.Trim(FileSystem.GetInvalidPathChars());
-				ShowFileName = ShowFileName.Trim(FileSystem.GetInvalidFileNameChars());
+				ShowFilePath = ShowFilePath.Trim(fileSystem.Path.GetInvalidPathChars());
+				ShowFileName = ShowFileName.Trim(fileSystem.Path.GetInvalidFileNameChars());
 				
 				// Return the full file path.
-				return new File(FileSystem.PathCombine(ShowFilePath, ShowFileName));
+				return fileSystem.FileInfo.FromFileName(fileSystem.Path.Combine(ShowFilePath, ShowFileName));
 			}
 		}
 
 		public void Convert()
 		{
 			// Create file for converted version of show.
-			IFile ConvertedMediaFile = new File(MediaFile.FullNameWithoutExtension + ".converted." + OrganisedFileType);
+			var fullNameWithoutExtension = fileSystem.Path.Combine(MediaFile.Directory.FullName, fileSystem.Path.GetFileNameWithoutExtension(MediaFile.FullName));
+			var ConvertedMediaFile = fileSystem.FileInfo.FromFileName(fullNameWithoutExtension + ".converted." + OrganisedFileType);
 
 			// Convert show.
 			Convertor.Convertor.ConvertForRetina(MediaFile, ConvertedMediaFile);
 
 			// Delete old file and assign the new converted file to the show.
-			IFile OldFile = MediaFile;
+			var OldFile = MediaFile;
 			MediaFile = ConvertedMediaFile;
 			OldFile.Delete();
 		}

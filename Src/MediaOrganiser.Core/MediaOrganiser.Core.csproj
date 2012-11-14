@@ -50,11 +50,11 @@
     <Reference Include="System.Core" />
     <Reference Include="System" />
     <Reference Include="Mono.Posix" />
-    <Reference Include="System.Files">
-      <HintPath>_bin_deployableAssemblies\System.Files.dll</HintPath>
-    </Reference>
     <Reference Include="TvdbLib">
       <HintPath>_bin_deployableAssemblies\TVDBLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Abstractions">
+      <HintPath>..\packages\System.IO.Abstractions.1.4.0.35\lib\net35\System.IO.Abstractions.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -64,5 +64,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Convertor\Externals\HandBrakeCLI.exe" />
     <EmbeddedResource Include="Media\Externals\AtomicParsley.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

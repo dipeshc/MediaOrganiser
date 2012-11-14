@@ -46,4 +46,7 @@
       <Name>MediaOrganiser.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

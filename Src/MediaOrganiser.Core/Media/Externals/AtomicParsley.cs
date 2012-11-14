@@ -1,7 +1,6 @@
 using System;
+using System.IO.Abstractions;
 using System.Linq;
-using System.Files;
-using System.Files.Interfaces;
 using System.Logger;
 using System.Reflection;
 using System.Diagnostics;
@@ -13,14 +12,15 @@ namespace AtomicParsley
 {
 	public static class AtomicParsley
 	{
+		private static IFileSystem fileSystem = new FileSystem();
 		private static Regex AtomDetailRegex = new Regex("Atom \"(.*)\" contains: (.*)");
 
-		private static IFile AtomicParsleyFile
+		private static FileInfoBase AtomicParsleyFile
 		{
 			get
 			{
 				// Get AtomicParsely file.
-				IFile _AtomicParsleyFile = new File(FileSystem.PathCombine(FileSystem.GetTempPath(), "MediaOrganiser", "AtomicParsley.exe"));
+				var _AtomicParsleyFile = fileSystem.FileInfo.FromFileName(fileSystem.Path.Combine(fileSystem.Path.GetTempPath(), "MediaOrganiser" + fileSystem.Path.DirectorySeparatorChar + "AtomicParsley.exe"));
 
 				// Create directory if required.
 				if(!_AtomicParsleyFile.Directory.Exists)
