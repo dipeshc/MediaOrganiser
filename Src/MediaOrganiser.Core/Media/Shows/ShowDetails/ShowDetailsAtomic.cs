@@ -1,6 +1,6 @@
 using System;
+using System.IO.Abstractions;
 using System.Linq;
-using System.Files.Interfaces;
 using System.Collections.Generic;
 using AtomicParsley;
 
@@ -71,8 +71,8 @@ namespace MediaOrganiser.Media.Shows.Details
 			}
 		}
 
-		private IEnumerable<IFile> _Artworks;
-		public IEnumerable<IFile> Artworks
+		private IEnumerable<FileInfoBase> _Artworks;
+		public IEnumerable<FileInfoBase> Artworks
 		{
 			get
 			{
@@ -89,7 +89,7 @@ namespace MediaOrganiser.Media.Shows.Details
 			}
 		}
 
-		public Boolean ExtractDetails(IFile ShowFile)
+		public Boolean ExtractDetails(FileInfoBase ShowFile)
 		{
 			// Run AtomicParsley to get details.
 			Dictionary<String, String> Details = AtomicParsley.AtomicParsley.ExtractDetails(ShowFile.FullName);

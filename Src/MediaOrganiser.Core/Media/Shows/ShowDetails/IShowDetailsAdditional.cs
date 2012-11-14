@@ -1,6 +1,6 @@
 using System;
-using System.Files.Interfaces;
 using System.Collections.Generic;
+using System.IO.Abstractions;
 
 namespace MediaOrganiser.Media.Shows.Details
 {
@@ -10,7 +10,6 @@ namespace MediaOrganiser.Media.Shows.Details
 		DateTime? AiredDate { get; }
 		String Overview { get; }
 		String TVNetwork { get; }
-		IEnumerable<IFile> Artworks { get; }
+		IEnumerable<FileInfoBase> Artworks { get; }
 	}
 }
-

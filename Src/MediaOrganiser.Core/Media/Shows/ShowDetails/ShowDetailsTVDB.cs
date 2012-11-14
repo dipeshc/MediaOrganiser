@@ -1,9 +1,8 @@
 using System;
-using System.Linq;
-using System.Files;
-using System.Files.Interfaces;
-using System.Reflection;
 using System.Collections.Generic;
+using System.IO.Abstractions;
+using System.Linq;
+using System.Reflection;
 using TvdbLib;
 using TvdbLib.Data;
 using TvdbLib.Data.Banner;
@@ -13,7 +12,8 @@ namespace MediaOrganiser.Media.Shows.Details
 {
 	public class ShowDetailsTVDB : IShowDetailsBasic, IShowDetailsAdditional
 	{
-		private static Directory CacheDirectory = new Directory(FileSystem.PathCombine(FileSystem.GetTempPath(), "MediaOrganiser", "TVDBCache"));
+		private static IFileSystem fileSystem = new FileSystem();
+		private static DirectoryInfoBase CacheDirectory = fileSystem.DirectoryInfo.FromDirectoryName(fileSystem.Path.Combine(fileSystem.Path.GetTempPath(), "MediaOrganiser" + fileSystem.Path.DirectorySeparatorChar +"TVDBCache"));
 		private static TvdbHandler TVDB = new TvdbHandler(new XmlCacheProvider(CacheDirectory.FullName), "416920BF8A4C278C");
 
 		private String _ShowName;
@@ -79,8 +79,8 @@ namespace MediaOrganiser.Media.Shows.Details
 			}
 		}
 
-		private IEnumerable<IFile> _Artworks;
-		public IEnumerable<IFile> Artworks
+		private IEnumerable<FileInfoBase> _Artworks;
+		public IEnumerable<FileInfoBase> Artworks
 		{
 			get
 			{
@@ -167,12 +167,12 @@ namespace MediaOrganiser.Media.Shows.Details
 			_AiredDate = Episode.FirstAired;
 			_Overview = Episode.Overview;
 			_TVNetwork = Series.Network;
-			_Artworks = (Banner==null)?null:new List<IFile> {GetBannerCacheFile(Banner)};
+			_Artworks = (Banner==null)?null:new List<FileInfoBase> {GetBannerCacheFile(Banner)};
 			_HasDetails = true;
 			return true;
 		}
 
-		private static IFile GetBannerCacheFile(TvdbBanner Banner, Boolean Thumbnail=false)
+		private static FileInfoBase GetBannerCacheFile(TvdbBanner Banner, Boolean Thumbnail=false)
 		{
 			String FileName = "";
 
@@ -189,7 +189,7 @@ namespace MediaOrganiser.Media.Shows.Details
 			// Handle different BannerPath conversion for different banner types.
 			if(Banner.GetType() == typeof(TvdbFanartBanner))
 			{
-				FileName += "fan_" + new File(Banner.BannerPath).Name;
+				FileName += "fan_" + fileSystem.FileInfo.FromFileName(Banner.BannerPath).Name;
 			}
 			else
 			{
@@ -197,7 +197,8 @@ namespace MediaOrganiser.Media.Shows.Details
 			}
 
 			// Return file.
-			return new File(FileSystem.PathCombine(CacheDirectory.FullName, Banner.SeriesId.ToString(), FileName));
+			var innerPath = fileSystem.Path.Combine(Banner.SeriesId.ToString(), FileName);
+			return fileSystem.FileInfo.FromFileName(fileSystem.Path.Combine(CacheDirectory.FullName, innerPath));
 		}
 	}
 }
