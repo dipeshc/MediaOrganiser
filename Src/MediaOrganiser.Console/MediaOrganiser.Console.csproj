@@ -39,13 +39,28 @@
     <Reference Include="NDesk.Options">
       <HintPath>..\packages\NDesk.Options.0.2.1\lib\NDesk.Options.dll</HintPath>
     </Reference>
+    <Reference Include="System.IO.Abstractions">
+      <HintPath>..\packages\System.IO.Abstractions.1.4.0.35\lib\net35\System.IO.Abstractions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Finders\IMediaFinder.cs" />
+    <Compile Include="Finders\ShowFinder.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="OrganiseCommand.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Finders\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MediaOrganiser.Core\MediaOrganiser.Core.csproj">
+      <Project>{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}</Project>
+      <Name>MediaOrganiser.Core</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

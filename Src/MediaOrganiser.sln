@@ -34,7 +34,7 @@ Global
 		{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = MediaOrganiser.Core\MediaOrganiser.Core.csproj
+		StartupItem = MediaOrganiser.Console\MediaOrganiser.Console.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None
