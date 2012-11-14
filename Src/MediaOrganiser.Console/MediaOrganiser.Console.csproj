@@ -48,7 +48,7 @@
     <Compile Include="Finders\IMediaFinder.cs" />
     <Compile Include="Finders\ShowFinder.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="OrganiseCommand.cs" />
+    <Compile Include="Commands\Organise.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Finders\" />
+    <Folder Include="Commands\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MediaOrganiser.Core\MediaOrganiser.Core.csproj">
