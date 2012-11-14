@@ -9,20 +9,22 @@ using MediaOrganiser.Organisers;
 
 namespace MediaOrganiser.Console
 {
-	public class OrganiseCommand : ConsoleCommand
+	public class Organise : ConsoleCommand
 	{
 		private static IFileSystem fileSystem = new FileSystem();
 
 		string inputPath = "";
 		DirectoryInfoBase outputDirectory = null;
 		bool forceConversion = false;
+		bool exclude = false;
 
-		public OrganiseCommand()
+		public Organise()
 		{
 			IsCommand("organise", "Organises the media (TV Shows) into a uniform ouput which can be consumed.");
-			HasRequiredOption("i|input=", "The Input folders from which media will be found.", v => inputPath = v);
-			HasRequiredOption("o|output=", "The Output folder from which organised media will be put.", v => outputDirectory = fileSystem.DirectoryInfo.FromDirectoryName(v));
+			HasRequiredOption("i|input=", "The Input path from which media will be found.", v => inputPath = v);
+			HasRequiredOption("o|output=", "The Output directory from which organised media will be put.", v => outputDirectory = fileSystem.DirectoryInfo.FromDirectoryName(v));
 			HasOption("f|forceConversion", "Forces the conversion of all input media, even if the media is already in the correct format.", v => forceConversion = v != null);
+			HasOption("x|Exclude", "Excludes organised shows in output directory when searching the input path.", v => exclude = v != null);
 		}
 
 		public override int Run(string[] remainingArguments)
@@ -40,7 +42,12 @@ namespace MediaOrganiser.Console
 			}
 			
 			// Get files to organise.
-			var showFinder = new ShowFinder(new List<string>() {inputPath}, new List<string>());
+			var excludedPaths = new List<string>();
+			if(exclude)
+			{
+				excludedPaths.Add(outputDirectory.FullName);
+			}
+			var showFinder = new ShowFinder(new List<string>() {inputPath}, excludedPaths);
 			var mediaToOrganise = showFinder.Scan().ToList();
 			
 			// Organise.
