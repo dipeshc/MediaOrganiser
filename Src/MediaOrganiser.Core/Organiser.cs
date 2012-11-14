@@ -106,7 +106,7 @@ namespace MediaOrganiser.Organisers
 
 		private void MoveMediaToOutputDirectory(IMedia Media, DirectoryInfoBase OutputDirectory)
 		{
-			var OrganisedFile = fileSystem.FileInfo.FromFileName(fileSystem.Path.Combine(OutputDirectory.FullName, Media.OrganisedMediaFile.ToString()));
+			var OrganisedFile = fileSystem.FileInfo.FromFileName(fileSystem.Path.Combine(OutputDirectory.FullName, Media.OrganisedMediaFile.Name));
 			if(OrganisedFile.Exists)
 			{
 				Logger.Log("Organiser").StdOut.WriteLine("Media file already exists. Will not overwriting. {0}", Media.MediaFile.FullName);
