@@ -7,70 +7,39 @@ namespace MediaOrganiser.Media.Shows.Details
 {
 	public class ShowDetailsRegex : IShowDetailsBasic
 	{
-		private static string ShowNamePatternPreFix = @"\[\w*\][\W_]?";
-		private static string ShowNamePatternShowName = @"(?<ShowName>.+)";
-		private static string ShowNamePatternSeasonEpisode = @"[Ss](?<SeasonNumber>\d+)[Ee](?<EpisodeNumber>\d+)";
-		private static string ShowNamePatternSeasonEpisodeCross = @"(?<SeasonNumber>\d+)x(?<EpisodeNumber>\d{2,})";
-		private static string ShowNamePatternEpisodeOnly = @"E(?<EpisodeNumber>\d{2,})";
-		private static string ShowNamePatternEpisodeNumberOnly = @"(?<EpisodeNumber>\d{3,})";
+		private static string _showNamePatternPreFix = @"\[\w*\][\W_]?";
+		private static string _showNamePatternShowName = @"(?<ShowName>.+)";
+		private static string _showNamePatternSeasonEpisode = @"[Ss](?<SeasonNumber>\d+)[Ee](?<EpisodeNumber>\d+)";
+		private static string _showNamePatternSeasonEpisodeCross = @"(?<SeasonNumber>\d+)x(?<EpisodeNumber>\d{2,})";
+		private static string _showNamePatternEpisodeOnly = @"E(?<EpisodeNumber>\d{2,})";
+		private static string _showNamePatternEpisodeNumberOnly = @"(?<EpisodeNumber>\d{3,})";
 
-		private static IEnumerable<Regex> _Patterns = null;
-		private static IEnumerable<Regex> Patterns
+		private static IEnumerable<Regex> _patterns = null;
+		private static IEnumerable<Regex> patterns
 		{
 			get
 			{
-				if(_Patterns==null)
+				if(_patterns==null)
 				{
-					var ShowNamePattern1 = new Regex(string.Format(@"^(?:{0})?{1}(?=[\W_]{2})", ShowNamePatternPreFix, ShowNamePatternShowName, ShowNamePatternSeasonEpisode));
-					var ShowNamePattern2 = new Regex(string.Format(@"^(?:{0})?{1}(?=[\W_]{2})", ShowNamePatternPreFix, ShowNamePatternShowName, ShowNamePatternSeasonEpisodeCross));
-					var ShowNamePattern3 = new Regex(string.Format(@"^(?:{0})?{1}(?=[\W_]{2})", ShowNamePatternPreFix, ShowNamePatternShowName, ShowNamePatternEpisodeOnly));
-					var ShowNamePattern4 = new Regex(string.Format(@"^(?:{0})?{1}(?=[\W_]{2})", ShowNamePatternPreFix, ShowNamePatternShowName, ShowNamePatternEpisodeNumberOnly));
-					_Patterns = new List<Regex>() { ShowNamePattern1, ShowNamePattern2, ShowNamePattern3, ShowNamePattern4 };
+					var ShowNamePattern1 = new Regex(string.Format(@"^(?:{0})?{1}(?=[\W_]{2})", _showNamePatternPreFix, _showNamePatternShowName, _showNamePatternSeasonEpisode));
+					var ShowNamePattern2 = new Regex(string.Format(@"^(?:{0})?{1}(?=[\W_]{2})", _showNamePatternPreFix, _showNamePatternShowName, _showNamePatternSeasonEpisodeCross));
+					var ShowNamePattern3 = new Regex(string.Format(@"^(?:{0})?{1}(?=[\W_]{2})", _showNamePatternPreFix, _showNamePatternShowName, _showNamePatternEpisodeOnly));
+					var ShowNamePattern4 = new Regex(string.Format(@"^(?:{0})?{1}(?=[\W_]{2})", _showNamePatternPreFix, _showNamePatternShowName, _showNamePatternEpisodeNumberOnly));
+					_patterns = new List<Regex>() { ShowNamePattern1, ShowNamePattern2, ShowNamePattern3, ShowNamePattern4 };
 				}
-				return _Patterns;
+				return _patterns;
 			}
 		}
 
-		private String _ShowName;
-		public String ShowName
-		{
-			get
-			{
-				return _ShowName;
-			}
-		}
+		public string ShowName { get; private set; }
+		public int? SeasonNumber { get; private set; }
+		public int? EpisodeNumber { get; private set; }
+		public bool HasDetails { get; private set; }
 
-		private Int32? _SeasonNumber;
-		public Int32? SeasonNumber
-		{
-			get
-			{
-				return _SeasonNumber;
-			}
-		}
-
-		private Int32? _EpisodeNumber;
-		public Int32? EpisodeNumber
-		{
-			get
-			{
-				return _EpisodeNumber;
-			}
-		}
-
-		private Boolean _HasDetails = false;
-		public Boolean HasDetails
-		{
-			get
-			{
-				return _HasDetails;
-			}
-		}
-
-		public Boolean ExtractDetails(String SearchInput)
+		public bool ExtractDetails(String SearchInput)
 		{
 			// Use regex to extract out details.
-			foreach(var Pattern in Patterns)
+			foreach(var Pattern in patterns)
 			{
 				// Use regex to extract out details.
 				var Match = Pattern.Match(SearchInput);
@@ -80,16 +49,16 @@ namespace MediaOrganiser.Media.Shows.Details
 				}
 
 				// Set the details.
-				_ShowName = Regex.Replace(Match.Groups["ShowName"].Value, @"[\W_]+", " ").Trim();
-				_ShowName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(_ShowName.ToLower());
+				ShowName = Regex.Replace(Match.Groups["ShowName"].Value, @"[\W_]+", " ").Trim();
+				ShowName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(ShowName.ToLower());
 				
 				if(!string.IsNullOrEmpty(Match.Groups["SeasonNumber"].Value))
 				{
-					_SeasonNumber = Int32.Parse(Match.Groups["SeasonNumber"].Value);
+					SeasonNumber = Int32.Parse(Match.Groups["SeasonNumber"].Value);
 				}
-				_EpisodeNumber = Int32.Parse(Match.Groups["EpisodeNumber"].Value);
+				EpisodeNumber = Int32.Parse(Match.Groups["EpisodeNumber"].Value);
 				
-				_HasDetails = true;
+				HasDetails = true;
 				return true;
 			}
 

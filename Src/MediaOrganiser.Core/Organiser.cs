@@ -11,7 +11,7 @@ namespace MediaOrganiser.Organisers
 {
 	public class Organiser
 	{
-		private IFileSystem fileSystem = new FileSystem();
+		private IFileSystem _fileSystem = new FileSystem();
 		public DirectoryInfoBase WorkingDirectory;
 
 		public TextWriter StdOut
@@ -25,10 +25,10 @@ namespace MediaOrganiser.Organisers
 			set { Logger.Log("Organiser").StdErr = value; }
 		}
 
-		public void Organise(IMedia Media, DirectoryInfoBase OutputDirectory, Boolean ForceConversion)
+		public void Organise(IMedia media, DirectoryInfoBase outputDirectory, bool forceConversion)
 		{
 			// Create working directory.
-			WorkingDirectory = fileSystem.DirectoryInfo.FromDirectoryName(fileSystem.Path.Combine(fileSystem.Path.GetTempPath(), "WorkingArea"));
+			WorkingDirectory = _fileSystem.DirectoryInfo.FromDirectoryName(_fileSystem.Path.Combine(_fileSystem.Path.GetTempPath(), "WorkingArea"));
 
 			// Create working directory if it does not exist.
 			if(!WorkingDirectory.Exists)
@@ -37,89 +37,108 @@ namespace MediaOrganiser.Organisers
 			}
 
 			// Copy to working area.
-			CopyMediaToWorkingArea(Media);
+			CopyMediaToWorkingArea(media);
 
 			// Convert if required.
-			if(ForceConversion || Media.RequiresConversion)
+			if(forceConversion || media.RequiresConversion)
 			{
-				ConvertMedia(Media);
+				ConvertMedia(media);
 			}
 
 			// Extract media details exhaustivly.
-			ExtractExhaustiveMediaDetails(Media);
+			ExtractExhaustiveMediaDetails(media);
 
 			// Save media meta data.
-			SaveMediaMetaData(Media);
+			var saveResponse = SaveMediaMetaData(media);
+			if(!saveResponse)
+			{
+				Logger.Log("Organiser").StdOut.WriteLine("Unable to save metadata. Will convert. {0}", media.MediaFile.FullName);
+				ConvertMedia(media);
+				SaveMediaMetaData(media);
+			}
 
 			// Rename media.
-			RenameMediaToCleanFileName(Media);
+			RenameMediaToCleanFileName(media);
 
 			// If output directory not provided, delete file. Otherwise move to output directory.
-			MoveMediaToOutputDirectory(Media, OutputDirectory);
+			MoveMediaToOutputDirectory(media, outputDirectory);
 		}
 
-		private void CopyMediaToWorkingArea(IMedia Media)
+		private bool CopyMediaToWorkingArea(IMedia media)
 		{
-			Logger.Log("Organiser").StdOut.WriteLine("Copying media to working area. {0}", Media.MediaFile.FullName);
+			Logger.Log("Organiser").StdOut.WriteLine("Copying media to working area. {0}", media.MediaFile.FullName);
 			// Create file for working area version of media.
-			var WorkingAreaMediaFile = fileSystem.FileInfo.FromFileName(fileSystem.Path.Combine(WorkingDirectory.FullName, Media.MediaFile.Name));
-
+			var WorkingAreaMediaFile = _fileSystem.FileInfo.FromFileName(_fileSystem.Path.Combine(WorkingDirectory.FullName, media.MediaFile.Name));
 			// Copy the media and then assign the new file to the media.
-			Media.MediaFile.CopyTo(WorkingAreaMediaFile.FullName, true);
-			Media.MediaFile = WorkingAreaMediaFile;
-			Logger.Log("Organiser").StdOut.WriteLine("Copied media to working area. {0}", Media.MediaFile.FullName);
+			media.MediaFile.CopyTo(WorkingAreaMediaFile.FullName, true);
+			media.MediaFile = WorkingAreaMediaFile;
+			Logger.Log("Organiser").StdOut.WriteLine("Copied media to working area. {0}", media.MediaFile.FullName);
+			return true;
 		}
 
-		private void ConvertMedia(IMedia Media)
+		private bool ConvertMedia(IMedia media)
 		{
-			Logger.Log("Organiser").StdOut.WriteLine("Starting media conversion. {0}", Media.MediaFile.FullName);
-			Media.Convert();
-			Logger.Log("Organiser").StdOut.WriteLine("Converted media. {0}", Media.MediaFile.FullName);
+			Logger.Log("Organiser").StdOut.WriteLine("Starting media conversion. {0}", media.MediaFile.FullName);
+			if(media.Convert())
+			{
+				Logger.Log("Organiser").StdOut.WriteLine("Converted media. {0}", media.MediaFile.FullName);
+				return true;
+			}
+			Logger.Log("Organiser").StdOut.WriteLine("Unable to convert media. {0}", media.MediaFile.FullName);
+			return false;
 		}
 
-		private void ExtractExhaustiveMediaDetails(IMedia Media)
+		private bool ExtractExhaustiveMediaDetails(IMedia media)
 		{
-			Logger.Log("Organiser").StdOut.WriteLine("Extracting Details Exhaustive. {0}", Media.MediaFile.FullName);
-			Media.ExtractDetails(true);
-			Logger.Log("Organiser").StdOut.WriteLine("Extracted Details Exhaustive. {0}", Media.MediaFile.FullName);
+			Logger.Log("Organiser").StdOut.WriteLine("Extracting Details Exhaustive. {0}", media.MediaFile.FullName);
+			var response = media.ExtractDetails(true);
+			Logger.Log("Organiser").StdOut.WriteLine("Extracted Details Exhaustive. {0}", media.MediaFile.FullName);
+			return response;
 		}
 
-		private void SaveMediaMetaData(IMedia Media)
+		private bool SaveMediaMetaData(IMedia media)
 		{
-			Logger.Log().StdOut.WriteLine("Saving details. {0}", Media.MediaFile.FullName);
-			Media.SaveDetails();
-			Logger.Log().StdOut.WriteLine("Saved details. {0}", Media.MediaFile.FullName);
+			Logger.Log().StdOut.WriteLine("Saving details. {0}", media.MediaFile.FullName);
+			if(media.SaveDetails())
+			{
+				Logger.Log().StdOut.WriteLine("Saved details. {0}", media.MediaFile.FullName);
+				return true;
+			}
+			Logger.Log().StdOut.WriteLine("Unable to save details. {0}", media.MediaFile.FullName);
+			return false;
 		}
 
-		private void RenameMediaToCleanFileName(IMedia Media)
+		private bool RenameMediaToCleanFileName(IMedia media)
 		{
-			Logger.Log("Organiser").StdOut.WriteLine("Renaming media. {0}", Media.MediaFile.FullName);
-			var OrganisedMediaFile = fileSystem.FileInfo.FromFileName(fileSystem.Path.Combine(WorkingDirectory.FullName, Media.OrganisedMediaFile.Name));
+			Logger.Log("Organiser").StdOut.WriteLine("Renaming media. {0}", media.MediaFile.FullName);
+			var OrganisedMediaFile = _fileSystem.FileInfo.FromFileName(_fileSystem.Path.Combine(WorkingDirectory.FullName, media.OrganisedMediaFile.Name));
 			// Delete the file it already exists.
 			if(OrganisedMediaFile.Exists)
 			{
 				OrganisedMediaFile.Delete();
 			}
-			Media.MediaFile.MoveTo(OrganisedMediaFile.FullName);
-			Logger.Log("Organiser").StdOut.WriteLine("Renamed media. {0}", Media.MediaFile.FullName);
+			media.MediaFile.MoveTo(OrganisedMediaFile.FullName);
+			Logger.Log("Organiser").StdOut.WriteLine("Renamed media. {0}", media.MediaFile.FullName);
+			return true;
 		}
 
-		private void MoveMediaToOutputDirectory(IMedia Media, DirectoryInfoBase OutputDirectory)
+		private bool MoveMediaToOutputDirectory(IMedia media, DirectoryInfoBase outputDirectory)
 		{
-			var OrganisedFile = fileSystem.FileInfo.FromFileName(fileSystem.Path.Combine(OutputDirectory.FullName, Media.OrganisedMediaFile.ToString()));
+			var OrganisedFile = _fileSystem.FileInfo.FromFileName(_fileSystem.Path.Combine(outputDirectory.FullName, media.OrganisedMediaFile.Name));
 			if(OrganisedFile.Exists)
 			{
-				Logger.Log("Organiser").StdOut.WriteLine("Media file already exists. Will not overwriting. {0}", Media.MediaFile.FullName);
-				return;
+				Logger.Log("Organiser").StdOut.WriteLine("Media file already exists. Will not overwriting. {0}", media.MediaFile.FullName);
+				return true;
 			}
 
-			Logger.Log("Organiser").StdOut.WriteLine("Copying media to output directory. {0}", Media.MediaFile.FullName);
+			Logger.Log("Organiser").StdOut.WriteLine("Copying media to output directory. {0}", media.MediaFile.FullName);
 			if(!OrganisedFile.Directory.Exists)
 			{
 				OrganisedFile.Directory.Create();
 			}
-			Media.MediaFile.MoveTo(OrganisedFile.FullName);
-			Logger.Log("Organiser").StdOut.WriteLine("Copied media to output directory. {0}", Media.MediaFile.FullName);
+			media.MediaFile.MoveTo(OrganisedFile.FullName);
+			Logger.Log("Organiser").StdOut.WriteLine("Copied media to output directory. {0}", media.MediaFile.FullName);
+			return true;
 		}
 	}
 }

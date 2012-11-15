@@ -11,132 +11,56 @@ namespace MediaOrganiser.Media.Shows
 	{
 		private IFileSystem fileSystem = new FileSystem();
 
+		private IShowDetailsBasic showDetailsBasic = null;
+		private IShowDetailsAdditional showDetailsAdditional = null;
+
+		private ShowDetailsRegex showDetailsRegex = new ShowDetailsRegex();
+		private ShowDetailsTVDB showDetailsTVDB = new ShowDetailsTVDB();
+		private ShowDetailsAtomic showDetailsAtomic = new ShowDetailsAtomic();
+
+		private static string OrganisedFileType = "mp4";
+
 		public FileInfoBase MediaFile { get; set; }
 
-		private IShowDetailsBasic ShowDetailsBasic = null;
-		private IShowDetailsAdditional ShowDetailsAdditional = null;
+		public bool HasDetails { get { return (showDetailsBasic!=null); } }
+		public bool HasFullDetails { get { return (showDetailsAdditional!=null); } }
+		public string ShowName { get { return showDetailsBasic.ShowName; } }
+		public int? SeasonNumber { get { return showDetailsBasic.SeasonNumber; } }
+		public int? EpisodeNumber { get { return showDetailsBasic.EpisodeNumber; } }
+		public string EpisodeName { get { return showDetailsAdditional==null?null:showDetailsAdditional.EpisodeName; } }
+		public DateTime? AiredDate { get { return showDetailsAdditional==null?null:showDetailsAdditional.AiredDate; } }
+		public string Overview { get { return showDetailsAdditional==null?null:showDetailsAdditional.Overview; } }
+		public string TVNetwork { get { return showDetailsAdditional==null?null:showDetailsAdditional.TVNetwork; } }
+		public IEnumerable<FileInfoBase> Artworks { get { return showDetailsAdditional==null?null:showDetailsAdditional.Artworks; } }
+		public bool RequiresConversion { get { return (MediaFile.Extension.ToLower() != "."+OrganisedFileType); } }
 
-		private ShowDetailsRegex ShowDetailsRegex = new ShowDetailsRegex();
-		private ShowDetailsTVDB ShowDetailsTVDB = new ShowDetailsTVDB();
-		private ShowDetailsAtomic ShowDetailsAtomic = new ShowDetailsAtomic();
-
-		private static String OrganisedFileType = "mp4";
-
-		public Boolean HasDetails
+		public Show(FileInfoBase mediaFile)
 		{
-			get
-			{
-				return (ShowDetailsBasic!=null);
-			}
+			MediaFile = mediaFile;
 		}
 
-		public Boolean HasFullDetails
-		{
-			get
-			{
-				return (ShowDetailsAdditional!=null);
-			}
-		}
-
-		public String ShowName
-		{
-			get
-			{
-				return ShowDetailsBasic.ShowName;
-			}
-		}
-
-		public Int32? SeasonNumber
-		{
-			get
-			{
-				return ShowDetailsBasic.SeasonNumber;
-			}
-		}
-
-		public Int32? EpisodeNumber
-		{
-			get
-			{
-				return ShowDetailsBasic.EpisodeNumber;
-			}
-		}
-
-		public String EpisodeName
-		{
-			get
-			{
-				return ShowDetailsAdditional==null?null:ShowDetailsAdditional.EpisodeName;
-			}
-		}
-
-		public DateTime? AiredDate
-		{
-			get
-			{
-				return ShowDetailsAdditional==null?null:ShowDetailsAdditional.AiredDate;
-			}
-		}
-
-		public String Overview
-		{
-			get
-			{
-				return ShowDetailsAdditional==null?null:ShowDetailsAdditional.Overview;
-			}
-		}
-
-		public String TVNetwork
-		{
-			get
-			{
-				return ShowDetailsAdditional==null?null:ShowDetailsAdditional.TVNetwork;
-			}
-		}
-
-		public IEnumerable<FileInfoBase> Artworks
-		{
-			get
-			{
-				return ShowDetailsAdditional==null?null:ShowDetailsAdditional.Artworks;
-			}
-		}
-
-		public Boolean RequiresConversion
-		{
-			get
-			{
-				return (MediaFile.Extension.ToLower() != "."+OrganisedFileType);
-			}
-		}
-
-		public Show(FileInfoBase MediaFile)
-		{
-			this.MediaFile = MediaFile;
-		}
-
-		public Boolean ExtractDetails(Boolean DoExhaustiveExtraction=true)
+		public bool ExtractDetails(bool doExhaustiveExtraction=true)
 		{
 			// 1) Try getting from file name.
-			if(ShowDetailsRegex.HasDetails || ShowDetailsRegex.ExtractDetails(MediaFile.Name))
+			if(showDetailsRegex.HasDetails || showDetailsRegex.ExtractDetails(MediaFile.Name))
 			{
-				ShowDetailsBasic = ShowDetailsRegex;
+				showDetailsBasic = showDetailsRegex;
 			}
 
 			// 2) If DoExhaustiveExtraction set then try getting directly from file meta data.
-			if(DoExhaustiveExtraction && (ShowDetailsAtomic.HasDetails || ShowDetailsAtomic.ExtractDetails(MediaFile)))
+			if(doExhaustiveExtraction && (showDetailsAtomic.HasDetails || showDetailsAtomic.ExtractDetails(MediaFile)))
 			{
-				ShowDetailsBasic = ShowDetailsAtomic;
-				ShowDetailsAdditional = ShowDetailsAtomic;
+				showDetailsBasic = showDetailsAtomic;
+				showDetailsAdditional = showDetailsAtomic;
 			}
 
 			// 3) If HasDetails and DoExhaustiveExtraction then try getting additional details from online.
 			try
 			{
-				if(HasDetails && DoExhaustiveExtraction && (ShowDetailsTVDB.HasDetails || ShowDetailsTVDB.ExtractDetails(ShowDetailsBasic)))
+				if(HasDetails && doExhaustiveExtraction && (showDetailsTVDB.HasDetails || showDetailsTVDB.ExtractDetails(showDetailsBasic)))
 				{
-					ShowDetailsBasic = ShowDetailsTVDB;
-					ShowDetailsAdditional = ShowDetailsTVDB;
+					showDetailsBasic = showDetailsTVDB;
+					showDetailsAdditional = showDetailsTVDB;
 				}
 			}
 			catch
@@ -146,63 +70,70 @@ namespace MediaOrganiser.Media.Shows
 			return HasDetails;
 		}
 
-		public void SaveDetails()
+		public bool SaveDetails()
 		{
-			AtomicParsley.AtomicParsley.SetDetails(MediaFile.FullName, ShowName, SeasonNumber, EpisodeNumber, EpisodeName, AiredDate, Overview, TVNetwork, Artworks==null?null:Artworks.Select(A=>A.FullName));
+			return AtomicParsley.AtomicParsley.SetDetails(MediaFile.FullName, ShowName, SeasonNumber, EpisodeNumber, EpisodeName, AiredDate, Overview, TVNetwork, Artworks==null?null:Artworks.Select(A=>A.FullName));
 		}
 
 		public FileInfoBase OrganisedMediaFile
 		{
 			get
 			{
-				String ShowFilePath = "";
-				String ShowFileName = "";
+				// Initalise empty filename and filepath.
+				var showFilePath = "";
+				var showFileName = "";
 				
 				// Add show name.
-				ShowFilePath += ShowDetailsBasic.ShowName;
-				ShowFileName += ShowDetailsBasic.ShowName + " - ";
+				showFilePath += showDetailsBasic.ShowName;
+				showFileName += showDetailsBasic.ShowName + " - ";
 				
 				// Add season number.
-				if(ShowDetailsBasic.SeasonNumber!=null)
+				if(showDetailsBasic.SeasonNumber!=null)
 				{
-					ShowFilePath = fileSystem.Path.Combine(ShowFilePath, String.Format("Season {0}", ShowDetailsBasic.SeasonNumber));
-					ShowFileName += String.Format("S{0:D2}", ShowDetailsBasic.SeasonNumber); 
+					showFilePath = fileSystem.Path.Combine(showFilePath, String.Format("Season {0}", showDetailsBasic.SeasonNumber));
+					showFileName += String.Format("S{0:D2}", showDetailsBasic.SeasonNumber); 
 				}
 				
 				// Add episode number.
-				ShowFileName += String.Format("E{0:D2}", ShowDetailsBasic.EpisodeNumber);
+				showFileName += String.Format("E{0:D2}", showDetailsBasic.EpisodeNumber);
 				
 				// Add epsisode name.
-				if(HasFullDetails && ShowDetailsAdditional.EpisodeName != null)
+				if(HasFullDetails && showDetailsAdditional.EpisodeName != null)
 				{
-					ShowFileName += " - "+ShowDetailsAdditional.EpisodeName;
+					showFileName += " - "+showDetailsAdditional.EpisodeName;
 				}
 				
 				// Add extension.
-				ShowFileName += MediaFile.Extension;
+				showFileName += MediaFile.Extension;
 				
 				// Sanitise.
-				ShowFilePath = ShowFilePath.Trim(fileSystem.Path.GetInvalidPathChars());
-				ShowFileName = ShowFileName.Trim(fileSystem.Path.GetInvalidFileNameChars());
+				showFilePath = showFilePath.Trim(fileSystem.Path.GetInvalidPathChars());
+				showFileName = showFileName.Trim(fileSystem.Path.GetInvalidFileNameChars());
 				
 				// Return the full file path.
-				return fileSystem.FileInfo.FromFileName(fileSystem.Path.Combine(ShowFilePath, ShowFileName));
+				return fileSystem.FileInfo.FromFileName(fileSystem.Path.Combine(showFilePath, showFileName));
 			}
 		}
 
-		public void Convert()
+		public bool Convert()
 		{
 			// Create file for converted version of show.
 			var fullNameWithoutExtension = fileSystem.Path.Combine(MediaFile.Directory.FullName, fileSystem.Path.GetFileNameWithoutExtension(MediaFile.FullName));
-			var ConvertedMediaFile = fileSystem.FileInfo.FromFileName(fullNameWithoutExtension + ".converted." + OrganisedFileType);
+			var convertedMediaFile = fileSystem.FileInfo.FromFileName(fullNameWithoutExtension + ".converted." + OrganisedFileType);
 
 			// Convert show.
-			Convertor.Convertor.ConvertForRetina(MediaFile, ConvertedMediaFile);
+			if(!Convertor.Convertor.ConvertForRetina(MediaFile, convertedMediaFile))
+			{
+				return false;
+			}
 
 			// Delete old file and assign the new converted file to the show.
-			var OldFile = MediaFile;
-			MediaFile = ConvertedMediaFile;
-			OldFile.Delete();
+			var oldFile = MediaFile;
+			MediaFile = convertedMediaFile;
+			oldFile.Delete();
+
+			// Return true.
+			return true;
 		}
 	}
 }

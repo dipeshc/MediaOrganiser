@@ -4,9 +4,8 @@ namespace MediaOrganiser.Media.Shows.Details
 {
 	public interface IShowDetailsBasic
 	{
-		String ShowName { get; }
-		Int32? SeasonNumber { get; }
-		Int32? EpisodeNumber { get; }
+		string ShowName { get; }
+		int? SeasonNumber { get; }
+		int? EpisodeNumber { get; }
 	}
 }
-
