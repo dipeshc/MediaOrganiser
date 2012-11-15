@@ -10,21 +10,25 @@ namespace MediaOrganiser.Console.Finders
 {
 	public class ShowFinder : IMediaFinder
 	{
-		private static IFileSystem fileSystem = new FileSystem();
 		public static IEnumerable<String> ShowFileTypes = new List<String>() {"mp4", "avi", "mkv", "m4v"};
 
 		private List<IShow> InputShows;
 		private List<IShow> ExcludedShows;
 
+		public IFileSystem FileSystem { get; private set; }
 		public IEnumerable<string> InputPaths { get; private set; }
 		public IEnumerable<string> ExcludedPaths { get; private set; }
 
-		public ShowFinder(IEnumerable<string> InputPaths, IEnumerable<string> ExcludedPaths)
+		public ShowFinder(IEnumerable<string> inputPaths, IEnumerable<string> excludedPaths) : this(new FileSystem(), inputPaths, excludedPaths)
 		{
-			this.InputPaths = InputPaths;
-			this.ExcludedPaths = ExcludedPaths;
 		}
 
+		public ShowFinder(IFileSystem fileSystem, IEnumerable<string> inputPaths, IEnumerable<string> excludedPaths)
+		{
+			FileSystem = fileSystem;
+			InputPaths = inputPaths;
+			ExcludedPaths = excludedPaths;
+		}
 
 		public IEnumerable<IMedia> Scan()
 		{
@@ -47,7 +51,6 @@ namespace MediaOrganiser.Console.Finders
 			});
 		}
 
-
 		private IEnumerable<IShow> GetShowsAtPaths(IEnumerable<string> Paths)
 		{
 			var Shows = new List<IShow>();
@@ -58,21 +61,20 @@ namespace MediaOrganiser.Console.Finders
 			return Shows;
 		}
 
-
 		private IEnumerable<IShow> GetShowsAtPath(string Path)
 		{
 			var Shows = new List<IShow>();
 			foreach(var ShowFileType in ShowFileTypes)
 			{
 				// If file then add directly.
-				if(fileSystem.File.Exists(Path) && fileSystem.FileInfo.FromFileName(Path).Extension.ToLower()=="."+ShowFileType)
+				if(FileSystem.File.Exists(Path) && FileSystem.FileInfo.FromFileName(Path).Extension.ToLower()=="."+ShowFileType)
 				{
-					Shows.Add(new Show(fileSystem.FileInfo.FromFileName(Path)));
+					Shows.Add(new Show(FileSystem.FileInfo.FromFileName(Path)));
 				}
-				else if(fileSystem.Directory.Exists(Path))
+				else if(FileSystem.Directory.Exists(Path))
 				{
 					// If directory go through directory and then add.
-					foreach(var ShowFile in fileSystem.DirectoryInfo.FromDirectoryName(Path).GetFiles("*."+ShowFileType, System.IO.SearchOption.AllDirectories))
+					foreach(var ShowFile in FileSystem.DirectoryInfo.FromDirectoryName(Path).GetFiles("*."+ShowFileType, System.IO.SearchOption.AllDirectories))
 					{
 						Shows.Add(new Show(ShowFile));
 					}

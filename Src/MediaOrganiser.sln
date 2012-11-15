@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiser.Core.Tests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiser.Console", "MediaOrganiser.Console\MediaOrganiser.Console.csproj", "{873C3B13-86E7-42AD-85C8-AA34E0C0372E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganiser.Console.Tests", "MediaOrganiser.Console.Tests\MediaOrganiser.Console.Tests.csproj", "{F53C6D9C-1870-4ABA-8C3C-6466A21E8DBF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -32,6 +34,12 @@ Global
 		{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}.Debug|x86.Build.0 = Debug|x86
 		{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}.Release|x86.ActiveCfg = Release|x86
 		{DBF1588A-5DC4-4BF4-A300-DE3B88886E4F}.Release|x86.Build.0 = Release|x86
+		{F53C6D9C-1870-4ABA-8C3C-6466A21E8DBF}.AppStore|x86.ActiveCfg = Debug|x86
+		{F53C6D9C-1870-4ABA-8C3C-6466A21E8DBF}.AppStore|x86.Build.0 = Debug|x86
+		{F53C6D9C-1870-4ABA-8C3C-6466A21E8DBF}.Debug|x86.ActiveCfg = Debug|x86
+		{F53C6D9C-1870-4ABA-8C3C-6466A21E8DBF}.Debug|x86.Build.0 = Debug|x86
+		{F53C6D9C-1870-4ABA-8C3C-6466A21E8DBF}.Release|x86.ActiveCfg = Release|x86
+		{F53C6D9C-1870-4ABA-8C3C-6466A21E8DBF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = MediaOrganiser.Console\MediaOrganiser.Console.csproj
