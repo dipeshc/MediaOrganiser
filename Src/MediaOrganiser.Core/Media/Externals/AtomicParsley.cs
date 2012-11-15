@@ -12,128 +12,130 @@ namespace MediaOrganiser.AtomicParsley
 {
 	public static class AtomicParsley
 	{
-		private static IFileSystem fileSystem = new FileSystem();
-		private static Regex AtomDetailRegex = new Regex("Atom \"(.*)\" contains: (.*)");
+		private static IFileSystem _fileSystem = new FileSystem();
+		private static Regex _atomDetailRegex = new Regex("Atom \"(.*)\" contains: (.*)");
 
-		private static FileInfoBase AtomicParsleyFile
+		private static FileInfoBase _atomicParsleyFile
 		{
 			get
 			{
 				// Get AtomicParsely file.
-				var _AtomicParsleyFile = fileSystem.FileInfo.FromFileName(fileSystem.Path.Combine(fileSystem.Path.GetTempPath(), "MediaOrganiser" + fileSystem.Path.DirectorySeparatorChar + "AtomicParsley.exe"));
+				var atomicParsleyFile = _fileSystem.FileInfo.FromFileName(_fileSystem.Path.Combine(_fileSystem.Path.GetTempPath(), "MediaOrganiser" + _fileSystem.Path.DirectorySeparatorChar + "AtomicParsley.exe"));
 
 				// Create directory if required.
-				if(!_AtomicParsleyFile.Directory.Exists)
+				if(!atomicParsleyFile.Directory.Exists)
 				{
-					_AtomicParsleyFile.Directory.Create();
+					atomicParsleyFile.Directory.Create();
 				}
 
 				// If AtomicParsely does not exist, then create it.
-				if(!_AtomicParsleyFile.Exists)
+				if(!atomicParsleyFile.Exists)
 				{
 					// Create folder if does not exist.
-					if(!_AtomicParsleyFile.Directory.Exists)
+					if(!atomicParsleyFile.Directory.Exists)
 					{
-						_AtomicParsleyFile.Directory.Create();
+						atomicParsleyFile.Directory.Create();
 					}
 
 					// Read bytes from assembly and create the file.
-					System.IO.Stream Stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MediaOrganiser.Core.Media.Externals."+_AtomicParsleyFile.Name);
-					byte[] Bytes = new byte[(int)Stream.Length];
-					Stream.Read(Bytes, 0, Bytes.Length);
-					System.IO.File.WriteAllBytes(_AtomicParsleyFile.FullName, Bytes);
+					var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MediaOrganiser.Core.Media.Externals."+atomicParsleyFile.Name);
+					var bytes = new byte[(int)stream.Length];
+					stream.Read(bytes, 0, bytes.Length);
+					_fileSystem.File.WriteAllBytes(atomicParsleyFile.FullName, bytes);
 
 					// Set permissions.
-					Syscall.chmod(_AtomicParsleyFile.FullName, FilePermissions.S_IRWXU);
+					Syscall.chmod(atomicParsleyFile.FullName, FilePermissions.S_IRWXU);
 				}
 
 				// Return.
-				return _AtomicParsleyFile;
+				return atomicParsleyFile;
 			}
 		}
 
-		public static int Run(String Arguments, out string Output)
+		public static int Run(string arguments, out string output)
 		{
 			// Create StartInfo.
-			var AtomicParsleyProcessStartInfo = new ProcessStartInfo();
-			AtomicParsleyProcessStartInfo.FileName = AtomicParsleyFile.FullName;
-			AtomicParsleyProcessStartInfo.Arguments = Arguments;
-			AtomicParsleyProcessStartInfo.UseShellExecute = false;
-			AtomicParsleyProcessStartInfo.RedirectStandardOutput = true;
-			AtomicParsleyProcessStartInfo.RedirectStandardError = true;
+			var atomicParsleyProcessStartInfo = new ProcessStartInfo();
+			atomicParsleyProcessStartInfo.FileName = _atomicParsleyFile.FullName;
+			atomicParsleyProcessStartInfo.Arguments = arguments;
+			atomicParsleyProcessStartInfo.UseShellExecute = false;
+			atomicParsleyProcessStartInfo.RedirectStandardOutput = true;
+			atomicParsleyProcessStartInfo.RedirectStandardError = true;
 
 			// Run.
-			using(var AtomicParsleyProcess = Process.Start(AtomicParsleyProcessStartInfo))
+			using(var atomicParsleyProcess = Process.Start(atomicParsleyProcessStartInfo))
 			{
 				// Write StdOut.
-				var LocalOutput = Output.ToString();
-				AtomicParsleyProcess.OutputDataReceived += (Sender, E) =>
+				var localOutput = output.ToString();
+				atomicParsleyProcess.OutputDataReceived += (Sender, E) =>
 				{
-					LocalOutput += E.Data;
+					localOutput += E.Data;
 					Logger.Log("AtomicParsley").StdOut.Write(E.Data);
 				};
 				
 				// Write StdErr.
-				AtomicParsleyProcess.ErrorDataReceived += (Sender, E) =>
+				atomicParsleyProcess.ErrorDataReceived += (Sender, E) =>
 				{
 					Logger.Log("AtomicParsley").StdErr.Write(E.Data);
 				};
 				
 				// Wait for process to exit and then assign Output to LocalOuput.
-				AtomicParsleyProcess.WaitForExit();
-				Output = LocalOutput;
+				atomicParsleyProcess.WaitForExit();
+				output = localOutput;
 
 				// Return exit code.
-				return AtomicParsleyProcess.ExitCode;
+				return atomicParsleyProcess.ExitCode;
 			}
 		}
 
-		public static Dictionary<String, String> ExtractDetails(String FilePath)
+		public static bool ExtractDetails(string filePath, out Dictionary<string, string> details)
 		{
-			Dictionary<String, String> Details = new Dictionary<String, String>();
-
-			string Output = "";
-			if(Run(String.Format("\"{0}\" -t", FilePath), out Output)!=0)
+			var output = "";
+			if(Run(string.Format("\"{0}\" -t", filePath), out output)!=0)
 			{
-				return Details;
+				details = null;
+				return false;
 			}
 
-			Output.Split('\n').ToList().ForEach(Line =>
+			// Parse out details.
+			var localDetails = new Dictionary<string, string>();
+			output.Split('\n').ToList().ForEach(Line =>
 			{
 				// Use regex to extract out details.
-				Match Match = AtomDetailRegex.Match(Line);
+				Match Match = _atomDetailRegex.Match(Line);
 				if(Match.Success)
 				{
-					Details.Add(Match.Groups[1].Value, Match.Groups[2].Value);
+					localDetails.Add(Match.Groups[1].Value, Match.Groups[2].Value);
 				}
 			});
+			details = localDetails;
 
-			return Details;
+			return true;
 		}
 
-		public static void SetDetails(String FilePath, String ShowName, Int32? SeasonNumber, Int32? EpisodeNumber, String EpisodeName, DateTime? AiredDate, String Overview, String TVNetwork, IEnumerable<String> ArtworkPaths=null)
+		public static bool SetDetails(string filePath, string showName, int? seasonNumber, int? episodeNumber, string episodeName, DateTime? airedDate, string overview, string tvNetwork, IEnumerable<String> artworkPaths=null)
 		{
-			String Arguments = String.Format(
+			var arguments = String.Format(
 				"\"{0}\" --overWrite --stik \"TV Show\" --TVShowName \"{1}\" --TVSeasonNum \"{2}\" --TVEpisodeNum \"{3}\" --tracknum \"{3}\" --title \"{4}\" --year \"{5}\" --description \"{6}\" --TVNetwork \"{7}\" --artwork REMOVE_ALL",
-				FilePath,
-				ShowName.Replace("\\", "\\\\").Replace("\"", "\\\""),
-				SeasonNumber,
-				EpisodeNumber,
-				EpisodeName==null?"":EpisodeName.Replace("\\", "\\\\").Replace("\"", "\\\""),
-				(AiredDate==null?"":((DateTime)AiredDate).ToString("u").Replace(" ", "T")),
-				Overview==null?"":Overview.Replace("\\", "\\\\").Replace("\"", "\\\""),
-				TVNetwork==null?"":TVNetwork.Replace("\\", "\\\\").Replace("\"", "\\\""));
+				filePath,
+				showName.Replace("\\", "\\\\").Replace("\"", "\\\""),
+				seasonNumber,
+				episodeNumber,
+				episodeName==null?"":episodeName.Replace("\\", "\\\\").Replace("\"", "\\\""),
+				(airedDate==null?"":((DateTime)airedDate).ToString("u").Replace(" ", "T")),
+				overview==null?"":overview.Replace("\\", "\\\\").Replace("\"", "\\\""),
+				tvNetwork==null?"":tvNetwork.Replace("\\", "\\\\").Replace("\"", "\\\""));
 
-			if(ArtworkPaths!=null)
+			if(artworkPaths!=null)
 			{
-				foreach(String ArtworkPath in ArtworkPaths)
+				foreach(var artworkPath in artworkPaths)
 				{
-					Arguments += String.Format(" --artwork \"{0}\"", ArtworkPath);
+					arguments += String.Format(" --artwork \"{0}\"", artworkPath);
 				}
 			}
 
-			String Output = "";
-			Run(Arguments, out Output);
+			String output = "";
+			return Run(arguments, out output)==0;
 		}
 	}
 }
