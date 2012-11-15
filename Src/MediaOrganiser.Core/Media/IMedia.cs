@@ -8,13 +8,13 @@ namespace MediaOrganiser.Media
 		FileInfoBase MediaFile { get ; set; }
 		FileInfoBase OrganisedMediaFile { get; }
 
-		Boolean ExtractDetails(Boolean GetFullDetails=true);
-		Boolean HasDetails { get; }
-		Boolean HasFullDetails { get; }
-		void SaveDetails();
+		bool ExtractDetails(bool getFullDetails=true);
+		bool HasDetails { get; }
+		bool HasFullDetails { get; }
+		bool SaveDetails();
 
-		Boolean RequiresConversion { get; }
-		void Convert();
+		bool RequiresConversion { get; }
+		bool Convert();
 	}
 }
 

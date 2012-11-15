@@ -9,57 +9,57 @@ namespace MediaOrganiser.HandBrake
 {
 	public static class HandBrake
 	{
-		private static IFileSystem fileSystem = new FileSystem();
+		private static IFileSystem _fileSystem = new FileSystem();
 
-		private static FileInfoBase HandBrakeFile
+		private static FileInfoBase _handBrakeFile
 		{
 			get
 			{
 				// Get HandBrakeCLI file.
-				var _HandBrakeFile = fileSystem.FileInfo.FromFileName(fileSystem.Path.Combine(fileSystem.Path.GetTempPath(), "HandBrakeCLI.exe"));
+				var handBrakeFile = _fileSystem.FileInfo.FromFileName(_fileSystem.Path.Combine(_fileSystem.Path.GetTempPath(), "HandBrakeCLI.exe"));
 
 				// Create directory if required.
-				if(!_HandBrakeFile.Directory.Exists)
+				if(!handBrakeFile.Directory.Exists)
 				{
-					_HandBrakeFile.Directory.Create();
+					handBrakeFile.Directory.Create();
 				}
 
 				// If HandBrake does not exist, then create it.
-				if(!_HandBrakeFile.Exists)
+				if(!handBrakeFile.Exists)
 				{
 					// Create folder if does not exist.
-					if(!_HandBrakeFile.Directory.Exists)
+					if(!handBrakeFile.Directory.Exists)
 					{
-						_HandBrakeFile.Directory.Create();
+						handBrakeFile.Directory.Create();
 					}
 
 					// Read bytes from assembly and create the HandBrake.
-					System.IO.Stream Stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MediaOrganiser.Core.Convertor.Externals."+_HandBrakeFile.Name);
-					byte[] Bytes = new byte[(int)Stream.Length];
-					Stream.Read(Bytes, 0, Bytes.Length);
-					System.IO.File.WriteAllBytes(_HandBrakeFile.FullName, Bytes);
+					var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MediaOrganiser.Core.Convertor.Externals." + handBrakeFile.Name);
+					var bytes = new byte[(int)stream.Length];
+					stream.Read(bytes, 0, bytes.Length);
+					_fileSystem.File.WriteAllBytes(handBrakeFile.FullName, bytes);
 
 					// Set permissions.
-					Syscall.chmod(_HandBrakeFile.FullName, FilePermissions.S_IRWXU);
+					Syscall.chmod(handBrakeFile.FullName, FilePermissions.S_IRWXU);
 				}
 
 				// Return.
-				return _HandBrakeFile;
+				return handBrakeFile;
 			}
 		}
 
-		public static int Run(String Arguments)
+		public static int Run(string arguments)
 		{
 			// Create StartInfo.
-			var HandBrakeProcessStartInfo = new ProcessStartInfo();
-			HandBrakeProcessStartInfo.FileName = HandBrakeFile.FullName;
-			HandBrakeProcessStartInfo.Arguments = Arguments;
-			HandBrakeProcessStartInfo.UseShellExecute = false;
-			HandBrakeProcessStartInfo.RedirectStandardOutput = true;
-			HandBrakeProcessStartInfo.RedirectStandardError = true;
+			var handBrakeProcessStartInfo = new ProcessStartInfo();
+			handBrakeProcessStartInfo.FileName = _handBrakeFile.FullName;
+			handBrakeProcessStartInfo.Arguments = arguments;
+			handBrakeProcessStartInfo.UseShellExecute = false;
+			handBrakeProcessStartInfo.RedirectStandardOutput = true;
+			handBrakeProcessStartInfo.RedirectStandardError = true;
 
 			// Run.
-			using(var HandBrakeProcess = Process.Start(HandBrakeProcessStartInfo))
+			using(var HandBrakeProcess = Process.Start(handBrakeProcessStartInfo))
 			{
 				// Write StdOut.
 				HandBrakeProcess.OutputDataReceived += (Sender, E) =>

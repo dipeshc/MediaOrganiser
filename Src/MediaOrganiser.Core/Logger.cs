@@ -8,14 +8,14 @@ namespace System.Logger
 		public TextWriter StdOut = Console.Out;
 		public TextWriter StdErr = Console.Error;
 
-		private static Dictionary<string, Logger> Logs = new Dictionary<string, Logger>();
-		public static Logger Log(string LogName = "Global")
+		private static Dictionary<string, Logger> logs = new Dictionary<string, Logger>();
+		public static Logger Log(string logName = "Global")
 		{
-			if(!Logs.ContainsKey(LogName))
+			if(!logs.ContainsKey(logName))
 			{
-				Logs[LogName] = new Logger();
+				logs[logName] = new Logger();
 			}
-			return Logs[LogName];
+			return logs[logName];
 		}
 	}
 }
