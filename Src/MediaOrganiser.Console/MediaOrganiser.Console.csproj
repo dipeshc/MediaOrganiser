@@ -44,7 +44,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Finders\IMediaFinder.cs" />
     <Compile Include="Finders\ShowFinder.cs" />
     <Compile Include="Program.cs" />
