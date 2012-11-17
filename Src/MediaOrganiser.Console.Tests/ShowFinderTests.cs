@@ -74,4 +74,3 @@ namespace MediaOrganiser.Console.Tests.Finders
 		}
 	}
 }
-
