@@ -61,7 +61,6 @@ namespace MediaOrganiser.Console.Tests.Finders
 
 			Assert.AreSame(inputPaths, finder.InputPaths);
 			Assert.AreSame(excludePaths, finder.ExcludedPaths);
-			Assert.AreSame(_fileSystem, finder.FileSystem);
 		}
 
 		[Test]
