@@ -122,7 +122,7 @@ namespace MediaOrganiser.Media.Shows
 			var convertedMediaFile = fileSystem.FileInfo.FromFileName(fullNameWithoutExtension + ".converted." + OrganisedFileType);
 
 			// Convert show.
-			if(!Convertor.Convertor.ConvertForRetina(MediaFile, convertedMediaFile))
+			if(!Convertor.Convertor.Convert(MediaFile, convertedMediaFile))
 			{
 				return false;
 			}

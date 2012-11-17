@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Diagnostics;
 using Mono.Unix.Native;
 
-namespace MediaOrganiser.HandBrake
+namespace MediaOrganiser.Convertor.HandBrake
 {
 	public static class HandBrake
 	{
