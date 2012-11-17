@@ -64,6 +64,7 @@ namespace MediaOrganiser.Console.Tests.Finders
 		}
 
 		[Test]
+		[Ignore]
 		public void ScanTest()
 		{
 			var inputPaths = new List<string> {"/Input/"};
