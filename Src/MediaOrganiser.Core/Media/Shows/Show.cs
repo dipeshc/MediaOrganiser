@@ -75,7 +75,7 @@ namespace MediaOrganiser.Media.Shows
 			return AtomicParsley.AtomicParsley.SetDetails(MediaFile.FullName, ShowName, SeasonNumber, EpisodeNumber, EpisodeName, AiredDate, Overview, TVNetwork, Artworks==null?null:Artworks.Select(A=>A.FullName));
 		}
 
-		public FileInfoBase OrganisedMediaFile
+		public string OrganisedMediaFileOutputPath
 		{
 			get
 			{
@@ -111,7 +111,7 @@ namespace MediaOrganiser.Media.Shows
 				showFileName = showFileName.Trim(fileSystem.Path.GetInvalidFileNameChars());
 				
 				// Return the full file path.
-				return fileSystem.FileInfo.FromFileName(fileSystem.Path.Combine(showFilePath, showFileName));
+				return fileSystem.Path.Combine(showFilePath, showFileName);
 			}
 		}
 
