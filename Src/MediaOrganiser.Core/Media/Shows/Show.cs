@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
+using TagLib.Id3v2;
 
 namespace MediaOrganiser.Media.Shows
 {

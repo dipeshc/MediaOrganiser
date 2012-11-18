@@ -45,6 +45,7 @@
     <Compile Include="Convertor\Convertor.cs" />
     <Compile Include="Convertor\Externals\HandBrake.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="TagModifier.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Core" />
@@ -55,6 +56,9 @@
     </Reference>
     <Reference Include="System.IO.Abstractions">
       <HintPath>..\packages\System.IO.Abstractions.1.4.0.35\lib\net35\System.IO.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="taglib-sharp">
+      <HintPath>..\packages\taglib.2.1.0.0\lib\taglib-sharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
