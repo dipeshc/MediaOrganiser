@@ -20,11 +20,6 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>True</Externalconsole>
-    <CustomCommands>
-      <CustomCommands>
-        <Command type="AfterBuild" command="rm -rf ${SolutionDir}/../Output; mkdir ${SolutionDir}/../Output; mono ${SolutionDir}/../Build/ILRepack.exe /out:${SolutionDir}/../Output/${TargetName} ${TargetName} *.dll" workingdir="${TargetDir}" externalConsole="True" pauseExternalConsole="True" />
-      </CustomCommands>
-    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
