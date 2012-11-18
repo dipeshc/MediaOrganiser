@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
+using System.Logger;
 using ManyConsole;
 using NDesk.Options;
 using MediaOrganiser.Console.Finders;
@@ -49,7 +50,14 @@ namespace MediaOrganiser.Console
 			}
 			var showFinder = new ShowFinder(new List<string>() {inputPath}, excludedPaths);
 			var mediaToOrganise = showFinder.Scan().ToList();
-			
+
+			// Log what is going to be organised.
+			Logger.Log().StdOut.WriteLine("Organising {0} files: ", mediaToOrganise.Count);
+			mediaToOrganise.ForEach(media =>
+			{
+				Logger.Log().StdOut.WriteLine("\tOrganising: {0}", media.MediaFile.Name);
+			});
+
 			// Organise.
 			var organiser = new Organiser();
 			mediaToOrganise.ForEach(media =>
