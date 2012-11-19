@@ -46,6 +46,7 @@
     <Compile Include="Convertor\Externals\HandBrake.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="TagModifier.cs" />
+    <Compile Include="Media\Shows\ShowDetails\ShowDetailsMetaDataTags.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Core" />

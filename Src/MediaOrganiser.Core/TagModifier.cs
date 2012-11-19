@@ -8,11 +8,12 @@ namespace MediaOrganiser.Core
 {
 	public static class TagModifier
 	{
-		public static bool SetTVShowDetails(string filePath, string showName, int? seasonNumber, int episodeNumber, string episodeName, DateTime? airedDate, string description, string tvNetwork, IEnumerable<string> artworkPaths=null)
+		public static bool SetTVShowDetails(string filePath, string showName, int? seasonNumber, int episodeNumber, string episodeName,
+		                                    DateTime? airedDate, string description, string tvNetwork, IEnumerable<string> artworkPaths=null)
 		{
 			// Create the file and get the tag.
 			var file = TagLib.File.Create(filePath);
-			var tag = (TagLib.Mpeg4.AppleTag) file.Tag;
+			var tag = (TagLib.Mpeg4.AppleTag) file.GetTag(TagTypes.Apple);
 
 			// Set tvshow tag type and name.
 			var tvShowData = new AppleDataBox(ByteVector.FromString(showName, StringType.UTF8), (int) AppleDataBox.FlagType.ContainsText);
@@ -21,15 +22,19 @@ namespace MediaOrganiser.Core
 			// Set tags.
 			tag.Title = episodeName;
 			tag.Track = (uint) episodeNumber;
-			var episodeNumberData = new AppleDataBox(ByteVector.FromInt(episodeNumber), (int) AppleDataBox.FlagType.ContainsText);
+			/**
+			var episodeNumberData = new AppleDataBox(ByteVector.FromInt(episodeNumber), (int) AppleDataBox.FlagType.ContainsData);
 			tag.SetData("TVEpisodeNum", new AppleDataBox[] {episodeNumberData});
+			**/
 
+			/**
 			// Set season number.
 			if(seasonNumber.HasValue)
 			{
 				var seasonNumberData = new AppleDataBox(ByteVector.FromInt(seasonNumber.Value), (int) AppleDataBox.FlagType.ContainsText);
 				tag.SetData("TVSeasonNum", new AppleDataBox[] {seasonNumberData});
 			}
+			**/
 
 			// If airdate provided.
 			if(airedDate.HasValue)
@@ -41,9 +46,11 @@ namespace MediaOrganiser.Core
 			var longDescriptionData = new AppleDataBox(ByteVector.FromString(description, StringType.UTF8), (int) AppleDataBox.FlagType.ContainsText);
 			tag.SetData("ldes", new AppleDataBox[] {longDescriptionData});
 
+			/**
 			// Set TVNetwork.
 			var tvNetworkData = new AppleDataBox(ByteVector.FromString(tvNetwork, StringType.UTF8), (int) AppleDataBox.FlagType.ContainsText);
 			tag.SetData("TVNetwork", new AppleDataBox[] {tvNetworkData});
+			**/
 
 			// Add artwork if it exists.
 			if(artworkPaths!=null)
