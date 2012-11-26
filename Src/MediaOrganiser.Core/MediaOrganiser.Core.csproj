@@ -32,7 +32,6 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="Organiser.cs" />
     <Compile Include="Media\IMedia.cs" />
     <Compile Include="Media\Externals\AtomicParsley.cs" />
     <Compile Include="Media\Shows\IShow.cs" />

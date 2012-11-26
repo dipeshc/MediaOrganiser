@@ -7,7 +7,7 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Logger;
 
-namespace MediaOrganiser.Organisers
+namespace MediaOrganiser.Console.Organisers
 {
 	public class Organiser
 	{
