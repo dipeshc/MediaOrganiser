@@ -72,7 +72,7 @@ namespace MediaOrganiser.Media.Shows
 
 		public bool SaveDetails()
 		{
-			return AtomicParsley.AtomicParsley.SetDetails(MediaFile.FullName, ShowName, SeasonNumber, EpisodeNumber, EpisodeName, AiredDate, Overview, TVNetwork, Artworks==null?null:Artworks.Select(A=>A.FullName));
+			return AtomicParsley.AtomicParsley.SetTVShowDetails(MediaFile.FullName, ShowName, SeasonNumber, EpisodeNumber, EpisodeName, AiredDate, Overview, TVNetwork, Artworks==null?null:Artworks.Select(A=>A.FullName));
 		}
 
 		public string OrganisedMediaFileOutputPath

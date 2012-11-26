@@ -41,8 +41,8 @@ namespace MediaOrganiser.Media.Movies
 		
 		public bool SaveDetails()
 		{
-			return false;
-			//return AtomicParsley.AtomicParsley.SetDetails(MediaFile.FullName, ShowName, SeasonNumber, EpisodeNumber, EpisodeName, AiredDate, Overview, TVNetwork, Artworks==null?null:Artworks.Select(A=>A.FullName));
+			// Save.
+			return AtomicParsley.AtomicParsley.SetMovieDetails(MediaFile.FullName, Name, Year);
 		}
 		
 		public string OrganisedMediaFileOutputPath { get { return string.Format("{0} ({1}).{2}", Name, Year, MediaFile.Extension); } }
