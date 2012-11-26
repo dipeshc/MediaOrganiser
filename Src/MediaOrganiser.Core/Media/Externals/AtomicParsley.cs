@@ -12,6 +12,8 @@ namespace MediaOrganiser.Media.AtomicParsley
 {
 	public static class AtomicParsley
 	{
+		public delegate void OnCompleteCallback(int exitCode, string output);
+
 		private static IFileSystem _fileSystem = new FileSystem();
 		private static Regex _atomDetailRegex = new Regex("Atom \"(.*)\" contains: (.*)");
 
@@ -52,7 +54,7 @@ namespace MediaOrganiser.Media.AtomicParsley
 			}
 		}
 
-		public static int Run(string arguments, out string output)
+		public static int Run(string arguments, OnCompleteCallback onCompleteCallback)
 		{
 			// Create StartInfo.
 			var atomicParsleyProcessStartInfo = new ProcessStartInfo();
@@ -66,7 +68,7 @@ namespace MediaOrganiser.Media.AtomicParsley
 			using(var atomicParsleyProcess = Process.Start(atomicParsleyProcessStartInfo))
 			{
 				// Write StdOut.
-				var localOutput = output.ToString();
+				var localOutput = "";
 				atomicParsleyProcess.OutputDataReceived += (Sender, E) =>
 				{
 					localOutput += E.Data;
@@ -81,7 +83,12 @@ namespace MediaOrganiser.Media.AtomicParsley
 				
 				// Wait for process to exit and then assign Output to LocalOuput.
 				atomicParsleyProcess.WaitForExit();
-				output = localOutput;
+
+				// Trigger onComplete
+				if(onCompleteCallback!=null)
+				{
+					onCompleteCallback(atomicParsleyProcess.ExitCode, localOutput);
+				}
 
 				// Return exit code.
 				return atomicParsleyProcess.ExitCode;
@@ -91,7 +98,7 @@ namespace MediaOrganiser.Media.AtomicParsley
 		public static bool ExtractDetails(string filePath, out Dictionary<string, string> details)
 		{
 			var output = "";
-			if(Run(string.Format("\"{0}\" -t", filePath), out output)!=0)
+			if(Run(string.Format("\"{0}\" -t", filePath), (e, o) =>output=o)!=0)
 			{
 				details = null;
 				return false;
@@ -113,9 +120,15 @@ namespace MediaOrganiser.Media.AtomicParsley
 			return true;
 		}
 
-		public static bool SetDetails(string filePath, string showName, int? seasonNumber, int? episodeNumber, string episodeName, DateTime? airedDate, string overview, string tvNetwork, IEnumerable<String> artworkPaths=null)
+		public static bool SetMovieDetails(string filePath, string Name, int Year)
 		{
-			var arguments = String.Format(
+			var arguments = string.Format("\"{0}\" --overWrite --title \"{1}\" --year \"{2}\"", Name, Year.ToString("u").Replace(" ", "T"));
+			return Run(arguments, null)==0;
+		}
+
+		public static bool SetTVShowDetails(string filePath, string showName, int? seasonNumber, int? episodeNumber, string episodeName, DateTime? airedDate, string overview, string tvNetwork, IEnumerable<String> artworkPaths=null)
+		{
+			var arguments = string.Format(
 				"\"{0}\" --overWrite --stik \"TV Show\" --TVShowName \"{1}\" --TVSeasonNum \"{2}\" --TVEpisodeNum \"{3}\" --tracknum \"{3}\" --title \"{4}\" --year \"{5}\" --description \"{6}\" --TVNetwork \"{7}\" --artwork REMOVE_ALL",
 				filePath,
 				showName.Replace("\\", "\\\\").Replace("\"", "\\\""),
@@ -134,8 +147,7 @@ namespace MediaOrganiser.Media.AtomicParsley
 				}
 			}
 
-			String output = "";
-			return Run(arguments, out output)==0;
+			return Run(arguments, null)==0;
 		}
 	}
 }
