@@ -42,14 +42,20 @@ namespace MediaOrganiser.Console
 				throw new ApplicationException("Invalid ouput directory provided.");
 			}
 			
-			// Get files to organise.
+			// Setup paths.
+			var inputPaths = new List<string>() { inputPath };
 			var excludedPaths = new List<string>();
 			if(exclude)
 			{
 				excludedPaths.Add(outputDirectory.FullName);
 			}
-			var showFinder = new ShowFinder(new List<string>() {inputPath}, excludedPaths);
-			var mediaToOrganise = showFinder.Scan().ToList();
+
+			// Find shows and movies.
+			var showFinder = new ShowFinder(inputPaths, excludedPaths);
+			var showsToOrganise = showFinder.Scan();
+			var movieFinder = new MovieFinder(inputPaths, excludedPaths.Union(showsToOrganise.Select(show => show.MediaFile.FullName)));
+			var moviesToOrganise = movieFinder.Scan();
+			var mediaToOrganise = showsToOrganise.Union(moviesToOrganise).ToList();
 
 			// Log what is going to be organised.
 			Logger.Log().StdOut.WriteLine("Organising {0} files: ", mediaToOrganise.Count);

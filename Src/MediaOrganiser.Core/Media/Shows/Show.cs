@@ -9,7 +9,7 @@ namespace MediaOrganiser.Media.Shows
 {
 	public class Show : IShow
 	{
-		private IFileSystem fileSystem = new FileSystem();
+		private IFileSystem _fileSystem;
 
 		private IShowDetailsBasic showDetailsBasic = null;
 		private IShowDetailsAdditional showDetailsAdditional = null;
@@ -34,8 +34,9 @@ namespace MediaOrganiser.Media.Shows
 		public IEnumerable<FileInfoBase> Artworks { get { return showDetailsAdditional==null?null:showDetailsAdditional.Artworks; } }
 		public bool RequiresConversion { get { return (MediaFile.Extension.ToLower() != "."+OrganisedFileType); } }
 
-		public Show(FileInfoBase mediaFile)
+		public Show(IFileSystem fileSystem, FileInfoBase mediaFile)
 		{
+			_fileSystem = fileSystem;
 			MediaFile = mediaFile;
 		}
 
@@ -90,7 +91,7 @@ namespace MediaOrganiser.Media.Shows
 				// Add season number.
 				if(showDetailsBasic.SeasonNumber!=null)
 				{
-					showFilePath = fileSystem.Path.Combine(showFilePath, String.Format("Season {0}", showDetailsBasic.SeasonNumber));
+					showFilePath = _fileSystem.Path.Combine(showFilePath, String.Format("Season {0}", showDetailsBasic.SeasonNumber));
 					showFileName += String.Format("S{0:D2}", showDetailsBasic.SeasonNumber); 
 				}
 				
@@ -107,19 +108,19 @@ namespace MediaOrganiser.Media.Shows
 				showFileName += MediaFile.Extension;
 				
 				// Sanitise.
-				showFilePath = showFilePath.Trim(fileSystem.Path.GetInvalidPathChars());
-				showFileName = showFileName.Trim(fileSystem.Path.GetInvalidFileNameChars());
+				showFilePath = showFilePath.Trim(_fileSystem.Path.GetInvalidPathChars());
+				showFileName = showFileName.Trim(_fileSystem.Path.GetInvalidFileNameChars());
 				
 				// Return the full file path.
-				return fileSystem.Path.Combine(showFilePath, showFileName);
+				return _fileSystem.Path.Combine(showFilePath, showFileName);
 			}
 		}
 
 		public bool Convert()
 		{
 			// Create file for converted version of show.
-			var fullNameWithoutExtension = fileSystem.Path.Combine(MediaFile.Directory.FullName, fileSystem.Path.GetFileNameWithoutExtension(MediaFile.FullName));
-			var convertedMediaFile = fileSystem.FileInfo.FromFileName(fullNameWithoutExtension + ".converted." + OrganisedFileType);
+			var fullNameWithoutExtension = _fileSystem.Path.Combine(MediaFile.Directory.FullName, _fileSystem.Path.GetFileNameWithoutExtension(MediaFile.FullName));
+			var convertedMediaFile = _fileSystem.FileInfo.FromFileName(fullNameWithoutExtension + ".converted." + OrganisedFileType);
 
 			// Convert show.
 			if(!Convertor.Convertor.Convert(MediaFile, convertedMediaFile))

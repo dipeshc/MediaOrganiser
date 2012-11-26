@@ -59,14 +59,14 @@ namespace MediaOrganiser.Console.Finders
 				// If file then add directly.
 				if(_fileSystem.File.Exists(Path) && _fileSystem.FileInfo.FromFileName(Path).Extension.ToLower()=="."+showFileType)
 				{
-					shows.Add(new Show(_fileSystem.FileInfo.FromFileName(Path)));
+					shows.Add(new Show(_fileSystem, _fileSystem.FileInfo.FromFileName(Path)));
 				}
 				else if(_fileSystem.Directory.Exists(Path))
 				{
 					// If directory go through directory and then add.
 					foreach(var ShowFile in _fileSystem.DirectoryInfo.FromDirectoryName(Path).GetFiles("*."+showFileType, System.IO.SearchOption.AllDirectories))
 					{
-						shows.Add(new Show(ShowFile));
+						shows.Add(new Show(_fileSystem, ShowFile));
 					}
 				}
 			}
