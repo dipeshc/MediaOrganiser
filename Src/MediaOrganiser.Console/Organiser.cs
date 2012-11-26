@@ -7,7 +7,7 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Logger;
 
-namespace MediaOrganiser.Organisers
+namespace MediaOrganiser.Console.Organisers
 {
 	public class Organiser
 	{
@@ -111,7 +111,8 @@ namespace MediaOrganiser.Organisers
 		private bool RenameMediaToCleanFileName(IMedia media)
 		{
 			Logger.Log("Organiser").StdOut.WriteLine("Renaming media. {0}", media.MediaFile.FullName);
-			var OrganisedMediaFile = _fileSystem.FileInfo.FromFileName(_fileSystem.Path.Combine(WorkingDirectory.FullName, media.OrganisedMediaFile.Name));
+			var outputFileName = _fileSystem.Path.GetFileName(media.OrganisedMediaFileOutputPath);
+			var OrganisedMediaFile = _fileSystem.FileInfo.FromFileName(_fileSystem.Path.Combine(WorkingDirectory.FullName, outputFileName));
 			// Delete the file it already exists.
 			if(OrganisedMediaFile.Exists)
 			{
@@ -124,11 +125,12 @@ namespace MediaOrganiser.Organisers
 
 		private bool MoveMediaToOutputDirectory(IMedia media, DirectoryInfoBase outputDirectory)
 		{
-			var OrganisedFile = _fileSystem.FileInfo.FromFileName(_fileSystem.Path.Combine(outputDirectory.FullName, media.OrganisedMediaFile.Name));
+			// Get the output file location of the media.
+			var OrganisedFile = _fileSystem.FileInfo.FromFileName(_fileSystem.Path.Combine(outputDirectory.FullName, media.OrganisedMediaFileOutputPath));
 			if(OrganisedFile.Exists)
 			{
 				Logger.Log("Organiser").StdOut.WriteLine("Media file already exists. Will not overwriting. {0}", media.MediaFile.FullName);
-				return true;
+				return false;
 			}
 
 			Logger.Log("Organiser").StdOut.WriteLine("Copying media to output directory. {0}", media.MediaFile.FullName);

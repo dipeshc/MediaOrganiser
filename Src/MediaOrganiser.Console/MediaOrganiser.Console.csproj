@@ -20,6 +20,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>True</Externalconsole>
+    <Commandlineparameters>-i /Users/Dipesh/Desktop/Input -o /Users/Dipesh/Desktop/Output -x</Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
@@ -48,6 +49,7 @@
     <Compile Include="Finders\ShowFinder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Commands\Organise.cs" />
+    <Compile Include="Organiser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

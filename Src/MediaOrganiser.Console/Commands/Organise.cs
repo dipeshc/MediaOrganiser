@@ -6,7 +6,7 @@ using System.Logger;
 using ManyConsole;
 using NDesk.Options;
 using MediaOrganiser.Console.Finders;
-using MediaOrganiser.Organisers;
+using MediaOrganiser.Console.Organisers;
 
 namespace MediaOrganiser.Console
 {
