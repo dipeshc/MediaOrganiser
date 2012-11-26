@@ -1,5 +1,5 @@
 using MediaOrganiser.Convertor;
-using MediaOrganiser.Media.Shows.Details;
+using MediaOrganiser.Media.Movies.Details;
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
@@ -9,49 +9,49 @@ namespace MediaOrganiser.Media.Movies
 {
 	public class Movie : IMovie
 	{
-		private IFileSystem fileSystem = new FileSystem();
-		
+		private IFileSystem _fileSystem = null;
 		private static string OrganisedFileType = "mp4";
-		
+
+		private IMovieDetailsBasic _movieDetailsBasic;
+		private MovieDetailsRegex _movieDetailsRegex = new MovieDetailsRegex();
+
 		public FileInfoBase MediaFile { get; set; }
 		public bool HasDetails { get; private set; }
 		public bool HasFullDetails { get { return HasDetails; } }
+		public bool RequiresConversion { get { return (MediaFile.Extension.ToLower() != "."+OrganisedFileType); } }
 
-		public string Name { get; private set; }
-		public int Year { get; private set; }
+		public string Name { get { return _movieDetailsBasic.Name; } }
+		public int Year { get { return _movieDetailsBasic.Year; } }
 
-		public Movie(FileInfoBase mediaFile)
+		public Movie(IFileSystem fileSystem, FileInfoBase mediaFile)
 		{
+			_fileSystem = fileSystem;
 			MediaFile = mediaFile;
 		}
 		
 		public bool ExtractDetails(bool doExhaustiveExtraction=true)
 		{
-			return false;
+			// Try getting from file name.
+			if(_movieDetailsRegex.HasDetails || _movieDetailsRegex.ExtractDetails(MediaFile.Name))
+			{
+				_movieDetailsBasic = _movieDetailsRegex;
+			}
+			return HasDetails;
 		}
 		
 		public bool SaveDetails()
 		{
 			return false;
+			//return AtomicParsley.AtomicParsley.SetDetails(MediaFile.FullName, ShowName, SeasonNumber, EpisodeNumber, EpisodeName, AiredDate, Overview, TVNetwork, Artworks==null?null:Artworks.Select(A=>A.FullName));
 		}
 		
-		public string OrganisedMediaFileOutputPath
-		{
-			get
-			{
-				// Initalise empty filename and filepath.
-				var movieFileName = "";
-				
-				// Return.
-				return string.Format("{0}.{1}", movieFileName, MediaFile.Extension);
-			}
-		}
+		public string OrganisedMediaFileOutputPath { get { return string.Format("{0} ({1}).{2}", Name, Year, MediaFile.Extension); } }
 		
 		public bool Convert()
 		{
 			// Create file for converted version of show.
-			var fullNameWithoutExtension = fileSystem.Path.Combine(MediaFile.Directory.FullName, fileSystem.Path.GetFileNameWithoutExtension(MediaFile.FullName));
-			var convertedMediaFile = fileSystem.FileInfo.FromFileName(fullNameWithoutExtension + ".converted." + OrganisedFileType);
+			var fullNameWithoutExtension = _fileSystem.Path.Combine(MediaFile.Directory.FullName, _fileSystem.Path.GetFileNameWithoutExtension(MediaFile.FullName));
+			var convertedMediaFile = _fileSystem.FileInfo.FromFileName(fullNameWithoutExtension + ".converted." + OrganisedFileType);
 			
 			// Convert show.
 			if(!Convertor.Convertor.Convert(MediaFile, convertedMediaFile))

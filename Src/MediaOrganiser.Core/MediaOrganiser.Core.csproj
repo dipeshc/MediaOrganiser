@@ -46,6 +46,8 @@
     <Compile Include="Logger.cs" />
     <Compile Include="Media\Movies\IMovie.cs" />
     <Compile Include="Media\Movies\Movie.cs" />
+    <Compile Include="Media\Movies\MovieDetails\IMovieDetailsBasic.cs" />
+    <Compile Include="Media\Movies\MovieDetails\MovieDetailsRegex.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Core" />
@@ -62,6 +64,7 @@
     <Folder Include="Media\" />
     <Folder Include="Convertor\" />
     <Folder Include="Media\Movies\" />
+    <Folder Include="Media\Movies\MovieDetails\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Convertor\Externals\HandBrakeCLI.exe" />
