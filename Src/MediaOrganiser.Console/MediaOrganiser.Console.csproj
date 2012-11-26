@@ -48,6 +48,7 @@
     <Compile Include="Finders\ShowFinder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Commands\Organise.cs" />
+    <Compile Include="Organiser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
