@@ -18,6 +18,7 @@ namespace MediaOrganiser.Console
 		DirectoryInfoBase outputDirectory = null;
 		bool forceConversion = false;
 		bool exclude = false;
+		bool strictSeason = false;
 
 		public Organise()
 		{
@@ -25,7 +26,8 @@ namespace MediaOrganiser.Console
 			HasRequiredOption("i|input=", "The Input path from which media will be found.", v => inputPath = v);
 			HasRequiredOption("o|output=", "The Output directory from which organised media will be put.", v => outputDirectory = _fileSystem.DirectoryInfo.FromDirectoryName(v));
 			HasOption("f|forceConversion", "Forces the conversion of all input media, even if the media is already in the correct format.", v => forceConversion = v != null);
-			HasOption("x|Exclude", "Excludes organised shows in output directory when searching the input path.", v => exclude = v != null);
+			HasOption("x|exclude", "Excludes organised shows in output directory when searching the input path.", v => exclude = v != null);
+			HasOption("s|strictSeason", "Enforces a strict season number requirement. This will guarantee the output media contains season details.", v => strictSeason = v != null);
 		}
 
 		public override int Run(string[] remainingArguments)
@@ -68,7 +70,7 @@ namespace MediaOrganiser.Console
 			var organiser = new Organiser();
 			mediaToOrganise.ForEach(media =>
 			{
-				organiser.Organise(media, outputDirectory, forceConversion);
+				organiser.Organise(media, outputDirectory, forceConversion, strictSeason);
 			});
 
 			// Return 0.

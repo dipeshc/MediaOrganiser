@@ -27,7 +27,7 @@ namespace MediaOrganiser.Media.Shows.Details
 		public IEnumerable<FileInfoBase> Artworks { get; private set; }
 		public bool HasDetails { get; private set; }
 
-		public bool ExtractDetails(IShowDetailsBasic showDetailsBasic)
+		public bool ExtractDetails(IShowDetailsBasic showDetailsBasic, bool strictSeason)
 		{
 			// Check if cache directory exists.
 			if(!CacheDirectory.Exists)
@@ -101,8 +101,16 @@ namespace MediaOrganiser.Media.Shows.Details
 
 			// Set details.
 			ShowName = series.SeriesName;
-			SeasonNumber = showDetailsBasic.SeasonNumber;
-			EpisodeNumber = showDetailsBasic.EpisodeNumber;
+			if(strictSeason)
+			{
+				SeasonNumber = episode.SeasonNumber;
+				EpisodeNumber = episode.EpisodeNumber;
+			}
+			else
+			{
+				SeasonNumber = showDetailsBasic.SeasonNumber;
+				EpisodeNumber = showDetailsBasic.EpisodeNumber;
+			}
 			EpisodeName = episode.EpisodeName;
 			AiredDate = episode.FirstAired;
 			Overview = episode.Overview;

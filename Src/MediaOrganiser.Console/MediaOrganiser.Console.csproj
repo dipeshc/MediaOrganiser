@@ -20,7 +20,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>True</Externalconsole>
-    <Commandlineparameters>-i /Users/Dipesh/Desktop/Input -o /Users/Dipesh/Desktop/Output -x</Commandlineparameters>
+    <Commandlineparameters>-i /Users/Dipesh/Desktop/Input -o /Users/Dipesh/Desktop/Output -s</Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>

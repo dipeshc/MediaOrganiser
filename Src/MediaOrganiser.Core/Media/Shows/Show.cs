@@ -40,7 +40,7 @@ namespace MediaOrganiser.Media.Shows
 			MediaFile = mediaFile;
 		}
 
-		public bool ExtractDetails(bool doExhaustiveExtraction=true)
+		public bool ExtractDetails(bool doExhaustiveExtraction, bool strictSeason)
 		{
 			// 1) Try getting from file name.
 			if(showDetailsRegex.HasDetails || showDetailsRegex.ExtractDetails(MediaFile.Name))
@@ -58,7 +58,7 @@ namespace MediaOrganiser.Media.Shows
 			// 3) If HasDetails and DoExhaustiveExtraction then try getting additional details from online.
 			try
 			{
-				if(HasDetails && doExhaustiveExtraction && (showDetailsTVDB.HasDetails || showDetailsTVDB.ExtractDetails(showDetailsBasic)))
+				if(HasDetails && doExhaustiveExtraction && (showDetailsTVDB.HasDetails || showDetailsTVDB.ExtractDetails(showDetailsBasic, strictSeason)))
 				{
 					showDetailsBasic = showDetailsTVDB;
 					showDetailsAdditional = showDetailsTVDB;

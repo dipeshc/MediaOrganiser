@@ -8,7 +8,7 @@ namespace MediaOrganiser.Media
 		FileInfoBase MediaFile { get ; set; }
 		string OrganisedMediaFileOutputPath { get; }
 
-		bool ExtractDetails(bool getFullDetails=true);
+		bool ExtractDetails(bool doExhaustiveExtraction, bool strictSeason);
 		bool HasDetails { get; }
 		bool HasFullDetails { get; }
 		bool SaveDetails();

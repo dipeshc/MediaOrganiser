@@ -29,7 +29,7 @@ namespace MediaOrganiser.Media.Movies
 			MediaFile = mediaFile;
 		}
 		
-		public bool ExtractDetails(bool doExhaustiveExtraction=true)
+		public bool ExtractDetails(bool doExhaustiveExtraction, bool strict)
 		{
 			// Try getting from file name.
 			if(_movieDetailsRegex.HasDetails || _movieDetailsRegex.ExtractDetails(MediaFile.Name))
