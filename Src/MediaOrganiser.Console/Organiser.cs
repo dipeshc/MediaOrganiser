@@ -25,7 +25,7 @@ namespace MediaOrganiser.Console.Organisers
 			set { Logger.Log("Organiser").StdErr = value; }
 		}
 
-		public void Organise(IMedia media, DirectoryInfoBase outputDirectory, bool forceConversion)
+		public void Organise(IMedia media, DirectoryInfoBase outputDirectory, bool forceConversion, bool strictSeason)
 		{
 			// Create working directory.
 			WorkingDirectory = _fileSystem.DirectoryInfo.FromDirectoryName(_fileSystem.Path.Combine(_fileSystem.Path.GetTempPath(), "WorkingArea"));
@@ -46,7 +46,7 @@ namespace MediaOrganiser.Console.Organisers
 			}
 
 			// Extract media details exhaustivly.
-			ExtractExhaustiveMediaDetails(media);
+			ExtractExhaustiveMediaDetails(media, strictSeason);
 
 			// Save media meta data.
 			var saveResponse = SaveMediaMetaData(media);
@@ -88,10 +88,10 @@ namespace MediaOrganiser.Console.Organisers
 			return false;
 		}
 
-		private bool ExtractExhaustiveMediaDetails(IMedia media)
+		private bool ExtractExhaustiveMediaDetails(IMedia media, bool strictSeason)
 		{
 			Logger.Log("Organiser").StdOut.WriteLine("Extracting Details Exhaustive. {0}", media.MediaFile.FullName);
-			var response = media.ExtractDetails(true);
+			var response = media.ExtractDetails(true, strictSeason);
 			Logger.Log("Organiser").StdOut.WriteLine("Extracted Details Exhaustive. {0}", media.MediaFile.FullName);
 			return response;
 		}

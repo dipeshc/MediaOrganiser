@@ -38,7 +38,7 @@ namespace MediaOrganiser.Console.Finders
 			Parallel.ForEach(Enumerable.Union<IMedia>(inputShowsTemp, excludedShowsTemp), show =>
 			{
 				System.Console.WriteLine("Extracting show details (not full) for {0}", show.MediaFile.FullName);
-				show.ExtractDetails(false);
+				show.ExtractDetails(false, false);
 				System.Console.WriteLine("Extracted show details (not full) for {0}", show.MediaFile.FullName);
 			});
 
