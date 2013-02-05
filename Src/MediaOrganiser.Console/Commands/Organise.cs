@@ -23,8 +23,28 @@ namespace MediaOrganiser.Console
 		public Organise()
 		{
 			IsCommand("organise", "Organises the media (TV Shows) into a uniform ouput which can be consumed.");
-			HasRequiredOption("i|input=", "The Input path from which media will be found.", v => _inputPath = v);
-			HasRequiredOption("o|output=", "The Output directory from which organised media will be put.", v => _outputDirectory = _fileSystem.DirectoryInfo.FromDirectoryName(v));
+			HasRequiredOption("i|input=", "The Input path from which media will be found.", v =>
+			{
+				// Check inputPath exists.
+				if(!_fileSystem.DirectoryInfo.FromDirectoryName(v).Exists && !_fileSystem.FileInfo.FromFileName(v).Exists)
+				{
+					throw new ApplicationException("Invalid input path provided.");
+				}
+
+				// Set.
+				_inputPath = v;
+			});
+			HasRequiredOption("o|output=", "The Output directory from which organised media will be put.", v =>
+			{
+				// Check output folder exists.
+				if(!_fileSystem.DirectoryInfo.FromDirectoryName(v).Exists)
+				{
+					throw new ApplicationException("Invalid ouput directory provided.");
+				}
+
+				// Set.
+				_outputDirectory = _fileSystem.DirectoryInfo.FromDirectoryName(v);
+			});
 			HasOption("x|exclude", "Excludes organised shows in output directory when searching the input path.", v => _exclude = v != null);
 			HasOption("s|strictSeason", "Enforces a strict season number requirement. This will guarantee the output media contains season details.", v => _strictSeason = v != null);
 			HasOption("c|conversion=", "Specifies if/when input media should be converted. Possibly values: \"default\", \"force\", or \"skip\". \"default\" only converts if required, \"force\" converts everything, and \"skip\" will skip conversion for anything that requires conversion.", v =>
@@ -50,18 +70,6 @@ namespace MediaOrganiser.Console
 
 		public override int Run(string[] remainingArguments)
 		{
-			// Check inputPath exists.
-			if(!_fileSystem.DirectoryInfo.FromDirectoryName(_inputPath).Exists && !_fileSystem.FileInfo.FromFileName(_inputPath).Exists)
-			{
-				throw new ApplicationException("Invalid input path provided.");
-			}
-			
-			// Check output folder exists.
-			if(!_outputDirectory.Exists)
-			{
-				throw new ApplicationException("Invalid ouput directory provided.");
-			}
-			
 			// Setup paths.
 			var inputPaths = new List<string>() { _inputPath };
 			var excludedPaths = new List<string>();
