@@ -16,18 +16,36 @@ namespace MediaOrganiser.Console
 
 		private string _inputPath = "";
 		private DirectoryInfoBase _outputDirectory = null;
-		private bool _forceConversion = false;
 		private bool _exclude = false;
 		private bool _strictSeason = false;
+		private OrganiserConversionOptions _conversionOption = OrganiserConversionOptions.Default;
 
 		public Organise()
 		{
 			IsCommand("organise", "Organises the media (TV Shows) into a uniform ouput which can be consumed.");
 			HasRequiredOption("i|input=", "The Input path from which media will be found.", v => _inputPath = v);
 			HasRequiredOption("o|output=", "The Output directory from which organised media will be put.", v => _outputDirectory = _fileSystem.DirectoryInfo.FromDirectoryName(v));
-			HasOption("f|forceConversion", "Forces the conversion of all input media, even if the media is already in the correct format.", v => _forceConversion = v != null);
 			HasOption("x|exclude", "Excludes organised shows in output directory when searching the input path.", v => _exclude = v != null);
 			HasOption("s|strictSeason", "Enforces a strict season number requirement. This will guarantee the output media contains season details.", v => _strictSeason = v != null);
+			HasOption("c|conversion=", "Specifies if/when input media should be converted. Possibly values: \"default\", \"force\", or \"skip\". \"default\" only converts if required, \"force\" converts everything, and \"skip\" will skip conversion for anything that requires conversion.", v =>
+			{
+				if(v == null || v.ToLower() == "default")
+				{
+					_conversionOption = OrganiserConversionOptions.Default;
+				}
+				else if(v.ToLower() == "force")
+				{
+					_conversionOption = OrganiserConversionOptions.Force;
+				}
+				else if(v.ToLower() == "skip")
+				{
+					_conversionOption = OrganiserConversionOptions.Skip;
+				}
+				else
+				{
+					throw new ApplicationException("Invalid conversion option provided.");
+				}
+			});
 		}
 
 		public override int Run(string[] remainingArguments)
@@ -70,7 +88,7 @@ namespace MediaOrganiser.Console
 			var organiser = new Organiser();
 			mediaToOrganise.ForEach(media =>
 			{
-				organiser.Organise(media, _outputDirectory, _forceConversion, _strictSeason);
+				organiser.Organise(media, _outputDirectory, _conversionOption, _strictSeason);
 			});
 
 			// Return 0.
