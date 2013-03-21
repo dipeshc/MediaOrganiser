@@ -31,6 +31,19 @@ namespace MediaOrganiser.Media.Shows.Details
 			}
 		}
 
+		private static Regex _showNameCleaningPattern = null;
+		private static Regex showNameCleaningPattern
+		{
+			get
+			{
+				if(_showNameCleaningPattern==null)
+				{
+					_showNameCleaningPattern = new Regex(@"(240|480|720|1080)[ip]");
+				}
+				return _showNameCleaningPattern;
+			}
+		}
+
 		public string ShowName { get; private set; }
 		public int? SeasonNumber { get; private set; }
 		public int? EpisodeNumber { get; private set; }
@@ -38,11 +51,14 @@ namespace MediaOrganiser.Media.Shows.Details
 
 		public bool ExtractDetails(String SearchInput)
 		{
+			// Clean search input.
+			var cleanSearchInput = showNameCleaningPattern.Replace(SearchInput, "");
+
 			// Use regex to extract out details.
-			foreach(var Pattern in patterns)
+			foreach(var pattern in patterns)
 			{
 				// Use regex to extract out details.
-				var Match = Pattern.Match(SearchInput);
+				var Match = pattern.Match(cleanSearchInput);
 				if(!Match.Success)
 				{
 					continue;

@@ -9,6 +9,13 @@ using System.Logger;
 
 namespace MediaOrganiser.Console.Organisers
 {
+	public enum OrganiserConversionOptions
+	{
+		Default,
+		Force,
+		Skip
+	}
+
 	public class Organiser
 	{
 		private IFileSystem _fileSystem = new FileSystem();
@@ -25,7 +32,7 @@ namespace MediaOrganiser.Console.Organisers
 			set { Logger.Log("Organiser").StdErr = value; }
 		}
 
-		public void Organise(IMedia media, DirectoryInfoBase outputDirectory, bool forceConversion, bool strictSeason)
+		public void Organise(IMedia media, DirectoryInfoBase outputDirectory, OrganiserConversionOptions conversionOption, bool strictSeason)
 		{
 			// Create working directory.
 			WorkingDirectory = _fileSystem.DirectoryInfo.FromDirectoryName(_fileSystem.Path.Combine(_fileSystem.Path.GetTempPath(), "WorkingArea"));
@@ -40,9 +47,22 @@ namespace MediaOrganiser.Console.Organisers
 			CopyMediaToWorkingArea(media);
 
 			// Convert if required.
-			if(forceConversion || media.RequiresConversion)
+			if(conversionOption == OrganiserConversionOptions.Force)
 			{
+				Logger.Log("Organiser").StdOut.WriteLine("Conversion set to \"force\". Will convert. {0}", media.MediaFile.FullName);
 				ConvertMedia(media);
+			}
+			else if(media.RequiresConversion)
+			{
+				if(conversionOption == OrganiserConversionOptions.Skip)
+				{
+					Logger.Log("Organiser").StdOut.WriteLine("Media requires conversion. Conversion set to \"skip\", skipping conversion. {0}", media.MediaFile.FullName);
+				}
+				else
+				{
+					Logger.Log("Organiser").StdOut.WriteLine("Media requires conversion. Will convert. {0}", media.MediaFile.FullName);
+					ConvertMedia(media);
+				}
 			}
 
 			// Extract media details exhaustivly.
@@ -52,9 +72,16 @@ namespace MediaOrganiser.Console.Organisers
 			var saveResponse = SaveMediaMetaData(media);
 			if(!saveResponse)
 			{
-				Logger.Log("Organiser").StdOut.WriteLine("Unable to save metadata. Will convert. {0}", media.MediaFile.FullName);
-				ConvertMedia(media);
-				SaveMediaMetaData(media);
+				if(conversionOption == OrganiserConversionOptions.Skip)
+				{
+					Logger.Log("Organiser").StdOut.WriteLine("Unable to save metadata. Conversion set to \"skip\", skipping conversion. {0}", media.MediaFile.FullName);
+				}
+				else
+				{
+					Logger.Log("Organiser").StdOut.WriteLine("Unable to save metadata. Will convert. {0}", media.MediaFile.FullName);
+					ConvertMedia(media);
+					SaveMediaMetaData(media);
+				}
 			}
 
 			// Rename media.
