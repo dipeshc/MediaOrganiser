@@ -86,6 +86,7 @@ namespace MediaOrganiser.Tests
 		[TestCase("Family.Guy.S10E20.HDTV.x264-LOL.mp4", "Family Guy", 10, 20)]
 		[TestCase("How.I.Met.Your.Mother.S07E21.HDTV.x264-LOL.[VTV].mp4", "How I Met Your Mother", 7, 21)]
 		[TestCase("Mad Men S01E01 DVDRIP MPEG-4 AVC 856x480 AAC", "Mad Men", 1, 1)]
+		[TestCase("[HorribleSubs] Naruto Shippuden - 260 [480p].mp4", "Naruto Shippuden", null, 260)]
 		[TestCase("[Narutoverse]_NARUTO_Shippuden_260", "Naruto Shippuden", null, 260)]
 		[TestCase("Naruto Shippuuden - E263 - Sai and Shin.mp4", "Naruto Shippuuden", null, 263)]
 		[TestCase("The.Big.Bang.Theory.S05E21.HDTV.x264-LOL.mp4", "The Big Bang Theory", 5, 21)]
